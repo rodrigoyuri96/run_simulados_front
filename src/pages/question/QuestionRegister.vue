@@ -1,0 +1,121 @@
+<template>
+  <v-container>
+    <v-dialog v-model="dialog">
+      <question-registers></question-registers>
+    </v-dialog>
+    <v-card class="form-group">
+      <v-card-title>Cadastro de Questões</v-card-title>
+      <v-row alignament="center" justify="start" no-gutters>
+        <v-col align-self="start">
+          <v-card-title>Questões</v-card-title>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col align-self="end" class="ml-12" md="4">
+          <v-btn color="primary" @click="addQuestion()">
+            Cadastrar Questão
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-card-text>
+        <v-simple-table fixed-header height="250px">
+          <template v-slot:default>
+            <thead>
+            <tr>
+              <th class="text-left">Questão</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+              v-for="(question, i) in questions"
+              :key="i"
+              class="text-center"
+            >
+              <td>{{ question.numberQuestion}}</td>
+              <td class="ml-5">
+                <v-btn @click="updateQuestion(i)" text color="teal">
+                  <v-icon>{{ icons.mdiPencil }}</v-icon>
+                </v-btn>
+                <v-btn
+                  @click="deleteQuestion(i)"
+                  text
+                  color="deep-orange accent-4"
+                >
+                  <v-icon>
+                    {{ icons.mdiDelete }}
+                  </v-icon>
+                </v-btn>
+              </td>
+            </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-card-text>
+    </v-card>
+  </v-container>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import { getModule } from "vuex-module-decorators";
+import { QuestionRegisterModule } from "@/store/modules/QuestionRegisterModule";
+import Question from "../../models/question/Question";
+import QuestionRegisters from "@/views/questao/QuestionRegisters.vue";
+import { RegisterStatus } from "@/models/RegisterStatus";
+import { mdiDelete, mdiPencil } from "@mdi/js";
+
+@Component({
+  name: "QuestionList",
+  components: { QuestionRegisters },
+})
+export default class QuestionList extends Vue {
+  questionRegiterModule = getModule(QuestionRegisterModule, this.$store);
+
+  icons = {
+    mdiDelete,
+    mdiPencil,
+  };
+
+  get questions() {
+    return this.questionRegiterModule.questions;
+  }
+
+  get question(){
+    return this.questionRegiterModule.question
+  }
+
+  get dialog() {
+    return this.questionRegiterModule.dialog;
+  }
+
+  set dialog(newValue) {
+    this.questionRegiterModule.setDialog(newValue);
+  }
+
+  set question(newValue: Question){
+    this.questionRegiterModule.setQuestion(newValue)
+  }
+
+  updateQuestion(i: number) {
+    this.questionRegiterModule.setQuestion(this.questionRegiterModule.questions[i])
+    this.questionRegiterModule.setRegisterStatus(RegisterStatus.UPDATE)
+    this.questionRegiterModule.setDialog(true)
+    this.questionRegiterModule.setValidUpdate(true)
+    console.log(this.questionRegiterModule.validUpdate)
+  }
+
+  deleteQuestion(i: number) {
+    this.questionRegiterModule.questions.splice(i, 1);
+  }
+
+  addQuestion() {
+    this.questionRegiterModule.setValidUpdate(false)
+    this.questionRegiterModule.setQuestion(new Question())
+    this.questionRegiterModule.setDialog(true);
+    console.log(this.questionRegiterModule.validUpdate)
+    console.log(this.questionRegiterModule._question)
+  }
+}
+</script>
+
+<style scoped>
+</style>

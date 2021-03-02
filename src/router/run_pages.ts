@@ -7,7 +7,6 @@ export default [{
     path: '/editor',
     name: 'editor',
     component: () => import('@/components/run/editor/RunEditor.vue'),
-
   },
   {
     path: '/cadastro-evento',

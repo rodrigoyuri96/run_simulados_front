@@ -5,6 +5,7 @@ import {InstitutionModule} from "@/store/modules/InstitutionModule";
 import {DisciplineModule} from "@/store/modules/DisciplineModule";
 import {SubjectModule} from "@/store/modules/SubjectModule";
 import {ValidationMessageModule} from "@/store/modules/validation/ValidationMessageModule";
+import {OptionModule} from "@/store/modules/OptionModule"
 
 // Global vuex
 import AppModule from './app'
@@ -21,7 +22,8 @@ const store = new Vuex.Store({
     InstitutionModule,
     DisciplineModule,
     SubjectModule,
-    ValidationMessageModule
+    ValidationMessageModule,
+    OptionModule
   }
 })
 

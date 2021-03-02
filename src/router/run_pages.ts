@@ -13,7 +13,10 @@ export default [{
     path: '/editor',
     name: 'editor',
     component: () => import('@/components/run/editor/RunEditor.vue'),
-
   },
-
+  {
+    path: '/cadastro-evento',
+    name: 'cadastro-evento',
+    component: () => import('@/pages/events/EventList.vue'),
+  }
 ]

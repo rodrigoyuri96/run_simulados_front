@@ -26,6 +26,8 @@ export default [
   },
   {
     icon: 'mdi-file-cog-outline', key: 'cadastro-questao', text: 'Cadastro Questão', link: '/cadastro-questao',
-
+  },
+  {
+    icon: 'mdi-file-cog-outline', key: 'cadastro-evento', text: 'Cadastro Evento', link: '/cadastro-evento',
   }
 ]

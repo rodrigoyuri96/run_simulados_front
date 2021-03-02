@@ -16,6 +16,11 @@ export default [{
 
   },
   {
+    path: '/cadastro-evento',
+    name: 'cadastro-evento',
+    component: () => import('@/pages/events/EventList.vue'),
+  },
+  {
     path: '/detalhe-questao',
     name: 'detalhe-questao',
     component: () => import('@/pages/question/QuestionDetail.vue')

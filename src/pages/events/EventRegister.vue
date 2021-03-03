@@ -12,6 +12,7 @@
           <v-row class="mt-5">
             <v-col cols="6">
               <v-text-field
+                v-model="event.eventTitle"
                 outlined
                 dense
                 required
@@ -27,6 +28,7 @@
             </v-col>
             <v-col cols="2">
               <v-text-field
+                v-model="event.typeEvent"
                 outlined
                 dense
                 required
@@ -59,12 +61,22 @@
 
           <v-row>
             <v-col>
+              <run-date v-model="event.startDateSubscription" label="Data inicio Instituição"></run-date>
+            </v-col>
+             <v-col>
+              <run-date v-model="event.endDateSubscription" label="Data fim Instituição"></run-date>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
               <run-date v-model="event.startDateEvent" label="Data inicio Evento"></run-date>
             </v-col>
              <v-col>
               <run-date v-model="event.endDateEvent" label="Data fim Evento"></run-date>
             </v-col>
           </v-row>
+
           <v-row>
             <v-col cols="6">
               <run-disciplines v-model="event.discipline"> </run-disciplines>

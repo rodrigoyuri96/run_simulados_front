@@ -1,81 +1,131 @@
 <template>
-  <div>
-    <vue-editor
-      v-model="description" useCustomImageHandler></vue-editor>
+  <div id="app">
+    <v-card class="ml-10"  >
+      <v-row>
+        <v-col class="ml-5">
+          <vue-editor id="editor"
+                      useCustomImageHandler
+                      @image-removed="handleImageRemoved"
+                      @image-added="handleImageAdded"
+                      v-model="htmlForEditor" />
+          <br>
+          <v-progress-linear
+            v-if="progressFlag"
+            color="light-blue"
+            height="10"
+            :value="progress"
+            striped
+          ></v-progress-linear>
+        </v-col>
+        <v-col>
+          <div class="ql-editor" v-html="htmlForEditor"></div>
+
+        </v-col>
+      </v-row>
+    </v-card>
+
   </div>
 </template>
 
 <script>
-import {VueEditor}  from "vue2-editor";
+
+import {Quill, VueEditor} from "vue2-editor";
 import Firebase from "@/firebase"
+
+const quill = new Quill('#preview', {theme: 'snow'});
 
 export default {
   components: {
     VueEditor
   },
 
+  computed:{
+    folderName(){
+      return 'ENEM/2021/1SEMESTRE/1FASE/FISICA/QUESTAO_50/'
+    }
+  },
+
   data() {
     return {
-      description: ""
+      progressFlag: false,
+      htmlForEditor: "",
+      progress: 0
     };
   },
 
   methods: {
-    addCustomImage(){
-      VueEditor.methods.customImageHandler(file, this.handleImageAdded)
-    },
-
     handleImageAdded: function(file, Editor, cursorLocation, resetUploader) {
+      console.log("file", file)
+      this.progressFlag = true
+      const storageRef = Firebase.storage().ref();
+      const uploadTask = storageRef.child( this.folderName +  this.generateFileName()).put(file);
 
-      console.log(file)
-      var storageRef = Firebase.storage().ref();
 
-      var uploadTask = storageRef.child('vue-editor/' + file.name).put(file);
-      uploadTask.on(Firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
-        function(snapshot) {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-          switch (snapshot.state) {
-            case Firebase.storage.TaskState.PAUSED: // or 'paused'
-              console.log('Upload is paused');
-              break;
-            case Firebase.storage.TaskState.RUNNING: // or 'running'
-              console.log('Upload is running');
-              break;
-          }
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          this.progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + this.progress + '% done');
         }, function(error) {
 
-          // A full list of error codes is available at
-          // https://firebase.google.com/docs/storage/web/handle-errors
           switch (error.code) {
             case 'storage/unauthorized':
-              console.log("usuario nao ter permissao")
               break;
 
             case 'storage/canceled':
-              console.log("upload cancelado")
               break;
+
             case 'storage/unknown':
-              console.log("storage desconhecido")
               break;
           }
-        }, function() {
-          // Upload completed successfully, now we can get the download URL
-          uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-            console.log('File available at', downloadURL);
-            Editor.insertEmbed(cursorLocation, "image", downloadURL);
+        }, ()=> {
+          uploadTask.snapshot.ref.getDownloadURL().then(function(url) {
+            console.log('File available at', url);
+            Editor.insertEmbed(cursorLocation, "image", url);
             resetUploader();
           });
+
+          setTimeout(()=> {
+            this.progressFlag = false
+          }, 3000);
         });
+
+
     },
 
+    generateFileName(){
+      return Math.random().toString(36).substr(1, 60);
+    },
+
+
+
+    handleImageRemoved(image){
+      const filename = image.substring(image.lastIndexOf('/')+1);
+      alert(unescape(filename));
+      const decodedName = unescape(filename)
+      let indexParameter = decodedName.indexOf("?")
+
+      const storageRef = Firebase.storage().ref();
+      const desertRef = storageRef.child(decodedName.substring(0, indexParameter));
+
+      desertRef.delete().then(function() {
+        console.log("Imagem deletada com sucesso")
+      }).catch(function(error) {
+        console.log("Erro ao deletar mensagem: ", error)
+      });
+
+    }
 
 
   }
 };
 </script>
 
-<style scoped>
+<style lang="css">
+@import "~vue2-editor/dist/vue2-editor.css";
+
+/* Import the Quill styles you want */
+@import '~quill/dist/quill.core.css';
+@import '~quill/dist/quill.bubble.css';
+@import '~quill/dist/quill.snow.css';
 
 </style>

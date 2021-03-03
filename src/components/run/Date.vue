@@ -40,8 +40,8 @@ import { Vue, Component, Watch, VModel, Prop } from "vue-property-decorator";
 })
 export default class RunDate extends Vue {
   menu1 = false;
-  @VModel({type: String}) date: String | "";
-  @Prop({type: String}) label: String | "";
+  @VModel({ type: String }) date: String | "";
+  @Prop({ type: String }) label: String | "";
   //.toISOString().substr(0, 10);
   dateFormatted: String = new String();
   //vm.formatDate(new Date().toISOString().substr(0, 10));

@@ -33,7 +33,7 @@
           </v-row>
           <v-row>
             <v-col cols="8">
-              <run-institution v-model="exam.institution" @valid-field="validInstitution = $event"/>
+              <run-institution v-model="exam.institution" @valid="validInstitution = $event"/>
             </v-col>
             <v-col cols="4">
               <v-text-field

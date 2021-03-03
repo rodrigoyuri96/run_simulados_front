@@ -2,6 +2,7 @@
   <div>
     <v-form v-model="valid">
       <v-autocomplete
+        v-if="multiple == false"
         v-model="discipline"
         :items="disciplines"
         item-text="name"
@@ -9,6 +10,18 @@
         :rules="[v=> !!v || 'campo obrigatório']"
         outlined
         dense
+        return-object
+      />
+      <v-autocomplete
+        v-if="multiple == true"
+        v-model="disciplineModule"
+        :items="disciplines"
+        item-text="name"
+        label="Disciplinas"
+        :rules="[v=> !!v || 'campo obrigatório']"
+        outlined
+        dense
+        multiple
         return-object
       />
     </v-form>
@@ -27,25 +40,18 @@ import Discipline from '@/models/Discipline'
 export default class Disciplines extends Vue {
   valid: boolean = false
   disciplineModule = getModule(DisciplineModule, this.$store)
-  @VModel({type: Discipline}) discipline: Discipline
-  @Prop({type:Boolean}) multiple: boolean
+  @VModel({type: Discipline}) discipline: Discipline = new Discipline()
+  @VModel({type: Discipline}) disciplinesModel: Discipline[] = []
+  @Prop({type:Boolean}) multiple: boolean = false
 
 
   get disciplines() {
     return this.disciplineModule.disciplines
   }
 
-  get discipline() {
-    return this.disciplineModule.discipline
-  }
-
-  set discipline(discipline: Discipline) {
-    this.disciplineModule.setDiscipline(discipline)
-  }
-
   @Emit('valid')
-  handleValid(event){
-    if(event != null && event !== undefined){
+  handleValid(event: Discipline){
+    if(event !== null){
       return true
     }else{
       return false

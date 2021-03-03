@@ -1,10 +1,12 @@
 <template>
   <v-container>
-     <v-dialog v-model="dialogEventReview">
+    <v-dialog v-model="dialogEventReview">
       <EventReview></EventReview>
-      </v-dialog>
+    </v-dialog>
     <v-card class="form-group">
-      <v-card-title class="headline teal lighten-2 white--text">Registro de Eventos</v-card-title>
+      <v-card-title class="headline teal lighten-2 white--text"
+        >Registro de Eventos</v-card-title
+      >
       <v-card-text class="mt-5">
         <v-form ref="form" v-model="valid">
           <v-row class="mt-5">
@@ -14,8 +16,11 @@
                 dense
                 required
                 :rules="[
-                  e=> !!e || 'Campo obrigatório',
-                  e => (e && e.length <= 60) || 'O título do vestibular deve ter até 60 caracteres']"
+                  (e) => !!e || 'Campo obrigatório',
+                  (e) =>
+                    (e && e.length <= 60) ||
+                    'O título do vestibular deve ter até 60 caracteres',
+                ]"
                 counter="60"
                 label="Título do Evento"
               ></v-text-field>
@@ -25,6 +30,13 @@
                 outlined
                 dense
                 required
+                :rules="[
+                  (e) => !!e || 'Campo obrigatório',
+                  (e) =>
+                    (e && e.length <= 10) ||
+                    'O título do vestibular deve ter até 10 caracteres',
+                ]"
+                counter="10"
                 label="Tipo do evento"
               ></v-text-field>
             </v-col>
@@ -34,13 +46,25 @@
                 outlined
                 dense
                 required
+                :rules="[
+                  (e) => !!e || 'Campo obrigatório',
+                  (e) =>
+                    (e && e <= 180 && e >= 1) ||
+                    'O número da questão deve ser entre 1 a 180',
+                ]"
                 label="Duração"
               ></v-text-field>
             </v-col>
           </v-row>
-      
-            <run-date></run-date>
-    
+
+          <v-row>
+            <v-col>
+              <run-date v-model="event.startDateEvent" label="Data inicio Evento"></run-date>
+            </v-col>
+             <v-col>
+              <run-date v-model="event.endDateEvent" label="Data fim Evento"></run-date>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col cols="6">
               <run-disciplines v-model="event.discipline"> </run-disciplines>
@@ -51,18 +75,23 @@
           </v-row>
           <v-row>
             <v-col cols="4">
-              <v-btn :disabled="!validForm" dark block color="primary"
+              <v-btn  @click="save()" :disabled="!validForm" dark block color="primary"
                 >Salvar</v-btn
               >
             </v-col>
             <v-col cols="4">
               <v-btn block color="yellow" @click="reviewEvent()">Revisão</v-btn>
             </v-col>
-           <v-col cols="4" align-self="start">
-            <v-btn block color="secondary" class="white--text" @click="cancel()">
-              Cancelar
-            </v-btn>
-           </v-col>
+            <v-col cols="4" align-self="start">
+              <v-btn
+                block
+                color="secondary"
+                class="white--text"
+                @click="cancel()"
+              >
+                Cancelar
+              </v-btn>
+            </v-col>
           </v-row>
         </v-form>
       </v-card-text>
@@ -82,8 +111,8 @@ import RunSubjects from "@/components/run/Subjects.vue";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import EventReview from "@/pages/events/EventReview.vue";
 import RunDate from "@/components/run/Date.vue";
-import {DateModule} from "@/store/modules/DateModule";
-import {RegisterStatus} from '@/models/RegisterStatus'
+import { DateModule } from "@/store/modules/DateModule";
+import { RegisterStatus } from "@/models/RegisterStatus";
 
 @Component({
   name: "EventRegister",
@@ -99,7 +128,7 @@ export default class EventRegister extends Vue {
   private valid: boolean = false;
 
   get isInsert() {
-    return this.eventModule.registerStatus === RegisterStatus.INSERT
+    return this.eventModule.registerStatus === RegisterStatus.INSERT;
   }
 
   get events() {
@@ -114,25 +143,28 @@ export default class EventRegister extends Vue {
     this.eventModule.setEvent(event);
   }
 
-  
   get dialogEventReview() {
-    return this.eventModule.eventReviewDialog
+    return this.eventModule.eventReviewDialog;
   }
 
   set dialogEventReview(newValue: boolean) {
-    this.eventModule.setEventReviewDialog(newValue)
+    this.eventModule.setEventReviewDialog(newValue);
   }
 
   reviewEvent() {
-    this.eventModule.setEventReviewDialog(true)
+    this.eventModule.setEventReviewDialog(true);
   }
 
   get validForm(): boolean {
-    return this.valid 
+    return this.valid;
   }
 
-   cancel() {
-    return this.eventModule.setDialog(false)
+  cancel() {
+    return this.eventModule.setDialog(false);
+  }
+
+  save(){
+    console.log("evento:", this.event)
   }
 }
 </script>

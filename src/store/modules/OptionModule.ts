@@ -1,5 +1,7 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
-import Option from "@/models/Option"
+import Option from "@/models/question/Option";
+import {OptionType} from "@/models/question/OptionType";
+import OptionTable from "@/models/question/OptionTable";
 
 @Module({ name: "OptionModule", namespaced: true })
 
@@ -8,11 +10,14 @@ export class OptionModule extends VuexModule {
     _option: Option = {
         description: "",
         isCorrectAnswer: false,
-        optionType: ""
+        urlImage: "",
+        optionType: OptionType.DESCRIPTION,
+        table: new OptionTable()
     }
     _dialog: Boolean = false
     _validUpdate: Boolean = false
- 
+    _dialogOptionTableType: String = "CONTENT"
+
     get options() {
         return this._options
     }
@@ -26,6 +31,15 @@ export class OptionModule extends VuexModule {
     }
     get validUpdate() {
         return this._validUpdate
+    }
+
+    get dialogOptionTableType(){
+      return this._dialogOptionTableType
+    }
+
+    @Mutation
+    setDialogOptionTableType(newValue: String) {
+      this._dialogOptionTableType = newValue
     }
 
     @Mutation
@@ -85,14 +99,14 @@ export class OptionModule extends VuexModule {
 
     @Action({commit: 'setOptions'})
     findAll() {
-        const option = new Option()
+        const option = new Option(OptionType.DESCRIPTION)
         option.description = "O Budismo";
 
-        const option2 = new Option()
+        const option2 = new Option(OptionType.DESCRIPTION)
         option2.description = "O Cristianismo"
         option2.isCorrectAnswer = true
 
-        const option3 = new Option()
+        const option3 = new Option(OptionType.DESCRIPTION)
         option3.description = "O Islamismo"
 
         const options: Option[] = []
@@ -100,5 +114,5 @@ export class OptionModule extends VuexModule {
         return options
     }
 
-    
+
 }

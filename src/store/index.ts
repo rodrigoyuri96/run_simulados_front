@@ -10,6 +10,7 @@ import {OptionModule} from "@/store/modules/OptionModule"
 
 // Global vuex
 import AppModule from './app'
+import {QuestionRegisterModule} from "@/store/modules/QuestionRegisterModule";
 
 Vue.use(Vuex)
 
@@ -25,7 +26,8 @@ const store = new Vuex.Store({
     SubjectModule,
     ValidationMessageModule,
     EventModule,
-    OptionModule
+    OptionModule,
+    QuestionRegisterModule
   }
 })
 

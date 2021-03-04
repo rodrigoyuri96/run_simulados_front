@@ -1,121 +1,166 @@
 <template>
   <v-container>
-    <v-dialog v-model="dialog">
-      <question-registers></question-registers>
-    </v-dialog>
     <v-card class="form-group">
-      <v-card-title>Cadastro de Questões</v-card-title>
-      <v-row alignament="center" justify="start" no-gutters>
-        <v-col align-self="start">
-          <v-card-title>Questões</v-card-title>
-        </v-col>
-        <v-spacer></v-spacer>
-        <v-col align-self="end" class="ml-12" md="4">
-          <v-btn color="primary" @click="addQuestion()">
-            Cadastrar Questão
-          </v-btn>
-        </v-col>
-      </v-row>
+      <v-card-title>Cadastro de questões</v-card-title>
       <v-card-text>
-        <v-simple-table fixed-header height="250px">
-          <template v-slot:default>
-            <thead>
-            <tr>
-              <th class="text-left">Questão</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr
-              v-for="(question, i) in questions"
-              :key="i"
-              class="text-center"
-            >
-              <td>{{ question.numberQuestion}}</td>
-              <td class="ml-5">
-                <v-btn @click="updateQuestion(i)" text color="teal">
-                  <v-icon>{{ icons.mdiPencil }}</v-icon>
-                </v-btn>
-                <v-btn
-                  @click="deleteQuestion(i)"
-                  text
-                  color="deep-orange accent-4"
-                >
-                  <v-icon>
-                    {{ icons.mdiDelete }}
-                  </v-icon>
-                </v-btn>
-              </td>
-            </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+        <v-form ref="form" v-model="valid">
+          <v-row class="mt-5">
+            <v-col>
+              <v-text-field
+                :rules="[
+                (v) => !!v || 'Campo obrigatório',
+                (v) =>
+                (v && v <= 180 && v >= 1) ||
+                'O número da questão deve ser entre 1 a 180',
+                ]"
+                outlined
+                dense
+                required
+                label="Número da Questão do Caderno"
+                v-model="question.numberQuestion"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <run-exams v-model="question.exam"> </run-exams>
+            </v-col>
+            <v-col cols="6">
+              <run-disciplines v-model="question.discipline"> </run-disciplines>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <strong>Titulo</strong>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <run-editor v-model="content" @dialog-status-change="dialog = $event"></run-editor>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn @click="dialog=true, imprime()">
+                Pré-visualização
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col align-self="center"></v-col>
+          </v-row>
+          <v-row class="mt-5">
+            <v-col cols="12">
+              <run-option></run-option>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <v-btn
+                class="white--text"
+                @click="save"
+                :disabled="!validForm"
+                dark
+                block
+                color="green"
+              >Salvar</v-btn
+              >
+            </v-col>
+            <v-col cols="6">
+              <v-btn class="white--text" dark block color="secondary" @click="reset">Cancelar</v-btn>
+            </v-col>
+          </v-row>
+        </v-form>
       </v-card-text>
     </v-card>
+
+    <v-dialog v-model="dialog">
+      <run-question :content="content" />
+    </v-dialog>
+
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Vue, Component, Emit } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { QuestionRegisterModule } from "@/store/modules/QuestionRegisterModule";
-import Question from "../../models/question/Question";
-import QuestionRegisters from "@/views/questao/QuestionRegisters.vue";
-import { RegisterStatus } from "@/models/RegisterStatus";
-import { mdiDelete, mdiPencil } from "@mdi/js";
+import QuestionRegister from "../../models/QuestionRegister";
+import RunDisciplines from "@/components/run/Disciplines.vue";
+import RunExams from "@/components/run/exam/Exams.vue";
+import { ExamModule } from "@/store/modules/ExamModule";
+import { DisciplineModule } from "@/store/modules/DisciplineModule";
+import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
+import ValidationMessage from "@/models/validation/ValidationMessage";
+import { TypeMessage } from "@/models/validation/TypeMessage";
+import RunEditor from "@/components/run/editor/RunEditor.vue"
+import RunQuestion from "@/components/run/question/Question.vue";
+import RunOption from "@/components/run/question/options/Options.vue";
+
 
 @Component({
-  name: "QuestionList",
-  components: { QuestionRegisters },
-})
-export default class QuestionList extends Vue {
-  questionRegiterModule = getModule(QuestionRegisterModule, this.$store);
+  name: "QuestionRegisters",
+  components: {
+    RunDisciplines, RunExams, RunEditor, RunQuestion, RunOption
+  }})
+export default class QuestionRegisters extends Vue {
+  questionRegisterModule = getModule(QuestionRegisterModule, this.$store);
+  examModule = getModule(ExamModule, this.$store);
+  disciplineModule = getModule(DisciplineModule, this.$store);
+  validationMessageModule = getModule(ValidationMessageModule, this.$store);
+  content: String = ""
+  dialog: Boolean = false
 
-  icons = {
-    mdiDelete,
-    mdiPencil,
-  };
+  private valid: boolean = false;
 
   get questions() {
-    return this.questionRegiterModule.questions;
+    return this.questionRegisterModule.questions;
   }
 
-  get question(){
-    return this.questionRegiterModule.question
+  get question() {
+    return this.questionRegisterModule.question;
   }
 
-  get dialog() {
-    return this.questionRegiterModule.dialog;
+  get validForm(): boolean {
+    return true
   }
 
-  set dialog(newValue) {
-    this.questionRegiterModule.setDialog(newValue);
+  set question(question: QuestionRegister) {
+    this.questionRegisterModule.setQuestion(question);
   }
 
-  set question(newValue: Question){
-    this.questionRegiterModule.setQuestion(newValue)
+  created() {
+    this.questionRegisterModule.findAll();
   }
 
-  updateQuestion(i: number) {
-    this.questionRegiterModule.setQuestion(this.questionRegiterModule.questions[i])
-    this.questionRegiterModule.setRegisterStatus(RegisterStatus.UPDATE)
-    this.questionRegiterModule.setDialog(true)
-    this.questionRegiterModule.setValidUpdate(true)
-    console.log(this.questionRegiterModule.validUpdate)
+  save() {
+    if (this.questionRegisterModule.validUpdate == true) {
+      return this.questionRegisterModule.setDialog(false);
+    } else {
+      this.questionRegisterModule.save(this.question);
+      const v = new ValidationMessage(
+        "Questão salva com sucesso",
+        TypeMessage.SUCCESS,
+        true,
+        "",
+        3000
+      );
+      this.validationMessageModule.setValidation(v);
+      return this.questionRegisterModule.setDialog(false);
+    }
   }
 
-  deleteQuestion(i: number) {
-    this.questionRegiterModule.questions.splice(i, 1);
+  reset() {
+    this.question = new QuestionRegister();
+    return this.questionRegisterModule.setDialog(false);
   }
 
-  addQuestion() {
-    this.questionRegiterModule.setValidUpdate(false)
-    this.questionRegiterModule.setQuestion(new Question())
-    this.questionRegiterModule.setDialog(true);
-    console.log(this.questionRegiterModule.validUpdate)
-    console.log(this.questionRegiterModule._question)
+
+  imprime(){
+    console.log("IMPRIMINDO: ", this.content)
   }
 }
 </script>
 
-<style scoped>
+<style>
 </style>

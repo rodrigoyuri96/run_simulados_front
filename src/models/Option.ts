@@ -1,15 +1,20 @@
+import {OptionType} from "@/models/question/OptionType";
+import OptionTable from "@/models/question/OptionTable";
+
 export default class Option {
 
-    public description: string
-    public isCorrectAnswer: any
-    public optionType: string
+  public description: String
+  public isCorrectAnswer: Boolean
+  public optionType: string =""
+  public urlImage: string
+  public table: OptionTable
 
-    constructor() {
-
-        this.description = ""
-        this.isCorrectAnswer = false
-        this.optionType = "DESCRICAO"
-
-    }
+  constructor(optionType?:OptionType) {
+    this.description = "";
+    this.isCorrectAnswer = false;
+    this.optionType = optionType?.toString();
+    this.urlImage = "";
+    this.table = new OptionTable()
+  }
 
 }

@@ -3,12 +3,6 @@ export default [{
   name: 'cadastro-vestibular',
   component: () => import('@/pages/exam/ExamList.vue'),
 },
-{
-  path: '/cadastro-questao',
-  name: 'cadastro-questao',
-  component: () => import('@/components/run/question/OptionTable.vue'),
-
-},
   {
     path: '/editor',
     name: 'editor',
@@ -21,6 +15,12 @@ export default [{
     component: () => import('@/pages/events/EventList.vue'),
   },
   {
+    path: '/cadastro-questao',
+    name: 'cadastro-questao',
+    component: () => import('@/pages/question/QuestionList.vue'),
+
+  },
+  {
     path: '/detalhe-questao',
     name: 'detalhe-questao',
     component: () => import('@/pages/question/QuestionDetail.vue')
@@ -28,7 +28,7 @@ export default [{
   {
     path: '/options',
     name: 'options',
-    component: () => import('@/pages/question/options/Options.vue')
+    component: () => import('@/components/run/question/options/Options.vue')
   }
 
 ]

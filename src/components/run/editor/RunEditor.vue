@@ -1,58 +1,58 @@
 <template>
   <div id="app">
-    <v-card class="ml-10"  >
-      <v-row>
-        <v-col class="ml-5">
-          <vue-editor id="editor"
-                      useCustomImageHandler
-                      @image-removed="handleImageRemoved"
-                      @image-added="handleImageAdded"
-                      v-model="htmlForEditor" />
-          <br>
-          <v-progress-linear
-            v-if="progressFlag"
-            color="light-blue"
-            height="10"
-            :value="progress"
-            striped
-          ></v-progress-linear>
-        </v-col>
-        <v-col>
-          <div class="ql-editor" v-html="htmlForEditor"></div>
-
-        </v-col>
-      </v-row>
-    </v-card>
-
+    <vue-editor id="editor"
+                useCustomImageHandler
+                @image-removed="handleImageRemoved"
+                @image-added="handleImageAdded"
+                v-model="html" />
+    <br>
+    <v-progress-linear
+      v-if="progressFlag"
+      color="light-blue"
+      height="10"
+      :value="progress"
+      striped
+    />
   </div>
 </template>
 
 <script>
 
-import {Quill, VueEditor} from "vue2-editor";
+import {VueEditor} from "vue2-editor";
 import Firebase from "@/firebase"
-
-const quill = new Quill('#preview', {theme: 'snow'});
 
 export default {
   components: {
     VueEditor
   },
-
-  computed:{
-    folderName(){
-      return 'ENEM/2021/1SEMESTRE/1FASE/FISICA/QUESTAO_50/'
+  props: {
+    content: {
+      type: String,
+      default: ""
     }
   },
-
   data() {
     return {
       progressFlag: false,
       htmlForEditor: "",
-      progress: 0
+      progress: 0,
+      status: false
     };
   },
 
+  computed: {
+    folderName() {
+      return 'ENEM/2021/1SEMESTRE/1FASE/FISICA/QUESTAO_50/'
+    },
+    html: {
+      get() {
+        return this.content
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
+    },
+  },
   methods: {
     handleImageAdded: function(file, Editor, cursorLocation, resetUploader) {
       console.log("file", file)
@@ -97,7 +97,6 @@ export default {
     },
 
 
-
     handleImageRemoved(image){
       const filename = image.substring(image.lastIndexOf('/')+1);
       alert(unescape(filename));
@@ -116,6 +115,10 @@ export default {
     }
 
 
+  },
+
+  mounted() {
+    this.status = this.dialog
   }
 };
 </script>

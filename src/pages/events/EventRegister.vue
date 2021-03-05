@@ -12,7 +12,7 @@
           <v-row class="mt-5">
             <v-col cols="6">
               <v-text-field
-                v-model="event.eventTitle"
+                v-model="event.title"
                 outlined
                 dense
                 required
@@ -61,52 +61,90 @@
 
           <v-row>
             <v-col>
-              <run-date v-model="event.startDateSubscription" label="Data inicio Instituição"></run-date>
+              <run-date
+                v-model="event.startDateSubscription"
+                label="Data inicio Inscrição"
+              ></run-date>
             </v-col>
-             <v-col>
-              <run-date v-model="event.endDateSubscription" label="Data fim Instituição"></run-date>
+            <v-col>
+              <run-date
+                v-model="event.endDateSubscription"
+                label="Data fim Inscrição"
+              ></run-date>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col>
-              <run-date v-model="event.startDateEvent" label="Data inicio Evento"></run-date>
+              <run-date
+                v-model="event.startDateEvent"
+                label="Data inicio Evento"
+              ></run-date>
             </v-col>
-             <v-col>
-              <run-date v-model="event.endDateEvent" label="Data fim Evento"></run-date>
+            <v-col>
+              <run-date
+                v-model="event.endDateEvent"
+                 @valid-field="validDate = $event"
+                label="Data fim Evento"
+              ></run-date>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="6">
-              <run-disciplines v-model="event.discipline"> </run-disciplines>
+              <run-disciplines
+                v-model="event.discipline"
+                @valid="validDisciplines = $event"
+              >
+              </run-disciplines>
             </v-col>
             <v-col cols="6">
-              <run-subjects v-model="event.subject"> </run-subjects>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="4">
-              <v-btn  @click="save()" :disabled="!validForm" dark block color="primary"
-                >Salvar</v-btn
+              <run-subjects
+                v-model="event.subject"
+                @valid-field="validSubjects = $event"
               >
-            </v-col>
-            <v-col cols="4">
-              <v-btn block color="yellow" @click="reviewEvent()">Revisão</v-btn>
-            </v-col>
-            <v-col cols="4" align-self="start">
-              <v-btn
-                block
-                color="secondary"
-                class="white--text"
-                @click="cancel()"
-              >
-                Cancelar
-              </v-btn>
+              </run-subjects>
             </v-col>
           </v-row>
         </v-form>
       </v-card-text>
+      <v-card-actions>
+        <v-row align="center" justify="center">
+          <v-col cols="4" align-self="end">
+            <v-btn
+              block
+              color="primary"
+              class="white--text"
+              :disabled="!validForm"
+              @click="save"
+            >
+              {{ isInsert ? "Salvar" : "Atualizar" }}
+            </v-btn>
+          </v-col>
+          <v-col cols="4" align-self="start">
+            <v-btn
+              :disabled="!validateUpdateAction"
+              block
+              color="yellow"
+              class="black--text"
+              @click="reviewEvent()"
+            >
+              Revisão
+            </v-btn>
+          </v-col>
+          <v-col cols="4" align-self="start">
+            <v-btn
+              :disabled="!validateUpdateAction"
+              block
+              color="secondary"
+              class="white--text"
+              @click="cancel()"
+            >
+              Cancelar
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-actions>
     </v-card>
   </v-container>
 </template>
@@ -120,11 +158,13 @@ import { DisciplineModule } from "@/store/modules/DisciplineModule";
 import Event from "../../models/Event";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunSubjects from "@/components/run/Subjects.vue";
-import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import EventReview from "@/pages/events/EventReview.vue";
 import RunDate from "@/components/run/Date.vue";
 import { DateModule } from "@/store/modules/DateModule";
 import { RegisterStatus } from "@/models/RegisterStatus";
+import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
+import ValidationMessage from "@/models/validation/ValidationMessage";
+import { TypeMessage } from "@/models/validation/TypeMessage";
 
 @Component({
   name: "EventRegister",
@@ -136,7 +176,8 @@ export default class EventRegister extends Vue {
   disciplineModule = getModule(DisciplineModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
   dateModule = getModule(DateModule, this.$store);
-
+  validDisciplines: boolean = false;
+  validSubjects: boolean = false;
   private valid: boolean = false;
 
   get isInsert() {
@@ -165,18 +206,45 @@ export default class EventRegister extends Vue {
 
   reviewEvent() {
     this.eventModule.setEventReviewDialog(true);
+    console.log("validDisciplines", this.validDisciplines);
   }
 
   get validForm(): boolean {
-    return this.valid;
+    return this.valid && this.validDisciplines && this.validSubjects;
+  }
+
+  get validateUpdateAction(): boolean {
+    return this.eventModule.registerStatus == RegisterStatus.UPDATE
+      ? this.validForm
+      : true;
   }
 
   cancel() {
     return this.eventModule.setDialog(false);
   }
 
-  save(){
-    console.log("evento:", this.event)
+  save() {
+    if (this.eventModule.registerStatus == RegisterStatus.INSERT) {
+      this.eventModule.save();
+      const v = new ValidationMessage(
+        "Vestibular salvo com sucesso",
+        TypeMessage.SUCCESS,
+        true,
+        "",
+        3000
+      );
+      this.eventModule.setDialog(false);
+    }
+    const v = new ValidationMessage(
+      "Vestibular atualizado com sucesso",
+      TypeMessage.SUCCESS,
+      true,
+      "",
+      3000
+    );
+
+    this.validationMessageModule.setValidation(v);
+    this.eventModule.setDialog(false);
   }
 }
 </script>

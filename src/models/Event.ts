@@ -2,7 +2,7 @@ import Discipline from "./Discipline"
 import Subject from "./Subject"
 
 export default class Event {
-    public eventTitle: String
+    public title: String
     public typeEvent: String
     public duracao: Number
     public discipline: Discipline
@@ -13,7 +13,7 @@ export default class Event {
     public endDateSubscription: String
 
     constructor(){
-        this.eventTitle = ""
+        this.title = ""
         this.typeEvent = ""
         this.duracao = 0
         this.discipline = new Discipline()

@@ -6,18 +6,18 @@
         <v-form class="mt-5">
            <v-row>
             <v-col>
-              <h3 class="text-center"> Data inicio de inscrição: </h3>
+              <h3 class="text-center"> Data inicio de inscrição: {{event.startDateSubscription}}</h3>
             </v-col>
             <v-col>
-               <h3 class="text-center"> Data fim de inscrição: </h3>
+               <h3 class="text-center"> Data fim de inscrição: {{event.endDateSubscription}}</h3>
             </v-col>
            </v-row>
            <v-row>
             <v-col>
-              <h3 class="text-center"> Inicio de evento: </h3>
+              <h3 class="text-center"> Inicio de evento: {{event.startDateEvent}}</h3>
             </v-col>
             <v-col>
-               <h3 class="text-center"> Fim do evento: </h3>
+               <h3 class="text-center"> Fim do evento:  {{event.endDateEvent}}</h3>
             </v-col>
            </v-row>
            <v-row>
@@ -42,7 +42,7 @@
           </v-col>
             <v-col cols="4" align-self="start">
             <v-btn block color="secondary" class="white--text" @click="cancel()">
-              Cancelar
+              Fechar
             </v-btn>
            </v-col>
         </v-row>
@@ -59,6 +59,7 @@ import {TagModule} from "@/store/modules/TagModule"
 import {getModule} from "vuex-module-decorators";
 import Tags from "@/components/run/Tags.vue"
 import {EventModule} from "@/store/modules/EventModule";
+
 
 @Component({
   name: "ExamRegister",

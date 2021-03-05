@@ -56,7 +56,7 @@ export class EventModule extends VuexModule {
 
     @Mutation
     setEvent(newEvent: Event){
-        this._events.push(newEvent)
+        this._event = newEvent
     }
 
     @Mutation

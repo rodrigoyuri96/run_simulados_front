@@ -4,8 +4,10 @@
       v-for="(subjects, i) in subjectsSelected"
       :key="i"
       class="ma-2"
-      color="primary"
+      :color="colorRandom()"
       outlined
+      close
+      @click:close="deleteTag(i)"
       >{{ subjects.name }}</v-chip
     >
   </div>
@@ -27,6 +29,9 @@ export default class Tags extends Vue {
 tagModule = getModule(TagModule, this.$store);
 subjectModule = getModule(SubjectModule, this.$store);
 
+  private generatorColor: String = "1234567890ABCDEF";
+   chip: boolean = true;
+
 
   get subjects(){
     return this.subjectModule.subjects
@@ -43,6 +48,18 @@ subjectModule = getModule(SubjectModule, this.$store);
  set subjectsSelected(subjects: Subject[]){
    this.subjectModule.setSubjectsSelected(subjects)
  }
+
+ deleteTag(index: number){
+   this.subjectsSelected.splice(index, 1)
+ }
+
+ colorRandom() {
+        var color = '#'
+        for (var i = 0; i < 6; i++) {
+            color += this.generatorColor[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
 }
 </script>
 

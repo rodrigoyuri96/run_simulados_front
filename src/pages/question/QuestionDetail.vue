@@ -30,7 +30,7 @@
                 </v-row>
                 <v-row>
                     <v-col>
-                        <h3>Ex: Questão {{numberQuestion}} 
+                        <h3>Questão {{numberQuestion}} 
                             <v-icon 
                                 class="ml-3"
                                 :color="isChecked ? 'green' : 'red'"
@@ -51,19 +51,7 @@
                             >{{subjects.name}}</v-chip>
                     </v-col>
                 </v-row>
-                <v-row>
-                    <v-col cols="12">
-                        <div>
-                            <p v-html="question"></p>
-                            <v-radio-group column>
-                                <v-radio 
-                                    v-for="(option, i) in options" :key="i"
-                                    :label="option.description"
-                                    ></v-radio>
-                            </v-radio-group>
-                        </div>
-                    </v-col>
-                </v-row>
+                <run-question :card="true" />
                 <v-row>
                     <v-col cols="6">
                         <v-btn block color="primary" style="color: white">Corrigir Questão</v-btn>
@@ -87,6 +75,7 @@ import { DisciplineModule } from '@/store/modules/DisciplineModule'
 import Subjects from "@/components/run/Subjects.vue"
 import Disciplines from "@/components/run/Disciplines.vue"
 import Exam from "@/components/run/exam/Exams.vue"
+import RunQuestion from "@/components/run/question/Question.vue"
  
 
 @Component({
@@ -95,7 +84,8 @@ import Exam from "@/components/run/exam/Exams.vue"
         QuestionDetail, 
         Subjects, 
         Disciplines, 
-        Exam 
+        Exam,
+        RunQuestion 
     }
 })
 

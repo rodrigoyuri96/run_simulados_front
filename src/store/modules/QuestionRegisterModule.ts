@@ -79,7 +79,9 @@ export class QuestionRegisterModule extends VuexModule {
     @Action({commit: '_setQuestions'})
     findAll(){
         const q1 = new QuestionRegister()
-        q1.numberQuestion = 1
+        q1.numberQuestion = 23
+        q1.discipline.name = 'Fisica'
+        q1.exam.title = "Fuvest"
         const d1 = new Discipline()
         d1.id = 1
         d1.name = 'Fisica'

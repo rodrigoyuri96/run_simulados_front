@@ -13,7 +13,7 @@
         <v-text-field
           v-model="dateFormatted"
           :label="label"
-          hint="formato: MM/DD/YYYY"
+          hint="formato: DD/MM/YYYY"
           outlined
           dense
           required
@@ -48,6 +48,7 @@ export default class RunDate extends Vue {
   //.toISOString().substr(0, 10);
   dateFormatted: String = new String();
   //vm.formatDate(new Date().toISOString().substr(0, 10));
+  validDate: boolean = false;
 
   get computedDateFormatted() {
     return this.formatDate(this.date);
@@ -64,22 +65,18 @@ export default class RunDate extends Vue {
     return `${day}/${month}/${year}`;
   }
 
-  parseDate(date: String) {
-    return DateUtil.parseDate(date)
-  }
 
   mounted() {
     let date: Date = new Date();
-    let str = `${date.getFullYear()}-${date
-      .getDay()
-      .toString()
-      .padStart(2, "0")}-${date.getMonth().toString().padStart(2, "0")}`;
+    let str = `${date.getFullYear()}-${date.getDay().toString().padStart(2, "0")}-${date.getMonth().toString().padStart(2, "0")}`;
     this.date = str;
     console.log(str);
   }
-
+  parseDate(date: String) {
+      return DateUtil.parseDate(date)
+  }
   
-  @Emit("valid-field")
+  @Emit('valid')
   handleValid(event: boolean) {
     if (event != null && event !== undefined) {
       return true;

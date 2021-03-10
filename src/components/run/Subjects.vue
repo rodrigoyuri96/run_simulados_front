@@ -1,6 +1,6 @@
 <template>
   <v-form v-model="validSubjects">
-    <v-select
+    <v-autocomplete
       v-model="subjectsSelected"
       :items="subjects"
       item-text="name"
@@ -12,12 +12,12 @@
       @change="handleValid"
       return-object
     >
-      <template v-slot:selection="{ subject, index }">
-        <span v-if="index === 1" class="orange--text">
+      <template v-slot:selection="{ index }">
+        <span v-if="index === 0" class="orange--text">
           ({{ subjectsSelected.length}} assuntos selecionados)
         </span>
       </template>
-    </v-select>
+    </v-autocomplete>
   </v-form>
 </template>
 
@@ -33,6 +33,7 @@ import Subject from "../../models/Subject";
 export default class Subjects extends Vue {
   subjectModule = getModule(SubjectModule, this.$store);
   valid: boolean = false;
+  validSubjects: boolean = false;
 
   get subjects() {
     return this.subjectModule.subjects;
@@ -50,7 +51,7 @@ export default class Subjects extends Vue {
     this.subjectModule.findAll();
   }
 
-  @Emit("valid-field")
+  @Emit('valid-field')
   handleValid(event: boolean) {
     if (event != null && event !== undefined) {
       return true;

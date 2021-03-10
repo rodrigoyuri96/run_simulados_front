@@ -50,8 +50,8 @@
                 :rules="[
                   (e) => !!e || 'Campo obrigatório',
                   (e) =>
-                    (e && e <= 180 && e >= 1) ||
-                    'O número da questão deve ser entre 1 a 180',
+                    (e && e <= 5 && e >= 1) ||
+                    'A duração deve ser entre uma a cinco horas',
                 ]"
                 label="Duração"
               ></v-text-field>
@@ -62,12 +62,14 @@
             <v-col>
               <run-date
                 v-model="event.startDateSubscription"
+                @valid="validDate = $event"
                 label="Data inicio Inscrição"
               ></run-date>
             </v-col>
             <v-col>
               <run-date
                 v-model="event.endDateSubscription"
+                @valid="validDate = $event"
                 label="Data fim Inscrição"
               ></run-date>
             </v-col>
@@ -77,13 +79,14 @@
             <v-col>
               <run-date
                 v-model="event.startDateEvent"
+                @valid="validDate = $event"
                 label="Data inicio Evento"
               ></run-date>
             </v-col>
             <v-col>
               <run-date
                 v-model="event.endDateEvent"
-                 @valid-field="validDate = $event"
+                 @valid="validDate = $event"
                 label="Data fim Evento"
               ></run-date>
             </v-col>
@@ -105,6 +108,7 @@
             </v-col>
           </v-row>
         </v-form>
+        <run-error v-if="errors.length > 0" :errors="errors"></run-error>
       </v-card-text>
       <v-card-actions>
         <v-row align="center" justify="center">
@@ -163,10 +167,12 @@ import { RegisterStatus } from "@/models/RegisterStatus";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
+import RunError  from "@/components/run/validator/Error.vue"
+import {DateUtil} from "@/util/date"
 
 @Component({
   name: "EventRegister",
-  components: { RunDisciplines, RunSubjects, EventReview, RunDate },
+  components: { RunDisciplines, RunSubjects, EventReview, RunDate, RunError },
 })
 export default class EventRegister extends Vue {
   eventModule = getModule(EventModule, this.$store);
@@ -176,7 +182,10 @@ export default class EventRegister extends Vue {
   dateModule = getModule(DateModule, this.$store);
   validDisciplines: boolean = false;
   validSubjects: boolean = false;
-  private valid: boolean = false;
+  validDate: boolean = false;
+  validDate1: boolean = false;
+  valid: boolean = false;
+  errors: String[] = [];
 
   get isInsert() {
     return this.eventModule.registerStatus === RegisterStatus.INSERT;
@@ -204,7 +213,6 @@ export default class EventRegister extends Vue {
 
   reviewEvent() {
     this.eventModule.setEventReviewDialog(true);
-    console.log("validDisciplines", this.validDisciplines);
   }
 
   get validForm(): boolean {
@@ -217,32 +225,47 @@ export default class EventRegister extends Vue {
       : true;
   }
 
+  get validationDateSubscription(): boolean {
+    this.errors = []
+    if(!DateUtil.isBiggersThanDate(this.event.endDateSubscription, this.event.startDateSubscription)){
+      this.errors.push('A data final da inscrição não pode ser menor que a data inicial')
+      console.log("A data final da inscrição não pode ser menor que a data inicial")
+    }
+
+    return this.errors.length > 0
+  }
+
   cancel() {
     return this.eventModule.setDialog(false);
   }
 
   save() {
-    if (this.eventModule.registerStatus == RegisterStatus.INSERT) {
-      this.eventModule.save();
+    if(!this.validationDateSubscription){
+      if (this.eventModule.registerStatus == RegisterStatus.INSERT) {
+
+        this.eventModule.save();
+        const v = new ValidationMessage(
+          "Vestibular salvo com sucesso",
+          TypeMessage.SUCCESS,
+          true,
+          "",
+          3000
+        );
+        
+        this.validationMessageModule.setValidation(v);
+        this.eventModule.setDialog(false);
+      }
       const v = new ValidationMessage(
-        "Vestibular salvo com sucesso",
+        "Vestibular atualizado com sucesso",
         TypeMessage.SUCCESS,
         true,
         "",
         3000
       );
+  
+      this.validationMessageModule.setValidation(v);
       this.eventModule.setDialog(false);
     }
-    const v = new ValidationMessage(
-      "Vestibular atualizado com sucesso",
-      TypeMessage.SUCCESS,
-      true,
-      "",
-      3000
-    );
-
-    this.validationMessageModule.setValidation(v);
-    this.eventModule.setDialog(false);
   }
 }
 </script>

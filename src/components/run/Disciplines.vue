@@ -57,6 +57,8 @@ export default class Disciplines extends Vue {
   @VModel({type: Discipline}) disciplinesModel!: Discipline[]
   @Prop({type:Boolean}) multiple!: Boolean 
 
+   validDisciplines: boolean = false;
+
 
   get disciplines() {
     return this.disciplineModule.disciplines

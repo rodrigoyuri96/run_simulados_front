@@ -6,18 +6,18 @@
         <v-form class="mt-5">
            <v-row>
             <v-col>
-              <h3 class="text-center"> Data inicio de inscrição: {{event.startDateSubscription}}</h3>
+              <h3 class="text-center"> Data inicio de inscrição: {{ transformDate(event.startDateSubscription)}}</h3>
             </v-col>
             <v-col>
-               <h3 class="text-center"> Data fim de inscrição: {{event.endDateSubscription}}</h3>
+               <h3 class="text-center"> Data fim de inscrição: {{ transformDate(event.endDateSubscription) }}</h3>
             </v-col>
            </v-row>
            <v-row>
             <v-col>
-              <h3 class="text-center"> Inicio de evento: {{event.startDateEvent}}</h3>
+              <h3 class="text-center"> Inicio de evento: {{transformDate(event.startDateEvent)}}</h3>
             </v-col>
             <v-col>
-               <h3 class="text-center"> Fim do evento:  {{event.endDateEvent}}</h3>
+               <h3 class="text-center"> Fim do evento:  {{transformDate(event.endDateEvent)}}</h3>
             </v-col>
            </v-row>
            <v-row>
@@ -59,7 +59,7 @@ import {TagModule} from "@/store/modules/TagModule"
 import {getModule} from "vuex-module-decorators";
 import Tags from "@/components/run/Tags.vue"
 import {EventModule} from "@/store/modules/EventModule";
-
+import { DateUtil } from "@/util/date"
 
 @Component({
   name: "ExamRegister",
@@ -84,6 +84,10 @@ export default class ExamRegister extends Vue{
 
    cancel() {
     this.eventModule.setEventReviewDialog(false)
+  }
+
+  transformDate(date: String){
+    return DateUtil.parseDateBR(date)
   }
 }
 </script>

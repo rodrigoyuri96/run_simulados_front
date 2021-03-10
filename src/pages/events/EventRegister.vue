@@ -228,8 +228,16 @@ export default class EventRegister extends Vue {
   get validationDateSubscription(): boolean {
     this.errors = []
     if(!DateUtil.isBiggersThanDate(this.event.endDateSubscription, this.event.startDateSubscription)){
-      this.errors.push('A data final da inscrição não pode ser menor que a data inicial')
-      console.log("A data final da inscrição não pode ser menor que a data inicial")
+      this.errors.push('A data final da inscrição não pode ser menor que a data inicial da inscrição.')
+    }
+    if(!DateUtil.isBiggersThanDate(this.event.startDateEvent, this.event.endDateSubscription)){
+      this.errors.push('A data fim de inscrição não pode ser depois da data inicio do evento.')
+    }
+    if(!DateUtil.isBiggersThanDate(this.event.startDateEvent, this.event.startDateSubscription)){
+      this.errors.push('A data inicial inscrição não pode ser depois do inicio do evento.')
+    }
+    if(!DateUtil.isBiggersThanDate(this.event.endDateEvent, this.event.startDateEvent)){
+      this.errors.push('A data final do evento não pode ser menor que a data inicial do evento.')
     }
 
     return this.errors.length > 0

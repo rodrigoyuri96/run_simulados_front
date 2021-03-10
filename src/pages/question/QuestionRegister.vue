@@ -23,10 +23,14 @@
           </v-row>
           <v-row>
             <v-col cols="6">
-              <run-exams v-model="question.exam"> </run-exams>
+              <run-exams 
+                @valid="isValidExam = $event" 
+                v-model="question.exam" />
             </v-col>
             <v-col cols="6">
-              <run-disciplines v-model="question.discipline"> </run-disciplines>
+              <run-disciplines 
+                @valid="isValidDiscipline = $event" 
+                v-model="question.discipline" />
             </v-col>
           </v-row>
           <v-row>
@@ -36,12 +40,15 @@
           </v-row>
           <v-row>
             <v-col>
-              <run-editor v-model="content" @dialog-status-change="dialog = $event"></run-editor>
+              <run-editor 
+                v-model="content" 
+                @dialog-status-change="dialog = $event"
+              ></run-editor>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-btn @click="dialog=true, imprime()">
+              <v-btn @click="dialog=true">
                 Pré-visualização
               </v-btn>
             </v-col>
@@ -51,7 +58,7 @@
           </v-row>
           <v-row class="mt-5">
             <v-col cols="12">
-              <run-option></run-option>
+             <!-- <run-option></run-option> -->
             </v-col>
           </v-row>
           <v-row>
@@ -63,8 +70,7 @@
                 dark
                 block
                 color="green"
-              >Salvar</v-btn
-              >
+              >Salvar</v-btn>
             </v-col>
             <v-col cols="6">
               <v-btn class="white--text" dark block color="secondary" @click="reset">Cancelar</v-btn>
@@ -88,7 +94,6 @@ import { QuestionRegisterModule } from "@/store/modules/QuestionRegisterModule";
 import QuestionRegister from "../../models/QuestionRegister";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunExams from "@/components/run/exam/Exams.vue";
-import { ExamModule } from "@/store/modules/ExamModule";
 import { DisciplineModule } from "@/store/modules/DisciplineModule";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
@@ -104,12 +109,14 @@ import RunOption from "@/components/run/question/options/Options.vue";
     RunDisciplines, RunExams, RunEditor, RunQuestion, RunOption
   }})
 export default class QuestionRegisters extends Vue {
+
   questionRegisterModule = getModule(QuestionRegisterModule, this.$store);
-  examModule = getModule(ExamModule, this.$store);
-  disciplineModule = getModule(DisciplineModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
   content: String = ""
   dialog: Boolean = false
+  isValidDiscipline: boolean = false
+  isValidExam: boolean = false 
+ 
 
   private valid: boolean = false;
 
@@ -122,7 +129,7 @@ export default class QuestionRegisters extends Vue {
   }
 
   get validForm(): boolean {
-    return true
+    return this.valid && this.isValidDiscipline && this.isValidExam
   }
 
   set question(question: QuestionRegister) {
@@ -135,7 +142,7 @@ export default class QuestionRegisters extends Vue {
 
   save() {
     if (this.questionRegisterModule.validUpdate == true) {
-      return this.questionRegisterModule.setDialog(false);
+      this.questionRegisterModule.setDialog(false);
     } else {
       this.questionRegisterModule.save(this.question);
       const v = new ValidationMessage(
@@ -146,13 +153,14 @@ export default class QuestionRegisters extends Vue {
         3000
       );
       this.validationMessageModule.setValidation(v);
-      return this.questionRegisterModule.setDialog(false);
+      this.questionRegisterModule.setDialog(false);
     }
+    console.log(this.question.exam)
   }
 
   reset() {
     this.question = new QuestionRegister();
-    return this.questionRegisterModule.setDialog(false);
+    this.questionRegisterModule.setDialog(false);
   }
 
 

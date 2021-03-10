@@ -19,7 +19,7 @@ export class DateUtil{
         const d1 = new Date(date1.toString()) 
         const d2 = new Date(date2.toString())
 
-        return d1.getTime() > d2.getTime() 
+        return d1.getTime() >= d2.getTime() 
     }
 
     protected static digitFormat(value: String){

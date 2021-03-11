@@ -146,6 +146,8 @@ export default class QuestionRegisters extends Vue {
   save() {
     if (this.questionRegisterModule.validUpdate == true) {
       this.questionRegisterModule.setDialog(false);
+      const v = new ValidationMessage("Questão editada com sucesso", TypeMessage.SUCCESS, true, "", 3000);
+      this.validationMessageModule.setValidation(v);
     } else {
       this.questionRegisterModule.save(this.question);
       const v = new ValidationMessage("Questão salva com sucesso", TypeMessage.SUCCESS, true, "", 3000);
@@ -158,11 +160,6 @@ export default class QuestionRegisters extends Vue {
   reset() {
     this.question = new QuestionRegister();
     this.questionRegisterModule.setDialog(false);
-  }
-
-
-  imprime(){
-    console.log("IMPRIMINDO: ", this.content)
   }
 }
 </script>

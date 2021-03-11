@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 <template>
   <v-container>
     <v-card class="form-group">
@@ -10,7 +8,6 @@
             <v-col>
               <v-text-field
                 v-model="exam.title"
-                class="form-control"
                 :rules="[
                   e=> !!e || 'Campo obrigatório',
                   e => (e && e.length <= 40) || 'O título do vestibular deve ter até 40 caracteres']"
@@ -42,6 +39,29 @@
                 outlined
                 dense
               />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-select 
+               v-model="exam.semester"
+               :items="items"
+                :rules="[
+                  e=> !!e || 'Campo obrigatório']"
+                outlined
+                dense
+                label="Semestre do vestibular"
+              />
+            </v-col>
+            <v-col>
+              <v-select
+                v-model="exam.phase"
+                :items="items"
+                :rules="[e=> !!e || 'Campo obrigatório']"
+                outlined
+                dense
+                label="Fase vestibular"
+               />
             </v-col>
           </v-row>
           <v-row>
@@ -151,6 +171,7 @@ export default class ExamRegister extends Vue {
   examModule = getModule(ExamModule, this.$store)
   institutionModule = getModule(InstitutionModule, this.$store)
   validationMessageModule = getModule(ValidationMessageModule, this.$store)
+  items = ['1','2']
   validInstitution: boolean = false
   valid = false
 
@@ -164,7 +185,7 @@ export default class ExamRegister extends Vue {
   }
 
   get validForm(): boolean {
-    return this.valid && this.validInstitution && this.exam.disciplinesRules.length > 0
+    return this.valid && this.validInstitution && this.exam.disciplinesRules.length > 0 
   }
 
   constructor() {
@@ -211,6 +232,7 @@ export default class ExamRegister extends Vue {
     if(this.examModule.registerStatus == RegisterStatus.INSERT){
       this.examModule.save()
       const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
+      console.log('novo exam', this.exam)
     }
     const v = new ValidationMessage('Vestibular atualizado com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
 

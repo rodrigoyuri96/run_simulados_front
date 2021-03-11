@@ -21,23 +21,23 @@
           <template v-slot:default>
             <thead class="mb-6">
             <tr>
-              <th class="text-left">
+              <th>
                 Vestibular
               </th>
+              <th class="text-center">Ações</th>
             </tr>
             </thead>
-            <tbody class="mt-6">
+            <tbody>
             <tr
               v-for="(exam,i) in exams"
               :key="i"
-              class="text-center mt-1"
             >
               <td>{{ exam.title }}</td>
-              <td class="ml-5">
-                <v-btn text color="teal" @click="updateExam(i)" >
+              <td class="text-center">
+                <v-btn icon text color="teal" @click="updateExam(i)" >
                   <v-icon>{{ icons.mdiPencil }}</v-icon>
                 </v-btn>
-                <v-btn text color="deep-orange accent-4" @click="deleteExam(i)">
+                <v-btn icon text color="deep-orange accent-4" @click="deleteExam(i)">
                   <v-icon>
                     {{ icons.mdiDelete }}
                   </v-icon>

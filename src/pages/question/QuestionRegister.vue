@@ -41,7 +41,10 @@
           <v-row>
             <v-col>
               <run-editor 
-                v-model="content" 
+                v-model="content"
+                :exam="question.exam"
+                :numberQuestion="question.numberQuestion"
+                :discipline="question.discipline"
                 @dialog-status-change="dialog = $event"
               ></run-editor>
             </v-col>
@@ -145,13 +148,7 @@ export default class QuestionRegisters extends Vue {
       this.questionRegisterModule.setDialog(false);
     } else {
       this.questionRegisterModule.save(this.question);
-      const v = new ValidationMessage(
-        "Questão salva com sucesso",
-        TypeMessage.SUCCESS,
-        true,
-        "",
-        3000
-      );
+      const v = new ValidationMessage("Questão salva com sucesso", TypeMessage.SUCCESS, true, "", 3000);
       this.validationMessageModule.setValidation(v);
       this.questionRegisterModule.setDialog(false);
     }

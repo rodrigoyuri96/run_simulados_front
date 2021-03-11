@@ -7,6 +7,8 @@ export default class Exam {
     public year: number
     public book: string
     public obs: string
+    public semester: number
+    public phase: number
     public institution: Institution
     public disciplinesRules: DisciplineRule []
 

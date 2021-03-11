@@ -27,7 +27,7 @@
       />
       <v-autocomplete
         v-if="multiple == true"
-        v-model="disciplineModule"
+        v-model="discipline"
         :items="disciplines"
         item-text="name"
         label="Disciplinas"

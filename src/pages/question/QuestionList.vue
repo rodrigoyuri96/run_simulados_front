@@ -73,9 +73,12 @@
 import { Component, Vue } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { QuestionRegisterModule } from "@/store/modules/QuestionRegisterModule";
-import RunQuestionRegister from "@/pages/question/QuestionRegister.vue";
 import { RegisterStatus } from "@/models/RegisterStatus";
 import { mdiDelete, mdiPencil } from "@mdi/js";
+import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
+import { TypeMessage } from "@/models/validation/TypeMessage";
+import ValidationMessage from "@/models/validation/ValidationMessage";
+import RunQuestionRegister from "@/pages/question/QuestionRegister.vue";
 import QuestionRegister from '../../models/QuestionRegister';
 import RunQuestion from '@/components/run/question/Question.vue'
 
@@ -86,6 +89,8 @@ import RunQuestion from '@/components/run/question/Question.vue'
 export default class QuestionList extends Vue {
 
   questionRegisterModule = getModule(QuestionRegisterModule, this.$store);
+  validationMessageModule = getModule(ValidationMessageModule, this.$store);
+
   private modal: boolean = false
   content: String = ""
 
@@ -125,6 +130,10 @@ export default class QuestionList extends Vue {
 
   deleteQuestion(i: number) {
     this.questionRegisterModule.questions.splice(i, 1);
+    const v = new ValidationMessage("Questão removida com sucesso", TypeMessage.SUCCESS, true, "", 3000);
+    this.validationMessageModule.setValidation(v);
+
+
   }
 
   addQuestion() {

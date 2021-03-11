@@ -7,9 +7,9 @@ export default class Event {
     public duracao: Number
     public discipline: Discipline
     public subject: Subject
-    public startDateEvent: String
     public startDateSubscription: String
     public endDateSubscription: String
+    public startDateEvent: String
 
 
     public endDateEvent: String
@@ -20,9 +20,9 @@ export default class Event {
         this.duracao = 0
         this.discipline = new Discipline()
         this.subject = new Subject()
-        this.startDateEvent = ""
-        this.endDateEvent = ""
         this.startDateSubscription = ""
         this.endDateSubscription = ""
+        this.startDateEvent = ""
+        this.endDateEvent = ""
     }
 }

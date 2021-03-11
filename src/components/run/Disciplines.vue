@@ -9,25 +9,12 @@
         :rules="[v=> !!v || 'campo obrigatório']"
         outlined
         dense
-        @change="handleValid()"
+        @change="handleValid"
         return-object
       />
       <v-autocomplete
         v-if="multiple == true"
-        v-model="disciplineModule"
-        :items="disciplines"
-        item-text="name"
-        label="Disciplinas"
-        :rules="[v=> !!v || 'campo obrigatório']"
-        outlined
-        dense
-        @change="handleValid()"
-        multiple
-        return-object
-      />
-      <v-autocomplete
-        v-if="multiple == true"
-        v-model="disciplineModule"
+        v-model="discipline"
         :items="disciplines"
         item-text="name"
         label="Disciplinas"

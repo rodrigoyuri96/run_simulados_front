@@ -100,7 +100,6 @@ export default class ExamList extends Vue {
     this.examModule.setRegisterStatus(RegisterStatus.INSERT)
     this.examModule.setExam(new Exam())
     this.examModule.setDialog(true)
-
   }
 }
 </script>

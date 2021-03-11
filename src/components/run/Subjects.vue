@@ -1,56 +1,67 @@
 <template>
-  <div>
+  <v-form v-model="validSubjects">
     <v-autocomplete
-        v-model="subjectsSelected"
-        :items="subjects"
-        item-text="name"
-        label="Assuntos`"
-        outlined
-        multiple
-        dense
-        @change="imprime()"
-        return-object
-    />
-  </div>
+      v-model="subjectsSelected"
+      :items="subjects"
+      item-text="name"
+      label="Assuntos"
+      :rules="[(v) => !!v || 'campo obrigatório']"
+      outlined
+      multiple
+      dense
+      @change="handleValid"
+      return-object
+    >
+      <template v-slot:selection="{ index }">
+        <span v-if="index === 0" class="orange--text">
+          ({{ subjectsSelected.length}} assuntos selecionados)
+        </span>
+      </template>
+    </v-autocomplete>
+  </v-form>
 </template>
 
 <script lang="ts">
-import {Vue, Component} from 'vue-property-decorator'
-import {getModule} from "vuex-module-decorators";
-import {SubjectModule} from "../../store/modules/SubjectModule";
+import { Vue, Component, Emit } from "vue-property-decorator";
+import { getModule } from "vuex-module-decorators";
+import { SubjectModule } from "../../store/modules/SubjectModule";
 import Subject from "../../models/Subject";
 
 @Component({
-  name: "Subjects"
-
+  name: "Subjects",
 })
-export default class Subjects extends Vue{
-  subjectModule = getModule(SubjectModule, this.$store)
+export default class Subjects extends Vue {
+  subjectModule = getModule(SubjectModule, this.$store);
+  valid: boolean = false;
+  validSubjects: boolean = false;
 
-  get subjects(){
-    return this.subjectModule.subjects
+  get subjects() {
+    return this.subjectModule.subjects;
   }
 
-  get subjectsSelected(){
-    return this.subjectModule.subjectsSelected
+  get subjectsSelected() {
+    return this.subjectModule.subjectsSelected;
   }
 
-  set subjectsSelected(subjects: Subject[]){
-    this.subjectModule.setSubjectsSelected(subjects)
+  set subjectsSelected(subjects: Subject[]) {
+    this.subjectModule.setSubjectsSelected(subjects);
   }
 
-  mounted(){
-    this.subjectModule.findAll()
+  mounted() {
+    this.subjectModule.findAll();
   }
 
-  imprime(){
-    console.log(this.subjectsSelected)
+  @Emit('valid-field')
+  handleValid(event: boolean) {
+    if (event != null && event !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
   }
-
 }
 </script>
 
 <style scoped>
-
 </style>
 

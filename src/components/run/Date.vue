@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-form v-model="validDate">
     <v-menu
       ref="menu1"
       v-model="menu1"
@@ -13,14 +13,16 @@
         <v-text-field
           v-model="dateFormatted"
           :label="label"
-          hint="formato: MM/DD/YYYY"
+          hint="formato: DD/MM/YYYY"
           outlined
           dense
           required
           append-icon="mdi-calendar"
           v-bind="attrs"
           @blur="date = parseDate(dateFormatted)"
+          @change="handleValid"
           v-on="on"
+          :rules="[(v) => !!v || 'campo obrigatório']"
         ></v-text-field>
       </template>
       <v-date-picker
@@ -29,11 +31,12 @@
         @input="menu1 = false"
       ></v-date-picker>
     </v-menu>
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch, VModel, Prop } from "vue-property-decorator";
+import { Vue, Component, Watch, VModel, Prop, Emit } from "vue-property-decorator";
+import {DateUtil} from "@/util/date"
 
 @Component({
   name: "RunDate",
@@ -45,6 +48,7 @@ export default class RunDate extends Vue {
   //.toISOString().substr(0, 10);
   dateFormatted: String = new String();
   //vm.formatDate(new Date().toISOString().substr(0, 10));
+  validDate: boolean = false;
 
   get computedDateFormatted() {
     return this.formatDate(this.date);
@@ -61,20 +65,24 @@ export default class RunDate extends Vue {
     return `${day}/${month}/${year}`;
   }
 
-  parseDate(date: String) {
-    if (!date) return null;
-    const [month, day, year] = date.split("/");
-    return `${year}-${day.padStart(2, "0")}-${month.padStart(2, "0")}`;
-  }
 
   mounted() {
     let date: Date = new Date();
-    let str = `${date.getFullYear()}-${date
-      .getDay()
-      .toString()
-      .padStart(2, "0")}-${date.getMonth().toString().padStart(2, "0")}`;
+    let str = `${date.getFullYear()}-${date.getDay().toString().padStart(2, "0")}-${date.getMonth().toString().padStart(2, "0")}`;
     this.date = str;
     console.log(str);
+  }
+  parseDate(date: String) {
+      return DateUtil.parseDate(date)
+  }
+  
+  @Emit('valid')
+  handleValid(event: boolean) {
+    if (event != null && event !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 </script>

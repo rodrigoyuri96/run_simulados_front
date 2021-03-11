@@ -10,8 +10,6 @@ export default class Event {
     public startDateSubscription: String
     public endDateSubscription: String
     public startDateEvent: String
-    public startDateSubscription: String
-    public endDateSubscription: String
 
 
     public endDateEvent: String
@@ -26,7 +24,5 @@ export default class Event {
         this.endDateSubscription = ""
         this.startDateEvent = ""
         this.endDateEvent = ""
-        this.startDateSubscription = ""
-        this.endDateSubscription = ""
     }
 }

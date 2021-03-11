@@ -28,6 +28,7 @@
             </v-col>
             <v-col cols="2">
               <v-text-field
+                v-model="event.typeEvent"
                 outlined
                 dense
                 required

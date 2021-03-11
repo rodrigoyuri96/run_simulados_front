@@ -125,6 +125,8 @@ export class ExamModule extends VuexModule {
       e1.obs = 'Questões 3 e 4 anuladas'
       e1.book = 'Caderno 2'
       e1.year = 2019
+      e1.semester = 2
+      e1.phase = 1
       const dr1 = new DisciplineRule()
       const d1 = new Discipline()
 

@@ -1,5 +1,5 @@
 <template>
-    <v-form v-model="validDisciplines">
+    <v-form v-model="valid">
       <v-autocomplete
         v-if="multiple == false"
         v-model="discipline"
@@ -24,7 +24,6 @@
         @change="handleValid()"
         multiple
         return-object
-        @change="handleValid"
       />
       <v-autocomplete
         v-if="multiple == true"
@@ -56,8 +55,7 @@ export default class Disciplines extends Vue {
   @VModel({type: Discipline}) discipline!: Discipline 
   @VModel({type: Discipline}) disciplinesModel!: Discipline[]
   @Prop({type:Boolean}) multiple!: Boolean 
-
-   validDisciplines: boolean = false;
+  valid: boolean = false;
 
 
   get disciplines() {

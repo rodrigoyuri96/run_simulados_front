@@ -8,6 +8,10 @@ export default class Event {
     public discipline: Discipline
     public subject: Subject
     public startDateEvent: String
+    public startDateSubscription: String
+    public endDateSubscription: String
+
+
     public endDateEvent: String
 
     constructor(){
@@ -18,5 +22,7 @@ export default class Event {
         this.subject = new Subject()
         this.startDateEvent = ""
         this.endDateEvent = ""
+        this.startDateSubscription = ""
+        this.endDateSubscription = ""
     }
 }

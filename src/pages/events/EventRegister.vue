@@ -252,24 +252,12 @@ export default class EventRegister extends Vue {
       if (this.eventModule.registerStatus == RegisterStatus.INSERT) {
 
         this.eventModule.save();
-        const v = new ValidationMessage(
-          "Vestibular salvo com sucesso",
-          TypeMessage.SUCCESS,
-          true,
-          "",
-          3000
-        );
+        const v = new ValidationMessage("Evento salvo com sucesso", TypeMessage.SUCCESS, true, "", 3000);
         
         this.validationMessageModule.setValidation(v);
         this.eventModule.setDialog(false);
       }
-      const v = new ValidationMessage(
-        "Vestibular atualizado com sucesso",
-        TypeMessage.SUCCESS,
-        true,
-        "",
-        3000
-      );
+      const v = new ValidationMessage("Evento atualizado com sucesso", TypeMessage.SUCCESS, true, "", 3000);
   
       this.validationMessageModule.setValidation(v);
       this.eventModule.setDialog(false);

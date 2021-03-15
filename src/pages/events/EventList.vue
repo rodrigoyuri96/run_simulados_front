@@ -58,6 +58,9 @@ import { getModule } from "vuex-module-decorators";
 import { EventModule } from "@/store/modules/EventModule";
 import EventRegister from "@/pages/events/EventRegister.vue";
 import { RegisterStatus } from "@/models/RegisterStatus";
+import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
+import ValidationMessage from "@/models/validation/ValidationMessage";
+import { TypeMessage } from "@/models/validation/TypeMessage";
 import { mdiDelete, mdiPencil } from "@mdi/js";
 import Event from "@/models/Event";
 
@@ -66,7 +69,10 @@ import Event from "@/models/Event";
   components: { EventRegister },
 })
 export default class EventList extends Vue {
+
   eventModule = getModule(EventModule, this.$store);
+  validationMessageModule = getModule(ValidationMessageModule, this.$store);
+
 
   icons = {
     mdiDelete,
@@ -93,7 +99,9 @@ export default class EventList extends Vue {
   }
 
   deleteEvent(i: number) {
-    this.eventModule.events.splice(i, 1);
+    this.eventModule.events.splice(i, 1)
+    const v = new ValidationMessage("Evento removido com sucesso", TypeMessage.SUCCESS, true, "", 3000);
+    this.validationMessageModule.setValidation(v);
   }
 
   addEvent() {

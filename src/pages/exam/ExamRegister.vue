@@ -162,6 +162,7 @@ import {ValidationMessageModule} from '@/store/modules/validation/ValidationMess
 import ValidationMessage from '@/models/validation/ValidationMessage'
 import {TypeMessage} from '@/models/validation/TypeMessage'
 import {RegisterStatus} from '@/models/RegisterStatus'
+import axios from '@/plugins/Axios'
 
 @Component({
   name: 'ExamRegister',
@@ -218,6 +219,14 @@ export default class ExamRegister extends Vue {
     return this.examModule.disciplineRulesDialog
   }
 
+  get snack() {
+    return this.validationMessageModule.snack
+  }
+
+  set snack(newValue: boolean) {
+    this.validationMessageModule.setSnack(newValue)
+  }
+
   set dialogDisciplineRules(newValue: boolean) {
     this.examModule.setDisciplineRulesDialog(newValue)
   }
@@ -229,7 +238,19 @@ export default class ExamRegister extends Vue {
   }
 
   save() {
-    if(this.examModule.registerStatus == RegisterStatus.INSERT){
+
+    axios.post('/cadastro-vestibular', this.exam).then((res) => {
+      console.log("RESPOSTA", res.data)
+        if(res.status == 201){
+          const message = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
+          this.validationMessageModule.setValidation(message)
+          this.validationMessageModule.openSnack(true)
+          this.exam = res.data
+          this.examModule.setDialog(false)
+          console.log('SNACK', this.snack)
+        }
+    })
+    /*if(this.examModule.registerStatus == RegisterStatus.INSERT){
       this.examModule.save()
       const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
       console.log('novo exam', this.exam)
@@ -237,7 +258,7 @@ export default class ExamRegister extends Vue {
     const v = new ValidationMessage('Vestibular atualizado com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
 
     this.validationMessageModule.setValidation(v)
-    this.examModule.setDialog(false)
+    this.examModule.setDialog(false)*/
   }
 
   get validateUpdateAction(): boolean{

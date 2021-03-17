@@ -55,7 +55,7 @@
           </td>
         </tr>
       </tbody>
-    </template> 
+    </template>
   </v-simple-table>
         </v-col>
     </v-row>
@@ -72,7 +72,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { QuestionRegisterModule } from "@/store/modules/QuestionRegisterModule";
+import { QuestionModule } from "@/store/modules/QuestionModule";
 import { RegisterStatus } from "@/models/RegisterStatus";
 import { mdiDelete, mdiPencil } from "@mdi/js";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
@@ -88,7 +88,7 @@ import RunQuestion from '@/components/run/question/Question.vue'
 })
 export default class QuestionList extends Vue {
 
-  questionRegisterModule = getModule(QuestionRegisterModule, this.$store);
+  questionRegisterModule = getModule(QuestionModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
 
   private modal: boolean = false

@@ -23,13 +23,13 @@
           </v-row>
           <v-row>
             <v-col cols="6">
-              <run-exams 
-                @valid="isValidExam = $event" 
+              <run-exams
+                @valid="isValidExam = $event"
                 v-model="question.exam" />
             </v-col>
             <v-col cols="6">
-              <run-disciplines 
-                @valid="isValidDiscipline = $event" 
+              <run-disciplines
+                @valid="isValidDiscipline = $event"
                 v-model="question.discipline" />
             </v-col>
           </v-row>
@@ -40,7 +40,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <run-editor 
+              <run-editor
                 v-model="content"
                 :exam="question.exam"
                 :numberQuestion="question.numberQuestion"
@@ -93,11 +93,10 @@
 <script lang="ts">
 import { Vue, Component, Emit } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { QuestionRegisterModule } from "@/store/modules/QuestionRegisterModule";
+import { QuestionRegisterModule } from "@/store/modules/QuestionModule";
 import QuestionRegister from "../../models/QuestionRegister";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunExams from "@/components/run/exam/Exams.vue";
-import { DisciplineModule } from "@/store/modules/DisciplineModule";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
@@ -118,8 +117,8 @@ export default class QuestionRegisters extends Vue {
   content: String = ""
   dialog: Boolean = false
   isValidDiscipline: boolean = false
-  isValidExam: boolean = false 
- 
+  isValidExam: boolean = false
+
 
   private valid: boolean = false;
 

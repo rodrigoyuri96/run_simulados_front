@@ -27,7 +27,7 @@ const store = new Vuex.Store({
     ValidationMessageModule,
     EventModule,
     OptionModule,
-    QuestionModule
+    QuestionModule,
   }
 })
 

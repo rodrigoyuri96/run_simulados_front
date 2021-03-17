@@ -6,8 +6,8 @@ import DisciplineRule from "@/models/DisciplineRule"
 import Institution from "@/models/Institution"
 import {RegisterStatus} from "@/models/RegisterStatus";
 
-@Module({ name: 'QuestionRegisterModule', namespaced: true})
-export class QuestionRegisterModule extends VuexModule {
+@Module({ name: 'QuestionModule', namespaced: true})
+export class QuestionModule extends VuexModule {
     _questions: QuestionRegister[] = []
     _question: QuestionRegister = new QuestionRegister()
     _validField: boolean = false
@@ -27,7 +27,7 @@ export class QuestionRegisterModule extends VuexModule {
     get question(){
         return this._question
     }
-    
+
     get validField(){
         return this._validField
     }
@@ -113,4 +113,4 @@ export class QuestionRegisterModule extends VuexModule {
     save(newQuestion: QuestionRegister){
         return newQuestion
     }
-} 
+}

@@ -25,8 +25,8 @@ export default [{
     component: () => import('@/pages/question/QuestionDetail.vue')
   },
   {
-    path: '/options',
-    name: 'options',
+    path: '/opcoes',
+    name: 'opcoes',
     component: () => import('@/components/run/question/options/Options.vue')
   }
 

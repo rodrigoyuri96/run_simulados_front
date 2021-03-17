@@ -1,18 +1,14 @@
-import {OptionType} from "./OptionType"
-import OptionTable from "@/models/question/OptionTable";
 
 export default class Option{
-    public description: String
-    public isCorrectAnswer: Boolean
-    public optionType: OptionType
-    public urlImage: string
-    public table: OptionTable
+    public description?: String
+    public isCorrectAnswer?: Boolean
+    public urlImage?: string
+    public row?: any[]
 
-  constructor(optionType:OptionType) {
+  constructor() {
     this.description = "";
     this.isCorrectAnswer = false;
-    this.optionType = optionType;
     this.urlImage = "";
-    this.table = new OptionTable()
+    this.row = [];
   }
 }

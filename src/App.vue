@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <run-validation-message></run-validation-message>
     <!-- Layout component -->
     <component :is="currentLayout" v-if="isRouterLoaded">
       <transition name="fade" mode="out-in">
@@ -26,7 +25,6 @@ import simpleLayout from './layouts/SimpleLayout'
 import landingLayout from './layouts/LandingLayout'
 import authLayout from './layouts/AuthLayout'
 import errorLayout from './layouts/ErrorLayout'
-import RunValidationMessage from '@/components/run/messages/ValidationMessage'
 
 /*
 |---------------------------------------------------------------------
@@ -43,7 +41,6 @@ export default {
     landingLayout,
     authLayout,
     errorLayout,
-    RunValidationMessage
   },
   computed: {
     ...mapState('app', ['toast']),

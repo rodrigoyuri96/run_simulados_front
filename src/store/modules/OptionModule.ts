@@ -1,25 +1,22 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import Option from "@/models/question/Option";
-import {OptionType} from "@/models/question/OptionType";
-import OptionTable from "@/models/question/OptionTable";
 
 @Module({ name: "OptionModule", namespaced: true })
-
 export class OptionModule extends VuexModule {
-    _options: Option[] = []
     _option: Option = {
         description: "",
         isCorrectAnswer: false,
         urlImage: "",
-        optionType: OptionType.DESCRIPTION,
-        table: new OptionTable()
+        row: []
     }
-    _dialog: Boolean = false
+    _opts: Option[] = [];
+
+  _dialog: Boolean = false
     _validUpdate: Boolean = false
     _dialogOptionTableType: String = "CONTENT"
 
     get options() {
-        return this._options
+        return this._opts
     }
 
     get option() {
@@ -53,18 +50,18 @@ export class OptionModule extends VuexModule {
     }
 
     @Mutation
-    _addOption(newOption: Option) {
-        this._options.push(newOption)
+    addOption(newOption: Option) {
+        this._opts.push(newOption)
     }
 
     @Mutation
     _removeOption(index: number) {
-        this._options.splice(index, 1)
+        this._opts.splice(index, 1)
     }
 
     @Mutation
     setOptions(options: Option[]) {
-        this._options = options
+        this._opts = options
     }
 
     @Mutation
@@ -75,6 +72,16 @@ export class OptionModule extends VuexModule {
     @Mutation
     updateOption(newValue: Option, index: number) {
         this.options[index] = newValue
+    }
+
+    @Mutation
+    addRow(contentRow: string ){
+      this.option.row.push(contentRow)
+    }
+
+    @Mutation
+    removeRow(index: number){
+      this.option.row.splice(index, 1)
     }
 
     @Action({commit: "_addOption"})
@@ -97,22 +104,8 @@ export class OptionModule extends VuexModule {
         return newValue
     }
 
-    @Action({commit: 'setOptions'})
-    findAll() {
-        const option = new Option(OptionType.DESCRIPTION)
-        option.description = "O Budismo";
 
-        const option2 = new Option(OptionType.DESCRIPTION)
-        option2.description = "O Cristianismo"
-        option2.isCorrectAnswer = true
 
-        const option3 = new Option(OptionType.DESCRIPTION)
-        option3.description = "O Islamismo"
-
-        const options: Option[] = []
-        options.push(option, option2, option3);
-        return options
-    }
 
 
 }

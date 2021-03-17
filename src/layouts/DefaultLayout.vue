@@ -67,7 +67,6 @@
     >
       <v-card class="flex-grow-1 d-flex" :class="[isToolbarDetached ? 'pa-1 mt-3 mx-1' : 'pa-0 ma-0']" :flat="!isToolbarDetached">
         <div class="d-flex flex-grow-1 align-center">
-
           <!-- search input mobile -->
           <v-text-field
             v-if="showSearch"
@@ -125,6 +124,8 @@
     <v-main>
 
         <v-layout>
+          <run-validation-message></run-validation-message>
+
           <slot></slot>
         </v-layout>
 
@@ -150,6 +151,7 @@ import ToolbarApps from '../components/toolbar/ToolbarApps'
 import ToolbarLanguage from '../components/toolbar/ToolbarLanguage'
 import ToolbarCurrency from '../components/toolbar/ToolbarCurrency'
 import ToolbarNotifications from '../components/toolbar/ToolbarNotifications'
+import RunValidationMessage from '@/components/run/messages/ValidationMessage'
 
 export default {
   components: {
@@ -158,7 +160,8 @@ export default {
     ToolbarApps,
     ToolbarLanguage,
     ToolbarCurrency,
-    ToolbarNotifications
+    ToolbarNotifications,
+    RunValidationMessage
   },
   data() {
     return {

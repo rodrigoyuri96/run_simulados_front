@@ -44,7 +44,7 @@
             </v-col>
             <v-col cols="2">
               <v-text-field
-                v-model="event.duracao"
+                v-model="event.duration"
                 outlined
                 dense
                 required
@@ -95,14 +95,15 @@
           <v-row>
             <v-col cols="6">
               <run-disciplines
-                v-model="event.discipline"
+                v-model="event.disciplines"
                 @valid="validDisciplines = $event"
+                :multiple="true"
               >
               </run-disciplines>
             </v-col>
             <v-col cols="6">
               <run-subjects
-                v-model="event.subject"
+                v-model="event.subjects"
                 @valid-field="validSubjects = $event"
               >
               </run-subjects>
@@ -153,7 +154,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Emit } from "vue-property-decorator";
+import {Vue, Component, Emit, Watch} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { EventModule } from "@/store/modules/EventModule";
 import { SubjectModule } from "@/store/modules/SubjectModule";
@@ -187,6 +188,29 @@ export default class EventRegister extends Vue {
   validDate1: boolean = false;
   valid: boolean = false;
   errors: String[] = [];
+
+  @Watch('event.disciplines')
+  onEventChanged(newVal: Event, oldVal: Event){
+    console.log("Mudança no evento monitorada com sucesso", newVal)
+    console.log("Estado anterior", oldVal)
+    this.subjectModule.subjects = []
+    this.subjectModule.filterByDiscipline(this.event.discipline).then(subjects=>{
+      if(subjects != null && disciplines.length > 0)
+        this.subjectModule.setSubjects(subjects)
+    })
+
+  }
+
+  @Watch('event.subjects')
+  onEventChanged(newVal: Event, oldVal: Event){
+    console.log("Mudança no evento monitorada com sucesso", newVal)
+    console.log("Estado anterior", oldVal)
+    this.disciplineModule.filterBySubject(this.event.subjects).then(disciplines=>{
+      if(disciplines != null && disciplines.length > 0)
+        this.disciplineModule._setDisciplines(disciplines)
+    })
+
+  }
 
   get isInsert() {
     return this.eventModule.registerStatus === RegisterStatus.INSERT;
@@ -254,12 +278,12 @@ export default class EventRegister extends Vue {
 
         this.eventModule.save();
         const v = new ValidationMessage("Evento salvo com sucesso", TypeMessage.SUCCESS, true, "", 3000);
-        
+
         this.validationMessageModule.setValidation(v);
         this.eventModule.setDialog(false);
       }
       const v = new ValidationMessage("Evento atualizado com sucesso", TypeMessage.SUCCESS, true, "", 3000);
-  
+
       this.validationMessageModule.setValidation(v);
       this.eventModule.setDialog(false);
     }

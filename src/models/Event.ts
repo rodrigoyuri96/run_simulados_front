@@ -4,9 +4,9 @@ import Subject from "./Subject"
 export default class Event {
     public title: String
     public typeEvent: String
-    public duracao: Number
-    public discipline: Discipline
-    public subject: Subject
+    public duration: Number
+    public disciplines: Discipline[]
+    public subjects: Subject[]
     public startDateSubscription: String
     public endDateSubscription: String
     public startDateEvent: String
@@ -17,9 +17,9 @@ export default class Event {
     constructor(){
         this.title = ""
         this.typeEvent = ""
-        this.duracao = 0
-        this.discipline = new Discipline()
-        this.subject = new Subject()
+        this.duration = 0
+        this.disciplines =[]
+        this.subjects = []
         this.startDateSubscription = ""
         this.endDateSubscription = ""
         this.startDateEvent = ""

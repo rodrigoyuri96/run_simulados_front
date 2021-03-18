@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// Routes
 import PagesRoutes from './pages.routes'
 import UsersRoutes from './users.routes'
 import LandingRoutes from './landing.routes'

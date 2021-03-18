@@ -1,16 +1,22 @@
 <template>
   <v-form v-model="validSubjects">
     <v-autocomplete
-      v-model="subjectsSelected"
-      :items="subjects"
+      v-model="subjects"
+      :items="items"
       item-text="name"
       label="Assuntos"
       :rules="[(v) => !!v || 'campo obrigatório']"
       outlined
       multiple
       dense
-      @change="handleValid"
+      @change="handleSubject"
       return-object
+      auto-select-first
+      clearable
+      chips
+      deletable-chips
+      small-chips
+      hide-no-data
     >
       <template v-slot:selection="{ index }">
         <span v-if="index === 0" class="orange--text">
@@ -22,29 +28,24 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Emit } from "vue-property-decorator";
+import {Vue, Component, Emit, VModel} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { SubjectModule } from "../../store/modules/SubjectModule";
 import Subject from "../../models/Subject";
+import {DisciplineModule} from "@/store/modules/DisciplineModule";
+import Discipline from "@/models/Discipline";
 
 @Component({
   name: "Subjects",
 })
 export default class Subjects extends Vue {
-  subjectModule = getModule(SubjectModule, this.$store);
+  subjectModule= getModule(SubjectModule, this.$store)
   valid: boolean = false;
   validSubjects: boolean = false;
+  @VModel({type: Array}) subjects!: Subject[]
 
-  get subjects() {
+  get items() {
     return this.subjectModule.subjects;
-  }
-
-  get subjectsSelected() {
-    return this.subjectModule.subjectsSelected;
-  }
-
-  set subjectsSelected(subjects: Subject[]) {
-    this.subjectModule.setSubjectsSelected(subjects);
   }
 
   mounted() {
@@ -58,6 +59,10 @@ export default class Subjects extends Vue {
     } else {
       return false;
     }
+  }
+
+  handleSubject(){
+    this.handleValid(this.valid)
   }
 }
 </script>

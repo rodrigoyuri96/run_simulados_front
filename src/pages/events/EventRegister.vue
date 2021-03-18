@@ -19,32 +19,27 @@
                 :rules="[
                   (e) => !!e || 'Campo obrigatório',
                   (e) =>
-                    (e && e.length <= 60) ||
+                    (e && e.length <= 60 && e.length >= 3) ||
                     'O título do vestibular deve ter até 60 caracteres',
                 ]"
                 counter="60"
                 label="Título do Evento"
               ></v-text-field>
             </v-col>
-            <v-col cols="2">
-              <v-text-field
-                v-model="event.typeEvent"
+            <v-col cols="4">
+              <v-select
+                v-model="event.eventType"
+                :items="TypeList"
                 outlined
                 dense
                 required
-                :rules="[
-                  (e) => !!e || 'Campo obrigatório',
-                  (e) =>
-                    (e && e.length <= 10) ||
-                    'O título do vestibular deve ter até 10 caracteres',
-                ]"
-                counter="10"
+                :rules="[(e) => !!e || 'Campo obrigatório']"
                 label="Tipo do evento"
-              ></v-text-field>
+              ></v-select>
             </v-col>
             <v-col cols="2">
               <v-text-field
-                v-model="event.duracao"
+                v-model="event.duration"
                 outlined
                 dense
                 required
@@ -87,7 +82,7 @@
             <v-col>
               <run-date
                 v-model="event.endDateEvent"
-                 @valid="validDate = $event"
+                @valid="validDate = $event"
                 label="Data fim Evento"
               ></run-date>
             </v-col>
@@ -97,6 +92,7 @@
               <run-disciplines
                 v-model="event.discipline"
                 @valid="validDisciplines = $event"
+                :multiple="true"
               >
               </run-disciplines>
             </v-col>
@@ -153,7 +149,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Emit } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { EventModule } from "@/store/modules/EventModule";
 import { SubjectModule } from "@/store/modules/SubjectModule";
@@ -168,8 +164,9 @@ import { RegisterStatus } from "@/models/RegisterStatus";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
-import RunError  from "@/components/run/validator/Error.vue"
-import {DateUtil} from "@/util/date"
+import RunError from "@/components/run/validator/Error.vue";
+import { DateUtil } from "@/util/date";
+import axios from "@/plugins/Axios";
 
 @Component({
   name: "EventRegister",
@@ -187,6 +184,7 @@ export default class EventRegister extends Vue {
   validDate1: boolean = false;
   valid: boolean = false;
   errors: String[] = [];
+  TypeList: String[] = ["Comunidade", "Instituição"];
 
   get isInsert() {
     return this.eventModule.registerStatus === RegisterStatus.INSERT;
@@ -226,22 +224,57 @@ export default class EventRegister extends Vue {
       : true;
   }
 
+  get snack() {
+    return this.validationMessageModule.snack
+  }
+  set snack(newValue: boolean) {
+    this.validationMessageModule.setSnack(newValue)
+  }
+
   get validationDateSubscription(): boolean {
-    this.errors = []
-    if(!DateUtil.isBiggersThanDate(this.event.endDateSubscription, this.event.startDateSubscription)){
-      this.errors.push('A data final da inscrição não pode ser menor que a data inicial da inscrição.')
+    this.errors = [];
+    if (
+      !DateUtil.isBiggersThanDate(
+        this.event.endDateSubscription,
+        this.event.startDateSubscription
+      )
+    ) {
+      this.errors.push(
+        "A data final da inscrição não pode ser menor que a data inicial da inscrição."
+      );
     }
-    if(!DateUtil.isBiggersThanDate(this.event.startDateEvent, this.event.endDateSubscription)){
-      this.errors.push('A data fim de inscrição não pode ser depois da data inicio do evento.')
+    if (
+      !DateUtil.isBiggersThanDate(
+        this.event.startDateEvent,
+        this.event.endDateSubscription
+      )
+    ) {
+      this.errors.push(
+        "A data fim de inscrição não pode ser depois da data inicio do evento."
+      );
     }
-    if(!DateUtil.isBiggersThanDate(this.event.startDateEvent, this.event.startDateSubscription)){
-      this.errors.push('A data inicial inscrição não pode ser depois do inicio do evento.')
+    if (
+      !DateUtil.isBiggersThanDate(
+        this.event.startDateEvent,
+        this.event.startDateSubscription
+      )
+    ) {
+      this.errors.push(
+        "A data inicial inscrição não pode ser depois do inicio do evento."
+      );
     }
-    if(!DateUtil.isBiggersThanDate(this.event.endDateEvent, this.event.startDateEvent)){
-      this.errors.push('A data final do evento não pode ser menor que a data inicial do evento.')
+    if (
+      !DateUtil.isBiggersThanDate(
+        this.event.endDateEvent,
+        this.event.startDateEvent
+      )
+    ) {
+      this.errors.push(
+        "A data final do evento não pode ser menor que a data inicial do evento."
+      );
     }
 
-    return this.errors.length > 0
+    return this.errors.length > 0;
   }
 
   cancel() {
@@ -249,9 +282,33 @@ export default class EventRegister extends Vue {
   }
 
   save() {
-    if(!this.validationDateSubscription){
+    if (!this.validationDateSubscription) {
       if (this.eventModule.registerStatus == RegisterStatus.INSERT) {
-
+        axios
+          .post("/cadastro-evento", this.event)
+          .then((res) => {
+            if (res.status == 201) {
+              const message = new ValidationMessage(
+                "Evento salvo com sucesso",
+                TypeMessage.SUCCESS,
+                true,
+                "",
+                5000
+              );
+              this.validationMessageModule.setValidation(message);
+               this.validationMessageModule.openSnack(true)
+              this.event = res.data;
+              this.eventModule.setDialog(false);
+            }
+          })
+          .catch((error) => {
+            console.log("ERRO:", error);
+          });
+      }
+    }
+    /*
+    if (!this.validationDateSubscription) {
+      if (this.eventModule.registerStatus == RegisterStatus.INSERT) {
         this.eventModule.save();
         const v = new ValidationMessage(
           "Vestibular salvo com sucesso",
@@ -260,7 +317,6 @@ export default class EventRegister extends Vue {
           "",
           3000
         );
-        
         this.validationMessageModule.setValidation(v);
         this.eventModule.setDialog(false);
       }
@@ -271,10 +327,9 @@ export default class EventRegister extends Vue {
         "",
         3000
       );
-  
       this.validationMessageModule.setValidation(v);
       this.eventModule.setDialog(false);
-    }
+    }*/
   }
 }
 </script>

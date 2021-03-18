@@ -5,6 +5,7 @@ import Discipline from "@/models/Discipline";
 @Module({ name: 'DisciplineModule', namespaced: true })
 export class DisciplineModule extends VuexModule {
     _disciplines: Discipline[] = []
+    _disciplineSelected: Discipline[] = []
     _discipline: Discipline = {id: 0, name: ""}
 
 
@@ -14,6 +15,16 @@ export class DisciplineModule extends VuexModule {
 
     get discipline(){
         return this._discipline
+    }
+
+    get disciplinesSelected() {
+        return this._disciplineSelected
+      }
+
+      
+    @Mutation
+    setDisciplinesSelected(disciplines: Discipline[]) {
+      this._disciplineSelected = disciplines
     }
 
     @Mutation

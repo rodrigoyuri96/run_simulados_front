@@ -14,7 +14,7 @@
       />
       <v-autocomplete
         v-if="multiple == true"
-        v-model="discipline"
+        v-model="disciplinesSelected"
         :items="disciplines"
         item-text="name"
         label="Disciplinas"
@@ -24,7 +24,13 @@
         multiple
         return-object
         @change="handleValid"
-      />
+      >
+      <template v-slot:selection="{ index }">
+        <span v-if="index === 0" class="orange--text">
+          ({{ disciplinesSelected.length}} disciplinas selecionadas)
+        </span>
+      </template>
+      </v-autocomplete>
     </v-form>
 </template>
 
@@ -47,6 +53,14 @@ export default class Disciplines extends Vue {
 
   get disciplines() {
     return this.disciplineModule.disciplines
+  }
+
+  get disciplinesSelected() {
+    return this.disciplineModule.disciplinesSelected;
+  }
+
+  set disciplinesSelected(disciplines: Discipline[]) {
+    this.disciplineModule.setDisciplinesSelected(disciplines);
   }
     
   @Emit('valid')

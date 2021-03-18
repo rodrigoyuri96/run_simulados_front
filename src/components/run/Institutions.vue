@@ -1,8 +1,8 @@
 <template>
   <v-form v-model="valid"  >
     <v-autocomplete
-      v-model="institution"
-      :items="institutions"
+      v-model="institutions"
+      :items="items"
       :rules="[v=> !!v || 'campo obrigatório']"
       item-text="name"
       outlined
@@ -26,11 +26,10 @@ import Institution from '../../models/Institution'
 })
 export default class Institutions extends Vue {
   institutionModule = getModule(InstitutionModule, this.$store)
-  @VModel({type: Institution}) institution!: Institution
-  @VModel({type: Institution}) institutionModel!: Institution[]
+  @VModel() institutions!: any
   valid: boolean = false
 
-  get institutions() {
+  get items() {
     return this.institutionModule.institutions
   }
 

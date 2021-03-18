@@ -2,7 +2,7 @@
     <v-form v-model="valid">
       <v-autocomplete
         v-if="multiple == false"
-        v-model="discipline"
+        v-model="disciplines"
         :items="items"
         item-text="name"
         label="Disciplinas"
@@ -55,9 +55,7 @@ import {SubjectModule} from "@/store/modules/SubjectModule";
 })
 export default class Disciplines extends Vue {
   disciplineModule = getModule(DisciplineModule, this.$store)
-  subjectModule = getModule(SubjectModule, this.$store)
-  @VModel({type: Discipline}) discipline!: Discipline
-  @VModel({type: Array}) disciplines!: Discipline[]
+  @VModel() disciplines!: any
   @Prop({type:Boolean}) multiple!: Boolean
   valid: boolean = false;
 

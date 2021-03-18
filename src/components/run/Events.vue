@@ -2,8 +2,8 @@
    <v-form v-model="valid">
       <v-autocomplete
         multiple
-        v-model="event"
-        :items="events"
+        v-model="events"
+        :items="items"
         item-text="name"
         label="Eventos"
         :rules="[v=> !!v || 'campo obrigatório']"
@@ -26,14 +26,11 @@ import Event from '@/models/Event'
 })
 
 export default class Events extends Vue {
-
     eventModule = getModule( EventModule, this.$store )
-
-    @VModel({ type: Event }) event!: Event
-    @VModel({ type: Event }) eventModel!: Event[]
+    @VModel() events!: any
     valid = false
 
-    get events() {
+    get items() {
         return this.eventModule.events
     }
 

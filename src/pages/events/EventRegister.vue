@@ -190,19 +190,19 @@ export default class EventRegister extends Vue {
   errors: String[] = [];
 
   @Watch('event.disciplines')
-  onEventChanged(newVal: Event, oldVal: Event){
+  onDisciplineEventChanged(newVal: Event, oldVal: Event){
     console.log("Mudança no evento monitorada com sucesso", newVal)
     console.log("Estado anterior", oldVal)
-    this.subjectModule.subjects = []
-    this.subjectModule.filterByDiscipline(this.event.discipline).then(subjects=>{
-      if(subjects != null && disciplines.length > 0)
+    this.subjectModule.setSubjects([])
+    this.subjectModule.filterByDiscipline(this.event.disciplines).then(subjects=>{
+      if(subjects != null && subjects.length > 0)
         this.subjectModule.setSubjects(subjects)
     })
 
   }
 
   @Watch('event.subjects')
-  onEventChanged(newVal: Event, oldVal: Event){
+  onSubjectEventChanged(newVal: Event, oldVal: Event){
     console.log("Mudança no evento monitorada com sucesso", newVal)
     console.log("Estado anterior", oldVal)
     this.disciplineModule.filterBySubject(this.event.subjects).then(disciplines=>{

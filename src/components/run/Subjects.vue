@@ -20,7 +20,7 @@
     >
       <template v-slot:selection="{ index }">
         <span v-if="index === 0" class="orange--text">
-          ({{ subjectsSelected.length}} assuntos selecionados)
+          ({{ subjects.length}} assuntos selecionados)
         </span>
       </template>
     </v-autocomplete>
@@ -32,8 +32,6 @@ import {Vue, Component, Emit, VModel} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { SubjectModule } from "../../store/modules/SubjectModule";
 import Subject from "../../models/Subject";
-import {DisciplineModule} from "@/store/modules/DisciplineModule";
-import Discipline from "@/models/Discipline";
 
 @Component({
   name: "Subjects",

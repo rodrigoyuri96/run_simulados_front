@@ -53,13 +53,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { getModule } from 'vuex-module-decorators'
-import { ExamModule } from '@/store/modules/ExamModule'
+import {Component, Vue} from 'vue-property-decorator'
+import {getModule} from 'vuex-module-decorators'
+import {ExamModule} from '@/store/modules/ExamModule'
 import ExamRegister from '@/pages/exam/ExamRegister.vue'
-import { RegisterStatus } from '@/models/RegisterStatus'
-import { mdiDelete, mdiPencil } from '@mdi/js'
+import {RegisterStatus} from '@/models/RegisterStatus'
+import {mdiDelete, mdiPencil} from '@mdi/js'
 import Exam from "@/models/Exam";
+import ValidationMessage from "@/models/validation/ValidationMessage";
+import {TypeMessage} from "@/models/validation/TypeMessage";
+import {ValidationMessageModule} from "@/store/modules/validation/ValidationMessageModule";
 
 @Component({
   name: 'ExamList',
@@ -67,7 +70,7 @@ import Exam from "@/models/Exam";
 })
 export default class ExamList extends Vue {
   examModule = getModule(ExamModule, this.$store)
-
+  validationModule = getModule(ValidationMessageModule, this.$store)
   icons = {
     mdiDelete,
     mdiPencil
@@ -88,18 +91,34 @@ export default class ExamList extends Vue {
   updateExam(i: number) {
     console.log(this.examModule.exams[i])
     this.examModule.setExam(this.examModule.exams[i])
+    console.log("EXAME", this.examModule.exam)
     this.examModule.setRegisterStatus(RegisterStatus.UPDATE)
     this.examModule.setDialog(true)
   }
 
   deleteExam(i: number) {
-    this.examModule.exams.splice(i,1)
+    this.examModule.setExam(this.examModule.exams[i])
+    const message = new ValidationMessage('Vestibular deletado com sucesso', TypeMessage.SUCCESS, true, '', 3000)
+    this.examModule.delete().then(res=>{
+      if(res){
+        this.examModule.exams.splice(i,1)
+      }else{
+        message.message = "Erro ao deletar vestibular"
+        message.type = TypeMessage.ERROR
+      }
+      this.validationModule.setValidation(message)
+
+    })
   }
 
   addExam() {
     this.examModule.setRegisterStatus(RegisterStatus.INSERT)
     this.examModule.setExam(new Exam())
     this.examModule.setDialog(true)
+  }
+
+  created(){
+    this.examModule.findAll()
   }
 }
 </script>

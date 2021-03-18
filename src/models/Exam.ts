@@ -2,7 +2,7 @@ import Institution from '@/models/Institution'
 import DisciplineRule from '@/models/DisciplineRule'
 
 export default class Exam {
-    public id: number
+    public id: string
     public title: string
     public year: number
     public book: string
@@ -13,7 +13,7 @@ export default class Exam {
     public disciplinesRules: DisciplineRule []
 
     constructor() {
-      this.id = 0
+      this.id = null
       this.title = ''
       this.year = 0
       this.book = ''

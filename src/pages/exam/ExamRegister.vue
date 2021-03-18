@@ -3,7 +3,7 @@
     <v-card class="form-group">
       <v-card-title class="headline teal lighten-2 white--text">{{ isInsert? 'Cadastro de Vestibular' : 'Atualização Vestibular' }}</v-card-title>
       <v-card-text class="mt-5">
-        <v-form v-model="valid">
+        <v-form v-model="valid" ref="formExam" lazy-validation>
           <v-row>
             <v-col>
               <v-text-field
@@ -25,7 +25,8 @@
                 label="Ano do vestibular"
                 outlined
                 dense
-              />
+              >
+              </v-autocomplete>
             </v-col>
           </v-row>
           <v-row>
@@ -43,7 +44,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-select 
+              <v-select
                v-model="exam.semester"
                :items="items"
                 :rules="[
@@ -51,7 +52,13 @@
                 outlined
                 dense
                 label="Semestre do vestibular"
-              />
+              >
+                <template v-slot:selection="{ index }">
+                  <span class="pink--text">
+                    {{ exam.semester }}º Semestre
+                  </span>
+                </template>
+              </v-select>
             </v-col>
             <v-col>
               <v-select
@@ -61,7 +68,13 @@
                 outlined
                 dense
                 label="Fase vestibular"
-               />
+              >
+                <template v-slot:selection="{ index }">
+                  <span class="pink--text">
+                    {{ exam.phase }}º Fase
+                  </span>
+                </template>
+              </v-select>
             </v-col>
           </v-row>
           <v-row>
@@ -112,6 +125,7 @@
               :key="i"
               class="text-center"
             >
+
               <td>{{ rule.discipline.name }}</td>
               <td>{{ rule.numberOfQuestions }}</td>
               <td class="ml-5">
@@ -131,11 +145,12 @@
       <v-card-actions>
         <v-row align="center" justify="center">
           <v-col cols="4" align-self="end">
-            <v-btn block color="primary" class="white--text" :disabled="!validForm"
+            <v-btn block color="primary" class="white--text"
                    @click="save">
               {{ isInsert ? 'Salvar' : 'Atualizar' }}
             </v-btn>
           </v-col>
+
           <v-col cols="4" align-self="start">
             <v-btn :disabled="!validateUpdateAction" block color="secondary" class="white--text" @click="cancel()">
               Cancelar
@@ -144,6 +159,7 @@
         </v-row>
       </v-card-actions>
     </v-card>
+
   </v-container>
 </template>
 
@@ -171,7 +187,7 @@ export default class ExamRegister extends Vue {
   examModule = getModule(ExamModule, this.$store)
   institutionModule = getModule(InstitutionModule, this.$store)
   validationMessageModule = getModule(ValidationMessageModule, this.$store)
-  items = ['1','2']
+  items = [1,2]
   validInstitution: boolean = false
   valid = false
 
@@ -184,12 +200,17 @@ export default class ExamRegister extends Vue {
     return this.examModule.registerStatus === RegisterStatus.INSERT
   }
 
-  get validForm(): boolean {
-    return this.valid && this.validInstitution && this.exam.disciplinesRules.length > 0 
-  }
-
   constructor() {
     super()
+  }
+
+  //Os s' armazenam o status dos formularios
+  validateForm(): Boolean{
+    let s1 = this.$refs.formExam.validate()
+    let s2 = this.validInstitution
+    let s3 = this.exam.disciplinesRules.length > 0;
+
+    return s1 && s2 && s3;
   }
 
   get years() {
@@ -229,15 +250,27 @@ export default class ExamRegister extends Vue {
   }
 
   save() {
+    if(!this.validateForm())
+      return
+
+    const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
+
+    console.log(this.exam)
     if(this.examModule.registerStatus == RegisterStatus.INSERT){
-      this.examModule.save()
-      const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
-      console.log('novo exam', this.exam)
+      this.examModule.save().then(res=>{
+        if(!(res.status == 201)){
+          v.message = "Erro ao salvar vestibular"
+          v.type = TypeMessage.ERROR
+        }
+      })
+
+    }else{
+      v.message = "Vestibular atualizado com sucesso"
     }
-    const v = new ValidationMessage('Vestibular atualizado com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
 
     this.validationMessageModule.setValidation(v)
     this.examModule.setDialog(false)
+    this.examModule.findAll()
   }
 
   get validateUpdateAction(): boolean{

@@ -1,5 +1,5 @@
 <template>
-  <v-form v-model="valid"  >
+  <v-form v-model="valid" ref="formInstitution" lazy-validation>
     <v-autocomplete
       v-model="institutions"
       :items="items"
@@ -10,6 +10,7 @@
       dense
       @change="handleValid()"
       return-object
+      auto-select-first
     />
   </v-form>
 </template>
@@ -27,23 +28,28 @@ import Institution from '../../models/Institution'
 export default class Institutions extends Vue {
   institutionModule = getModule(InstitutionModule, this.$store)
   @VModel() institutions!: any
-  valid: boolean = false
+  valid: boolean = true
 
   get items() {
     return this.institutionModule.institutions
   }
 
-
   @Emit('valid')
   handleValid(){
+    this.validate()
     return this.valid
-
   }
-
   created() {
     this.institutionModule.findAll()
   }
 
+  validate(){
+    this.valid = this.$refs.formInstitution.validate()
+  }
+
+  mounted(){
+    this.handleValid()
+  }
 }
 </script>
 

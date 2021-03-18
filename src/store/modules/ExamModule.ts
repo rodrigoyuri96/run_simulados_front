@@ -3,6 +3,7 @@ import Discipline from "@/models/Discipline"
 import Exam from '@/models/Exam'
 import DisciplineRule from '@/models/DisciplineRule'
 import { RegisterStatus } from '@/models/RegisterStatus'
+import Axios from "@/plugins/Axios"
 
 @Module({ name: 'ExamModule', namespaced: true })
 export class ExamModule extends VuexModule {
@@ -111,44 +112,36 @@ export class ExamModule extends VuexModule {
       this.disciplinesRules[this._index] = newValue
     }
 
-    @Action({ commit:'_addToExams' })
+    @Action
     save() {
-      return this.exam
+      return new Promise(((resolve, reject) => {
+        Axios.post("/vestibulares", this.exam).then(res=>{
+          resolve(res)
+        }).catch(error=>{
+          console.log("erro: ", error)
+          reject(null)
+        })
+      }))
     }
 
-    @Action({ commit: '_setExams' })
+    @Action
     findAll() {
-      const e1 = new Exam()
+      Axios.get('/vestibulares').then(res=>{
+        this._setExams(res.data)
+      })
+    }
 
-      e1.title = 'FUVEST - 1 Semestre/2019'
-      e1.id = 1
-      e1.obs = 'Questões 3 e 4 anuladas'
-      e1.book = 'Caderno 2'
-      e1.year = 2019
-      e1.semester = 2
-      e1.phase = 1
-      const dr1 = new DisciplineRule()
-      const d1 = new Discipline()
-
-      d1.id = 1
-      d1.name = 'Matematica'
-      dr1.discipline = d1
-      dr1.numberOfQuestions = 10
-      const dr2 = new DisciplineRule()
-      const d2 = new Discipline()
-
-      d2.id = 2
-      d2.name = 'Geografia'
-      dr2.discipline = d2
-      dr2.numberOfQuestions = 10
-      e1.disciplinesRules.push(dr1, dr2)
-      const exams: Exam[] = []
-
-      exams.push(e1)
-      console.log('VESTIBULARES', exams)
-
-      return exams
-
+    @Action
+    delete(){
+      return new Promise((resolve, reject) => {
+        Axios.delete('/vestibulares/' + this.exam.id).then(res=>{
+          if(res.status == 200){
+              resolve(true)
+          }
+        }).catch(error=>{
+          reject(false)
+        })
+      })
     }
 
 }

@@ -93,7 +93,7 @@
 <script lang="ts">
 import { Vue, Component, Emit } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { QuestionRegisterModule } from "@/store/modules/QuestionModule";
+import { QuestionModule } from "@/store/modules/QuestionModule";
 import QuestionRegister from "../../models/QuestionRegister";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunExams from "@/components/run/exam/Exams.vue";
@@ -112,7 +112,7 @@ import RunOption from "@/components/run/question/options/Options.vue";
   }})
 export default class QuestionRegisters extends Vue {
 
-  questionRegisterModule = getModule(QuestionRegisterModule, this.$store);
+  questionRegisterModule = getModule(QuestionModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
   content: String = ""
   dialog: Boolean = false

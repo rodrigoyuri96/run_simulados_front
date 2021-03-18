@@ -26,9 +26,6 @@
               </v-col>
            </v-row>
            <v-row>
-             <v-col cols="2">
-             <h3 class="text-right">{{event.discipline.name}}:</h3>
-              </v-col>
               <v-col>
                 <tags></tags>
               </v-col>

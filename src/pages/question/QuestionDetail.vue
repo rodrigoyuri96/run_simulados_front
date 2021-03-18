@@ -5,7 +5,7 @@
             <v-card-text>
                 <v-row>
                     <v-col cols="6">
-                        <exam></exam> 
+                        <exam></exam>
                     </v-col>
                     <v-col cols="6">
                         <disciplines></disciplines>
@@ -14,7 +14,7 @@
                 <v-row>
                     <v-col cols="6">
                         <v-text-field
-                            v-model="numberQuestion" 
+                            v-model="numberQuestion"
                             outlined
                             label="Número da Questão"
                             dense />
@@ -30,8 +30,8 @@
                 </v-row>
                 <v-row>
                     <v-col>
-                        <h3>Questão {{numberQuestion}} 
-                            <v-icon 
+                        <h3>Questão {{numberQuestion}}
+                            <v-icon
                                 class="ml-3"
                                 :color="isChecked ? 'green' : 'red'"
                             >{{ isChecked ? 'mdi-check-circle' : 'mdi-cancel' }}</v-icon>
@@ -45,9 +45,9 @@
                     <v-col cols="10">
                         <v-chip
                             v-for="(subjects, i) in subjectsSelected " :key="i"
-                            class="ma-2" 
+                            class="ma-2"
                             :color="colorRandom()"
-                            outlined 
+                            outlined
                             >{{subjects.name}}</v-chip>
                     </v-col>
                 </v-row>
@@ -67,7 +67,8 @@
 
 <script lang="ts">
 
-import { Component, Vue } from 'vue-property-decorator'
+import
+{ Component, Vue } from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { OptionModule } from "@/store/modules/OptionModule"
 import { SubjectModule } from "@/store/modules/SubjectModule"
@@ -76,16 +77,16 @@ import Subjects from "@/components/run/Subjects.vue"
 import Disciplines from "@/components/run/Disciplines.vue"
 import Exam from "@/components/run/exam/Exams.vue"
 import RunQuestion from "@/components/run/question/Question.vue"
- 
+
 
 @Component({
     name: "QuestionDetail",
-    components: { 
-        QuestionDetail, 
-        Subjects, 
-        Disciplines, 
+    components: {
+        QuestionDetail,
+        Subjects,
+        Disciplines,
         Exam,
-        RunQuestion 
+        RunQuestion
     }
 })
 
@@ -99,8 +100,8 @@ export default class QuestionDetail extends Vue {
     private numberQuestion: Number = 0
     private isChecked: Boolean = false
     private question: String = `
-      <p style="font-size: 17px">Dentre os vários Reinos Bárbaros que se formaram na Europa, após a queda do Império Romano Ocidental, 
-      um teve grande destaque, em virtude de personagens como Clóvis e Carlos Magno. O grupo Germano organizador 
+      <p style="font-size: 17px">Dentre os vários Reinos Bárbaros que se formaram na Europa, após a queda do Império Romano Ocidental,
+      um teve grande destaque, em virtude de personagens como Clóvis e Carlos Magno. O grupo Germano organizador
       de tal reino foi o dos:</p><img src='teste.jpg'>`
 
     get option() {
@@ -140,7 +141,7 @@ export default class QuestionDetail extends Vue {
         console.log(this.colorRandom())
     }
 
-   
+
 
 }
 </script>

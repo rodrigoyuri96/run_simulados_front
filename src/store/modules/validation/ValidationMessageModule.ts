@@ -1,4 +1,4 @@
-import { Module, Mutation, Action, VuexModule } from 'vuex-module-decorators'
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import ValidationMessage from '@/models/validation/ValidationMessage'
 import { TypeMessage } from '@/models/validation/TypeMessage'
 
@@ -24,8 +24,7 @@ export class ValidationMessageModule extends VuexModule {
     setSnack(newValue: boolean) {
       this._snack = newValue
     }
-
-    @Action({commit: 'setSnack'})
+    @Action({ commit: 'setSnack' })
     openSnack(newValue: boolean) {
       return newValue
     }

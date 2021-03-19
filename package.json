@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "dev": "npm run serve",
-    "prod":"node server.ts"
+    "start":"node server.ts"
   },
   "dependencies": {
     "animate.css": "^4.1.0",

@@ -1,5 +1,4 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import Discipline from "@/models/Discipline"
 import Exam from '@/models/Exam'
 import DisciplineRule from '@/models/DisciplineRule'
 import { RegisterStatus } from '@/models/RegisterStatus'

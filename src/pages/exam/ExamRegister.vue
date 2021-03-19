@@ -245,6 +245,14 @@ export default class ExamRegister extends Vue {
     return this.examModule.disciplineRulesDialog
   }
 
+  get snack() {
+    return this.validationMessageModule.snack
+  }
+
+  set snack(newValue: boolean) {
+    this.validationMessageModule.setSnack(newValue)
+  }
+
   set dialogDisciplineRules(newValue: boolean) {
     this.examModule.setDisciplineRulesDialog(newValue)
   }
@@ -275,6 +283,7 @@ export default class ExamRegister extends Vue {
     }
 
     this.validationMessageModule.setValidation(v)
+    this.validationMessageModule.openSnack(true)
     this.examModule.setDialog(false)
     this.examModule.findAll()
   }

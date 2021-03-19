@@ -104,8 +104,10 @@ export class OptionModule extends VuexModule {
         return newValue
     }
 
-
-
+    @Action
+    findAll(){
+      return []
+    }
 
 
 }

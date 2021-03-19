@@ -52,7 +52,7 @@ export class SubjectModule extends VuexModule {
 
   @Action
   filterByDiscipline(disciplines: Discipline[]){
-    return new Promise<Discipline[]>( (reject, resolve) =>{
+    return new Promise<Subject[]>( (reject, resolve) =>{
       Axios.get('/assuntos/filtro/disciplinas', {data:disciplines}).then(res=>{
         resolve(res.data)
       }).catch(error=>{

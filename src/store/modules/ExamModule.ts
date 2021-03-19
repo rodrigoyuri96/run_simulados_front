@@ -3,6 +3,7 @@ import Exam from '@/models/Exam'
 import DisciplineRule from '@/models/DisciplineRule'
 import { RegisterStatus } from '@/models/RegisterStatus'
 import Axios from "@/plugins/Axios"
+import { AxiosResponse } from 'axios'
 
 @Module({ name: 'ExamModule', namespaced: true })
 export class ExamModule extends VuexModule {
@@ -113,7 +114,7 @@ export class ExamModule extends VuexModule {
 
     @Action
     save() {
-      return new Promise(((resolve, reject) => {
+      return new Promise<AxiosResponse>(((resolve, reject) => {
         Axios.post("/vestibulares", this.exam).then(res=>{
           resolve(res)
         }).catch(error=>{
@@ -132,7 +133,7 @@ export class ExamModule extends VuexModule {
 
     @Action
     delete(){
-      return new Promise((resolve, reject) => {
+      return new Promise<Boolean>((resolve, reject) => {
         Axios.delete('/vestibulares/' + this.exam.id).then(res=>{
           if(res.status == 200){
               resolve(true)

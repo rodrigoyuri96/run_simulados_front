@@ -27,7 +27,7 @@
            </v-row>
            <v-row>
               <v-col>
-                <tags></tags>
+                <run-tag v-model="event.subjects"></run-tag>
               </v-col>
            </v-row>
         </v-form>
@@ -54,16 +54,16 @@ import {Component, Vue} from "vue-property-decorator";
 import RunInstitution from "@/components/run/Institutions.vue";
 import {TagModule} from "@/store/modules/TagModule"
 import {getModule} from "vuex-module-decorators";
-import Tags from "@/components/run/Tags.vue"
+import RunTag from "@/components/run/Tags.vue"
 import {EventModule} from "@/store/modules/EventModule";
 import { DateUtil } from "@/util/date"
 
 @Component({
-  name: "ExamRegister",
-  components: {RunInstitution, Tags}
+  name: "EventReview",
+  components: {RunInstitution, RunTag}
 })
 
-export default class ExamRegister extends Vue{
+export default class EventReview extends Vue{
 
   tagModule = getModule(TagModule, this.$store)
   eventModule = getModule(EventModule, this.$store)

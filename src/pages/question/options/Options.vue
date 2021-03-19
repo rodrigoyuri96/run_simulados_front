@@ -9,30 +9,30 @@
             <v-col cols="4">
                 <v-radio
                 value="onlyText"
-                color="teal darken-1" 
+                color="teal darken-1"
                 label="Somente Texto"></v-radio>
             </v-col>
             <v-col cols="4">
                 <v-radio
                 value="onlyImage"
-                color="teal darken-1" 
+                color="teal darken-1"
                 label="Somente Imagens"></v-radio>
             </v-col>
             <v-col cols="4">
                 <v-radio
-                class="mt-1" 
-                color="teal darken-1" 
+                class="mt-1"
+                color="teal darken-1"
                 label="Tipo Tabela"></v-radio>
             </v-col>
         </v-radio-group>
     </v-row>
     <v-divider></v-divider>
     <v-row justify="end">
-       <v-btn 
+       <v-btn
       class="mr-2 mt-6 mb-3"
       style="color: white"
       color="primary"
-      @click="addOption()" 
+      @click="addOption()"
       >Adicionar Opção
       <v-icon class="ml-2">mdi-plus</v-icon>
       </v-btn>
@@ -63,7 +63,7 @@
         <tr v-for="(option, i) in options" :key="i">
           <td>{{option.description}}</td>
           <td class="text-center">
-            <v-icon 
+            <v-icon
             :color="option.isCorrectAnswer ? 'green darken-1' : 'red darken-1'" >
               {{option.isCorrectAnswer ? 'mdi-check' : 'mdi-cancel'}}
             </v-icon>
@@ -80,7 +80,7 @@
           </td>
         </tr>
       </tbody>
-    </template> 
+    </template>
   </v-simple-table>
         </v-col>
     </v-row>
@@ -96,7 +96,7 @@ import OnlyText from "@/pages/question/options/OnlyText.vue"
 import {Component,  Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
 import {OptionModule} from '@/store/modules/OptionModule'
-import Option from '@/models/Option'
+import Option from '@/models/question/Option'
 
 @Component({
   components: { OnlyText, OnlyImage }
@@ -106,7 +106,7 @@ export default class Options extends Vue {
 
   private optionStore = getModule(OptionModule, this.$store)
   optionType: String = "onlyText"
- 
+
  get options() {
    return this.optionStore.options
  }
@@ -143,7 +143,7 @@ export default class Options extends Vue {
 
   created() {
     this.optionStore.findAll()
-   
+
   }
 }
 

@@ -178,6 +178,7 @@ import {ValidationMessageModule} from '@/store/modules/validation/ValidationMess
 import ValidationMessage from '@/models/validation/ValidationMessage'
 import {TypeMessage} from '@/models/validation/TypeMessage'
 import {RegisterStatus} from '@/models/RegisterStatus'
+import {RunForm} from "@/commons/RunForm";
 
 @Component({
   name: 'ExamRegister',
@@ -204,14 +205,19 @@ export default class ExamRegister extends Vue {
     super()
   }
 
+  get form(): RunForm{
+    return this.$refs.formExam as RunForm
+  }
+
   //Os s' armazenam o status dos formularios
   validateForm(): Boolean{
-    let s1 = this.$refs.formExam.validate()
+    let s1 = this.form.validate()
     let s2 = this.validInstitution
     let s3 = this.exam.disciplinesRules.length > 0;
 
     return s1 && s2 && s3;
   }
+
 
   get years() {
     const years = []
@@ -273,8 +279,8 @@ export default class ExamRegister extends Vue {
     this.examModule.findAll()
   }
 
-  get validateUpdateAction(): boolean{
-    return this.examModule.registerStatus == RegisterStatus.UPDATE? this.validForm : true
+  get validateUpdateAction(): Boolean{
+    return this.examModule.registerStatus == RegisterStatus.UPDATE? this.validateForm() : new Boolean(true)
   }
 
   updateRule(index: number) {

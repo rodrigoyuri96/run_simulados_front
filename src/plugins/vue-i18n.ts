@@ -21,6 +21,4 @@ export const i18n = new VueI18n({
   messages
 })
 
-i18n.locales = availableLocales
-
 export default i18n

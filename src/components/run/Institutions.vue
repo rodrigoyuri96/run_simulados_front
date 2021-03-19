@@ -19,7 +19,7 @@
 import { Vue, Component, VModel, Emit } from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { InstitutionModule } from '@/store/modules/InstitutionModule'
-import Institution from '../../models/Institution'
+import type {RunForm} from "@/commons/RunForm"
 
 @Component({
   name: 'Institutions'
@@ -34,6 +34,10 @@ export default class Institutions extends Vue {
     return this.institutionModule.institutions
   }
 
+  get form():RunForm{
+    return this.$refs.formInstitution as RunForm
+  }
+
   @Emit('valid')
   handleValid(){
     this.validate()
@@ -44,7 +48,7 @@ export default class Institutions extends Vue {
   }
 
   validate(){
-    this.valid = this.$refs.formInstitution.validate()
+    this.valid = this.form.validate()
   }
 
   mounted(){

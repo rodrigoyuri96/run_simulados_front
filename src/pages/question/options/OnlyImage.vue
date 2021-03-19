@@ -1,15 +1,15 @@
 <template>
   <v-dialog
-    id="OnlyImage" 
-    transition="dialog-bottom-transition" 
+    id="OnlyImage"
+    transition="dialog-bottom-transition"
     max-width="600"
     v-model="dialog"
     >
     <template v-slot:default="dialog">
       <v-card>
-        <v-toolbar 
+        <v-toolbar
         color="primary"
-        style="color: white" 
+        style="color: white"
         >
         <v-card-title>Opção Somente Imagens</v-card-title>
         </v-toolbar>
@@ -26,9 +26,9 @@
           <v-row>
             <v-col cols="12">
           <v-sheet class="pa-3">
-            <v-skeleton-loader 
-            class="mx-auto" 
-            max-width="300" 
+            <v-skeleton-loader
+            class="mx-auto"
+            max-width="300"
             type="card"
             ></v-skeleton-loader>
           </v-sheet>
@@ -36,13 +36,13 @@
           </v-row>
         </v-card-text>
         <v-card-actions class="justify-end">
-          <v-btn 
-          text 
+          <v-btn
+          text
           color="green"
-          >Salvar</v-btn>  
-          <v-btn 
-          text 
-          color="primary" 
+          >Salvar</v-btn>
+          <v-btn
+          text
+          color="primary"
           @click="dialog.value = false"
           >Cancelar</v-btn>
         </v-card-actions>
@@ -56,12 +56,9 @@
 import {Component, Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
 import {OptionModule} from '@/store/modules/OptionModule'
-import Option from '@/models/Option'
-import Options from './Options.vue'
 
-@Component({  })
-
-export default class OnlyText extends Vue {
+@Component({ name: 'OnlyImage' })
+export default class OnlyImage extends Vue {
 
   optionModule = getModule(OptionModule, this.$store)
 

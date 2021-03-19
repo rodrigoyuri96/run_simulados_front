@@ -58,7 +58,7 @@ import Teste from "@/components/run/question/options/teste.vue";
 })
 export default class OptionTable extends Vue{
   @Prop({type:Boolean}) imageHeaderFlag!: Boolean
-  header: [] = []
+  header: any[] = []
   contentHeader: String = ""
   files: [] = []
 
@@ -66,7 +66,7 @@ export default class OptionTable extends Vue{
     if(this.imageHeaderFlag){
       this.files.forEach(file=>{
         FirebaseStorageService.uploadImage('header/option/212/', FirebaseStorageService.generateFileName('header'), file)
-        .then(url=>{
+        .then((url: any)=>{
           this.header.push(url)
         })
       })

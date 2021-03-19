@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import {Vue, Component, VModel} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import {TagModule}  from  "@/store/modules/TagModule";
 import { SubjectModule } from "@/store/modules/SubjectModule";
@@ -26,27 +26,19 @@ import Subject from "@/models/Subject";
     components: {RunSubjects},
 })
 export default class Tags extends Vue {
-tagModule = getModule(TagModule, this.$store);
-subjectModule = getModule(SubjectModule, this.$store);
-
-  private generatorColor: String = "1234567890ABCDEF";
+   tagModule = getModule(TagModule, this.$store);
+   subjectModule = getModule(SubjectModule, this.$store);
+   generatorColor: String = "1234567890ABCDEF";
    chip: boolean = true;
+   @VModel({type: Array}) subjectsSelected!:[]
 
 
   get subjects(){
     return this.subjectModule.subjects
   }
 
-  get subjectsSelected(){
-    return this.subjectModule.subjectsSelected
-  }
-
  set subjects(subjects: Subject[]) {
    this.subjectModule.setSubjects(subjects)
- }
-
- set subjectsSelected(subjects: Subject[]){
-   this.subjectModule.setSubjectsSelected(subjects)
  }
 
  deleteTag(index: number){

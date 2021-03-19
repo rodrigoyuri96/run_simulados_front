@@ -43,12 +43,7 @@
                         <h3 class="ma-3">Matemática:</h3>
                     </v-col>
                     <v-col cols="10">
-                        <v-chip
-                            v-for="(subjects, i) in subjectsSelected " :key="i"
-                            class="ma-2"
-                            :color="colorRandom()"
-                            outlined
-                            >{{subjects.name}}</v-chip>
+                        <run-tags v-model="subjectsSelected"></run-tags>
                     </v-col>
                 </v-row>
                 <run-question :card="true" />
@@ -68,7 +63,7 @@
 <script lang="ts">
 
 import
-{ Component, Vue } from 'vue-property-decorator'
+{Component, VModel, Vue} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { OptionModule } from "@/store/modules/OptionModule"
 import { SubjectModule } from "@/store/modules/SubjectModule"
@@ -77,7 +72,8 @@ import Subjects from "@/components/run/Subjects.vue"
 import Disciplines from "@/components/run/Disciplines.vue"
 import Exam from "@/components/run/exam/Exams.vue"
 import RunQuestion from "@/components/run/question/Question.vue"
-
+import RunTags from "@/components/run/Tags.vue";
+import Subject from "@/models/Subject";
 
 @Component({
     name: "QuestionDetail",
@@ -86,12 +82,13 @@ import RunQuestion from "@/components/run/question/Question.vue"
         Subjects,
         Disciplines,
         Exam,
-        RunQuestion
+        RunQuestion,
+        RunTags
     }
 })
 
 export default class QuestionDetail extends Vue {
-
+    @VModel({type:Array}) subjectsSelected!: Subject[]
     private subjectStore = getModule(SubjectModule, this.$store)
     private optionModule = getModule(OptionModule, this.$store)
     private disciplineModule = getModule(DisciplineModule, this.$store)
@@ -114,10 +111,6 @@ export default class QuestionDetail extends Vue {
 
     get subjects() {
       return this.subjectStore.subjects
-    }
-
-    get subjectsSelected() {
-      return this.subjectStore.subjectsSelected
     }
 
     get disciplines() {

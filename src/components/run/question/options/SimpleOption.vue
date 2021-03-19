@@ -36,7 +36,7 @@ export default class SimpleOption extends Vue {
   @Prop({type:Boolean, default:false}) imageFlag!:Boolean
   files: [] = []
   description: String = ""
-  descriptions: String[] = []
+  descriptions: any[] = []
   valid: Boolean = false
 
   get options(){
@@ -53,7 +53,7 @@ export default class SimpleOption extends Vue {
         this.options.forEach(opt=>{
           FirebaseStorageService.deleteImage(opt.description)
             .then(res=>{
-              this.descriptions.slice(opt, 1)
+              this.descriptions.slice(this.options.indexOf(opt), 1)
               this.options = []
               console.log("sucesso ao deletar imagem: ", res , this.options)
             })

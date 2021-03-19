@@ -1,13 +1,13 @@
 <template>
   <v-dialog
-    id="onlyText" 
+    id="onlyText"
     v-model="openDialog"
-    transition="dialog-bottom-transition" 
+    transition="dialog-bottom-transition"
     max-width="600">
     <template >
       <v-card>
-        <v-toolbar 
-        color="primary" 
+        <v-toolbar
+        color="primary"
         style="color: white"
         >
         <v-card-title>Opção Somente Texto</v-card-title>
@@ -26,14 +26,14 @@
           </v-row>
             <v-row>
             <v-col cols="12">
-              <v-form 
+              <v-form
               class="form-group"
               v-model="valid"
               >
-              <v-textarea 
-              v-model="option.description" 
+              <v-textarea
+              v-model="option.description"
               outlined
-              :rules="[e => !!e || 'Campo Obrigatório'  ]" 
+              :rules="[e => !!e || 'Campo Obrigatório'  ]"
               label="Descrição"
               >
               </v-textarea>
@@ -42,15 +42,15 @@
             </v-row>
         </v-card-text>
         <v-card-actions class="justify-end">
-          <v-btn 
+          <v-btn
           text
           color="green"
           :disabled="!valid"
           @click="saveOption()"
           >Salvar</v-btn>
-          <v-btn 
-          text 
-          color="primary" 
+          <v-btn
+          text
+          color="primary"
           @click="cancel()"
           >Cancelar</v-btn>
         </v-card-actions>
@@ -64,11 +64,11 @@
 import {Component, Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
 import {OptionModule} from '@/store/modules/OptionModule'
-import Option from '@/models/Option'
-import Options from './Options.vue'
+import Option from '@/models/question/Option'
 
-@Component({  })
-
+@Component({
+  name: 'OnlyText'
+})
 export default class OnlyText extends Vue {
 
  private optionStore = getModule( OptionModule, this.$store )
@@ -97,7 +97,7 @@ export default class OnlyText extends Vue {
      this.optionStore.saveOption()
      this.optionStore.openDialog(false)
    }
-  
+
  }
 
  cancel() {
@@ -105,7 +105,7 @@ export default class OnlyText extends Vue {
  }
 
 
- 
+
 }
 
 </script>

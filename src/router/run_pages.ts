@@ -1,6 +1,9 @@
 export default [{
   path: '/cadastro-vestibular',
   name: 'cadastro-vestibular',
+  meta:{
+    profile: 'CLIENT'
+  },
   component: () => import('@/pages/exam/ExamList.vue'),
 },
   {

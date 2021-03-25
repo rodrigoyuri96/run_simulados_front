@@ -3,7 +3,7 @@
     <v-card class="form-group">
       <v-card-title class="headline teal lighten-2 white--text">{{ isInsert? 'Cadastro de Vestibular' : 'Atualização Vestibular' }}</v-card-title>
       <v-card-text class="mt-5">
-        <v-form v-model="valid" ref="formExam" lazy-validation>
+        <v-form v-model="valid" ref="formExam">
           <v-row>
             <v-col>
               <v-text-field
@@ -25,13 +25,12 @@
                 label="Ano do vestibular"
                 outlined
                 dense
-              >
-              </v-autocomplete>
+              />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="8">
-              <run-institution v-model="exam.institution" @valid="validInstitution = $event"/>
+              <run-institution v-model="exam.institution" @valid="validInstitution = $event" :rules="[i=> !!i || 'Campo obrigatório']"/>
             </v-col>
             <v-col cols="4">
               <v-text-field
@@ -145,7 +144,9 @@
       <v-card-actions>
         <v-row align="center" justify="center">
           <v-col cols="4" align-self="end">
-            <v-btn block color="primary" class="white--text"
+            <v-btn block color="primary"
+                   class="white--text"
+                   :disabled="!isValid"
                    @click="save">
               {{ isInsert ? 'Salvar' : 'Atualizar' }}
             </v-btn>
@@ -165,6 +166,7 @@
 
 <script lang="ts">
 
+import vue from 'vue'
 import {Component, Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
 import {ExamModule} from '@/store/modules/ExamModule'
@@ -178,7 +180,8 @@ import {ValidationMessageModule} from '@/store/modules/validation/ValidationMess
 import ValidationMessage from '@/models/validation/ValidationMessage'
 import {TypeMessage} from '@/models/validation/TypeMessage'
 import {RegisterStatus} from '@/models/RegisterStatus'
-import {RunForm} from "@/commons/RunForm";
+import type {VForm} from "@/commons/RunForm.ts"
+
 
 @Component({
   name: 'ExamRegister',
@@ -201,17 +204,21 @@ export default class ExamRegister extends Vue {
     return this.examModule.registerStatus === RegisterStatus.INSERT
   }
 
+  get isValid(){
+    console.log("valid", this.valid)
+    console.log("validInstitution", this.validInstitution)
+    console.log("dr", this.exam.disciplinesRules)
+    return this.valid && this.validInstitution && this.exam.disciplinesRules.length > 0
+  }
+
   constructor() {
     super()
   }
 
-  get form(): RunForm{
-    return this.$refs.formExam as RunForm
-  }
-
   //Os s' armazenam o status dos formularios
   validateForm(): Boolean{
-    let s1 = this.form.validate()
+    let f: any = this.$refs.formExam
+    let s1 = f.validate()
     let s2 = this.validInstitution
     let s3 = this.exam.disciplinesRules.length > 0;
 
@@ -256,8 +263,9 @@ export default class ExamRegister extends Vue {
   }
 
   save() {
-    if(!this.validateForm())
-      return
+    if(!this.validateForm()){
+      console.log("formulário inválido")
+    }
 
     const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
 
@@ -280,7 +288,7 @@ export default class ExamRegister extends Vue {
   }
 
   get validateUpdateAction(): Boolean{
-    return this.examModule.registerStatus == RegisterStatus.UPDATE? this.validateForm() : new Boolean(true)
+     return this.examModule.registerStatus == RegisterStatus.UPDATE? this.validateForm() : new Boolean(true)
   }
 
   updateRule(index: number) {

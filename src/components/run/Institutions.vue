@@ -1,9 +1,9 @@
 <template>
-  <v-form v-model="valid" ref="formInstitution" lazy-validation>
+  <v-form v-model="valid">
     <v-autocomplete
       v-model="institutions"
       :items="items"
-      :rules="[v=> !!v || 'campo obrigatório']"
+      :rules="rules"
       item-text="name"
       outlined
       label="instituições"
@@ -16,10 +16,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, VModel, Emit } from 'vue-property-decorator'
+import {Vue, Component, VModel, Emit, Prop} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { InstitutionModule } from '@/store/modules/InstitutionModule'
-import type {RunForm} from "@/commons/RunForm"
+import Institution from "@/models/Institution";
 
 @Component({
   name: 'Institutions'
@@ -27,28 +27,20 @@ import type {RunForm} from "@/commons/RunForm"
 })
 export default class Institutions extends Vue {
   institutionModule = getModule(InstitutionModule, this.$store)
-  @VModel() institutions!: any
-  valid: boolean = true
+  @VModel({type: Institution, default: null}) institutions: any
+  @Prop({type:Array}) rules: any[]
+  valid: boolean = false
 
   get items() {
     return this.institutionModule.institutions
   }
 
-  get form():RunForm{
-    return this.$refs.formInstitution as RunForm
-  }
-
   @Emit('valid')
   handleValid(){
-    this.validate()
     return this.valid
   }
   created() {
     this.institutionModule.findAll()
-  }
-
-  validate(){
-    this.valid = this.form.validate()
   }
 
   mounted(){

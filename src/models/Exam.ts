@@ -18,7 +18,7 @@ export default class Exam {
       this.year = 0
       this.book = ''
       this.obs = ''
-      this.institution = new Institution()
+      this.institution = null
       this.disciplinesRules = []
     }
 }

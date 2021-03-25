@@ -1,5 +1,3 @@
-import Vue from 'vue'
+import Vue from "vue"
 
-type RunForm = Vue & { validate: () => boolean }
-
-export type {RunForm}
+export type VForm = Vue & { validate: () => boolean }

@@ -207,7 +207,7 @@ export default class ExamRegister extends Vue {
   get isValid(){
     console.log("valid", this.valid)
     console.log("validInstitution", this.validInstitution)
-    console.log("dr", this.exam.disciplinesRules)
+    console.log("dr", this.examModule.disciplinesRules)
     return this.valid && this.validInstitution && this.exam.disciplinesRules.length > 0
   }
 

@@ -40,7 +40,6 @@ export default class Institutions extends Vue {
 
   @Emit('valid')
   handleValid(){
-    this.validate()
     return this.valid
   }
   created() {

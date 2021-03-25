@@ -50,10 +50,14 @@ export class SubjectModule extends VuexModule {
       })
     }
 
+
+
+
   @Action
   filterByDiscipline(disciplines: Discipline[]){
-    return new Promise<Subject[]>( (reject, resolve) =>{
-      Axios.get('/assuntos/filtro/disciplinas', {data:disciplines}).then(res=>{
+    return new Promise<Discipline[]>( (reject, resolve) =>{
+      Axios.post('/assuntos/filtro/disciplinas', disciplines).then(res=>{
+        this.context.commit('SubjectModule/setSubjects', res.data, {root: true})
         resolve(res.data)
       }).catch(error=>{
         reject([])

@@ -1,7 +1,7 @@
 <template>
   <v-row >
-      <v-col align="center" style="color:red; font-size: 15px; font-weight: bold;">
-        <span v-for="(error, i) in errors" :key=i>{{error}}<br></span>
+      <v-col align="right" style="color:red; font-size: 12px; font-weight: bold;">
+        <span v-for="(error, i) in errors" :key=i><v-icon style="color: red" small>mdi-alert</v-icon> {{error}}<br><br></span>
       </v-col>
   </v-row>
 </template>

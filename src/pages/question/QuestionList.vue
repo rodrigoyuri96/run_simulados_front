@@ -152,7 +152,7 @@ export default class QuestionList extends Vue {
   deleteQuestion() {
     this.questionRegisterModule.questions.splice(this.index, 1);
     this.openRemoveDialog = false
-    this.validationMessageModule.openSnack(true)
+    this.validationMessageModule.setSnack(true)
     const v = new ValidationMessage("Questão removida com sucesso", TypeMessage.SUCCESS, true, "", 3000);
     this.validationMessageModule.setValidation(v);
   }

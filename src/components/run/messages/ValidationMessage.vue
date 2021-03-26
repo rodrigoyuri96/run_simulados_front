@@ -1,7 +1,6 @@
 <template>
   <div class="mt-10">
     <v-snackbar
-      style="font-size: 1.25rem"
       right
       top
       v-model="snack"
@@ -11,7 +10,7 @@
     >
       <b>{{ validation.message }}</b>
     </v-snackbar>
-  </div>  
+  </div>
 </template>
 
 <script lang="ts">

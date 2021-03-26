@@ -270,20 +270,12 @@ export default class ExamRegister extends Vue {
         if(res.status == 201){
           const message = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
           this.validationMessageModule.setValidation(message)
-          this.validationMessageModule.openSnack(true)
+          this.validationMessageModule.setSnack(true)
           this.exam = res.data
           this.examModule.setDialog(false)
           console.log('SNACK', this.snack)
         }
     })
-    /*if(this.examModule.registerStatus == RegisterStatus.INSERT){
-      this.examModule.save()
-      const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
-      console.log('novo exam', this.exam)
-    }
-
-    this.validationMessageModule.setValidation(v)
-    this.examModule.setDialog(false)*/
   }
 
   get validateUpdateAction(): Boolean{

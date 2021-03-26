@@ -24,9 +24,4 @@ export class ValidationMessageModule extends VuexModule {
     setSnack(newValue: boolean) {
       this._snack = newValue
     }
-    @Action({ commit: 'setSnack' })
-    openSnack(newValue: boolean) {
-      return newValue
-    }
-
 }

@@ -53,7 +53,7 @@
                 dense
                 label="Semestre do vestibular"
               >
-                <template v-slot:selection="{ index }">
+                <template v-slot:selection="{  }">
                   <span class="pink--text">
                     {{ exam.semester }}º Semestre
                   </span>
@@ -69,7 +69,7 @@
                 dense
                 label="Fase vestibular"
               >
-                <template v-slot:selection="{ index }">
+                <template v-slot:selection="{  }">
                   <span class="pink--text">
                     {{ exam.phase }}º Fase
                   </span>
@@ -205,18 +205,19 @@ export default class ExamRegister extends Vue {
     super()
   }
 
-  get form(): RunForm{
+  /*get form(): RunForm{
     return this.$refs.formExam as RunForm
-  }
+  }*/
 
   //Os s' armazenam o status dos formularios
-  validateForm(): Boolean{
+
+  /*validateForm(): Boolean{
     let s1 = this.form.validate()
     let s2 = this.validInstitution
     let s3 = this.exam.disciplinesRules.length > 0;
 
     return s1 && s2 && s3;
-  }
+  }*/
 
 
   get years() {
@@ -278,9 +279,9 @@ export default class ExamRegister extends Vue {
     })
   }
 
-  get validateUpdateAction(): Boolean{
+  /*get validateUpdateAction(): Boolean{
     return this.examModule.registerStatus == RegisterStatus.UPDATE? this.validateForm() : new Boolean(true)
-  }
+  }*/
 
   updateRule(index: number) {
     this.examModule.setDisciplineRule(this.examModule.exam.disciplinesRules[index])

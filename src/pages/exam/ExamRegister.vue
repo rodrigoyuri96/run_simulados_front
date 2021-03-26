@@ -53,7 +53,7 @@
                 dense
                 label="Semestre do vestibular"
               >
-                <template v-slot:selection="{ index }">
+                <template v-slot:selection="{  }">
                   <span class="pink--text">
                     {{ exam.semester }}º Semestre
                   </span>
@@ -69,7 +69,7 @@
                 dense
                 label="Fase vestibular"
               >
-                <template v-slot:selection="{ index }">
+                <template v-slot:selection="{  }">
                   <span class="pink--text">
                     {{ exam.phase }}º Fase
                   </span>
@@ -178,7 +178,7 @@ import {ValidationMessageModule} from '@/store/modules/validation/ValidationMess
 import ValidationMessage from '@/models/validation/ValidationMessage'
 import {TypeMessage} from '@/models/validation/TypeMessage'
 import {RegisterStatus} from '@/models/RegisterStatus'
-import {RunForm} from "@/commons/RunForm";
+import axios from '@/plugins/Axios'
 
 @Component({
   name: 'ExamRegister',
@@ -205,18 +205,19 @@ export default class ExamRegister extends Vue {
     super()
   }
 
-  get form(): RunForm{
+  /*get form(): RunForm{
     return this.$refs.formExam as RunForm
-  }
+  }*/
 
   //Os s' armazenam o status dos formularios
-  validateForm(): Boolean{
+
+  /*validateForm(): Boolean{
     let s1 = this.form.validate()
     let s2 = this.validInstitution
     let s3 = this.exam.disciplinesRules.length > 0;
 
     return s1 && s2 && s3;
-  }
+  }*/
 
 
   get years() {
@@ -245,6 +246,14 @@ export default class ExamRegister extends Vue {
     return this.examModule.disciplineRulesDialog
   }
 
+  get snack() {
+    return this.validationMessageModule.snack
+  }
+
+  set snack(newValue: boolean) {
+    this.validationMessageModule.setSnack(newValue)
+  }
+
   set dialogDisciplineRules(newValue: boolean) {
     this.examModule.setDisciplineRulesDialog(newValue)
   }
@@ -256,32 +265,23 @@ export default class ExamRegister extends Vue {
   }
 
   save() {
-    if(!this.validateForm())
-      return
 
-    const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
-
-    console.log(this.exam)
-    if(this.examModule.registerStatus == RegisterStatus.INSERT){
-      this.examModule.save().then(res=>{
-        if(!(res.status == 201)){
-          v.message = "Erro ao salvar vestibular"
-          v.type = TypeMessage.ERROR
+    axios.post('/cadastro-vestibular', this.exam).then((res) => {
+      console.log("RESPOSTA", res.data)
+        if(res.status == 201){
+          const message = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
+          this.validationMessageModule.setValidation(message)
+          this.validationMessageModule.setSnack(true)
+          this.exam = res.data
+          this.examModule.setDialog(false)
+          console.log('SNACK', this.snack)
         }
-      })
-
-    }else{
-      v.message = "Vestibular atualizado com sucesso"
-    }
-
-    this.validationMessageModule.setValidation(v)
-    this.examModule.setDialog(false)
-    this.examModule.findAll()
+    })
   }
 
-  get validateUpdateAction(): Boolean{
+  /*get validateUpdateAction(): Boolean{
     return this.examModule.registerStatus == RegisterStatus.UPDATE? this.validateForm() : new Boolean(true)
-  }
+  }*/
 
   updateRule(index: number) {
     this.examModule.setDisciplineRule(this.examModule.exam.disciplinesRules[index])

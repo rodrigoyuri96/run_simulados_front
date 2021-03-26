@@ -1,4 +1,4 @@
-import {Vue} from "vue/types/vue";
+import Vue from 'vue'
 
 type RunForm = Vue & { validate: () => boolean }
 

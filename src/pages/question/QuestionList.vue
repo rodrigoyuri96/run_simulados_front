@@ -46,7 +46,7 @@
             <v-btn elevation="0" icon>
               <v-icon @click="updateQuestion(i)">mdi-pencil</v-icon>
             </v-btn>
-            <v-btn @click="deleteQuestion(i)" elevation="0" icon>
+            <v-btn @click="removeDialog(i)" elevation="0" icon>
               <v-icon>mdi-delete</v-icon>
             </v-btn>
             <v-btn icon @click="openDialog(true)" >
@@ -62,10 +62,15 @@
       </v-card-text>
     </v-card>
     <div class="text-center">
+
     <v-dialog v-model="modal">
       <run-question :card="false" :content="content" />
     </v-dialog>
+
     </div>
+    <run-remove-dialog 
+      :method="deleteQuestion" 
+      v-model="openRemoveDialog"  />
   </v-container>
 </template>
 
@@ -81,19 +86,22 @@ import ValidationMessage from "@/models/validation/ValidationMessage";
 import RunQuestionRegister from "@/pages/question/QuestionRegister.vue";
 import QuestionRegister from '../../models/QuestionRegister';
 import RunQuestion from '@/components/run/question/Question.vue'
+import RunRemoveDialog from "@/components/run/messages/removeDialog.vue"
+
 
 @Component({
   name: "QuestionList",
-  components: { RunQuestionRegister, RunQuestion }
+  components: { RunQuestionRegister, RunQuestion, RunRemoveDialog }
 })
 export default class QuestionList extends Vue {
 
   questionRegisterModule = getModule(QuestionModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
+  openRemoveDialog = false
+  index = 0
 
   private modal: boolean = false
   content: String = ""
-
 
   icons = {
     mdiDelete,
@@ -108,6 +116,14 @@ export default class QuestionList extends Vue {
     return this.questionRegisterModule.question
   }
 
+  get snack() {
+    return this.validationMessageModule.snack
+  }
+
+  set snack(newValue: boolean) {
+    this.validationMessageModule.setSnack(newValue)
+  }
+
   get dialog() {
     return this.questionRegisterModule.dialog;
   }
@@ -120,6 +136,11 @@ export default class QuestionList extends Vue {
     this.questionRegisterModule.setQuestion(newValue)
   }
 
+  removeDialog(i) {
+    this.index = i
+    this.openRemoveDialog = true
+  }
+
   updateQuestion(i: number) {
     this.questionRegisterModule.setQuestion(this.questionRegisterModule.questions[i])
     this.questionRegisterModule.setRegisterStatus(RegisterStatus.UPDATE)
@@ -128,12 +149,12 @@ export default class QuestionList extends Vue {
     console.log(this.questionRegisterModule.validUpdate)
   }
 
-  deleteQuestion(i: number) {
-    this.questionRegisterModule.questions.splice(i, 1);
+  deleteQuestion() {
+    this.questionRegisterModule.questions.splice(this.index, 1);
+    this.openRemoveDialog = false
+    this.validationMessageModule.setSnack(true)
     const v = new ValidationMessage("Questão removida com sucesso", TypeMessage.SUCCESS, true, "", 3000);
     this.validationMessageModule.setValidation(v);
-
-
   }
 
   addQuestion() {

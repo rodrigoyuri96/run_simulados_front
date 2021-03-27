@@ -52,7 +52,7 @@
                 dense
                 label="Semestre do vestibular"
               >
-                <template v-slot:selection="{ index }">
+                <template v-slot:selection="{  }">
                   <span class="pink--text">
                     {{ exam.semester }}º Semestre
                   </span>
@@ -68,7 +68,7 @@
                 dense
                 label="Fase vestibular"
               >
-                <template v-slot:selection="{ index }">
+                <template v-slot:selection="{  }">
                   <span class="pink--text">
                     {{ exam.phase }}º Fase
                   </span>
@@ -232,6 +232,14 @@ export default class ExamRegister extends Vue {
 
   get dialogDisciplineRules() {
     return this.examModule.disciplineRulesDialog
+  }
+
+  get snack() {
+    return this.validationMessageModule.snack
+  }
+
+  set snack(newValue: boolean) {
+    this.validationMessageModule.setSnack(newValue)
   }
 
   set dialogDisciplineRules(newValue: boolean) {

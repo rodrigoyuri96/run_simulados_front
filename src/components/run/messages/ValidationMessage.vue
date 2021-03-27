@@ -1,16 +1,15 @@
 <template>
   <div class="mt-10">
-    <v-alert
+    <v-snackbar
+      right
+      top
+      v-model="snack"
       v-if="validation.active"
       :type="validation.type"
-      class="transition-swing"
-      transition="scroll-x-reverse-transition"
-      dismissible
-      elevation="24"
-      border="left"
+      :color="validation.type"
     >
-      {{ validation.message }}
-    </v-alert>
+      <b>{{ validation.message }}</b>
+    </v-snackbar>
   </div>
 </template>
 
@@ -18,6 +17,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { ValidationMessageModule } from '@/store/modules/validation/ValidationMessageModule'
+import { TypeMessage } from "@/models/validation/TypeMessage"
 
 @Component({
   name: 'ValidationMessage'
@@ -27,6 +27,10 @@ export default class ValidationMessage extends Vue {
 
   get validation() {
     return this.validationModule.validation
+  }
+
+  get snack() {
+    return this.validationModule.snack
   }
 
   @Watch('validation')

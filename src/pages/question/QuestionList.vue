@@ -1,71 +1,62 @@
 <template>
   <v-container>
-    <v-dialog v-model="dialog">
-      <run-question-register></run-question-register>
-    </v-dialog>
+    <run-question-register v-model="openQuestionRegister" />
     <v-card class="form-group">
-      <v-card-title>Cadastro de Questões</v-card-title>
-      <v-row alignament="center" justify="start" no-gutters>
-        <v-col align-self="start">
-          <v-card-title>Questões</v-card-title>
-        </v-col>
-        <v-spacer></v-spacer>
-        <v-col align-self="end" class="ml-12" md="4">
-          <v-btn class="white--text" color="primary" @click="addQuestion()">
-            Cadastrar Questão
-          </v-btn>
-        </v-col>
-      </v-row>
+      <v-card-title
+        class="headline teal lighten-2 white--text font-weight-regular"
+      >Cadastro de Questões</v-card-title>
       <v-card-text>
-         <v-row>
-        <v-col cols="12">
+        <v-card-actions class="mt-3 mb-3">
+          <v-card-title class="ml-n1">Lista de Questões Cadastradas</v-card-title>
+          <v-spacer></v-spacer>
+          <v-btn class="white--text ml-n1" color="primary" @click="addQuestion()">Cadastrar Questão</v-btn>
+        </v-card-actions>
+
+        <v-row>
+          <v-col cols="12">
             <v-simple-table>
-    <template v-slot:default>
-      <thead>
-        <tr>
-          <th>
-            Vestibular
-          </th>
-          <th class="text-cenet">
-            Disciplina
-          </th>
-          <th class="text-center" >
-            Questão
-          </th>
-          <th class="text-center" >
-              Ações
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(question, i) in questions" :key="i">
-          <td>{{question.exam.title}}</td>
-          <td>{{question.discipline.name}}</td>
-          <td class="text-center" >{{question.numberQuestion}}</td>
-          <td class="text-center">
-            <v-btn elevation="0" icon>
-              <v-icon @click="updateQuestion(i)">mdi-pencil</v-icon>
-            </v-btn>
-            <v-btn @click="deleteQuestion(i)" elevation="0" icon>
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-            <v-btn icon @click="openDialog(true)" >
-              <v-icon>mdi-clipboard-text</v-icon>
-            </v-btn>
-          </td>
-        </tr>
-      </tbody>
-    </template>
-  </v-simple-table>
-        </v-col>
-    </v-row>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th>Vestibular</th>
+                    <th>Ano Vestibular</th>
+                    <th class="text-cenet">Disciplina</th>
+                    <th class="text-center">Questão</th>
+                    <th class="text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(question, i) in questions" :key="i">
+                    <td>{{question.exam.title}}</td>
+                    <td>{{question.exam.year}}</td>
+                    <td>{{question.discipline.name}}</td>
+                    <td class="text-center">{{question.numberQuestion}}</td>
+                    <td class="text-center">
+                      <v-btn elevation="0" icon>
+                        <v-icon @click="updateQuestion(i)">mdi-pencil</v-icon>
+                      </v-btn>
+                      <v-btn @click="removeDialog(i)" elevation="0" icon>
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                      <v-btn icon @click="openQuestion = true">
+                        <v-icon>mdi-clipboard-text</v-icon>
+                      </v-btn>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-card>
-    <div class="text-center">
-    <v-dialog v-model="modal">
-      <run-question :card="false" :content="content" />
-    </v-dialog>
-    </div>
+    <run-question 
+      v-model="openQuestion" 
+      :card="false" 
+      :content="content" />
+    <run-remove-dialog 
+      :method="deleteQuestion" 
+      v-model="openRemoveDialog" />
   </v-container>
 </template>
 
@@ -79,33 +70,44 @@ import { ValidationMessageModule } from "@/store/modules/validation/ValidationMe
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import RunQuestionRegister from "@/pages/question/QuestionRegister.vue";
-import QuestionRegister from '../../models/QuestionRegister';
-import RunQuestion from '@/components/run/question/Question.vue'
+import QuestionRegister from "../../models/QuestionRegister";
+import RunQuestion from "@/components/run/question/Question.vue";
+import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
 
 @Component({
   name: "QuestionList",
-  components: { RunQuestionRegister, RunQuestion }
+  components: { RunQuestionRegister, RunQuestion, RunRemoveDialog }
 })
 export default class QuestionList extends Vue {
-
   questionRegisterModule = getModule(QuestionModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
+  openRemoveDialog = false;
+  index = 0;
+  openQuestionRegister = false;
+  openQuestion = false
 
-  private modal: boolean = false
-  content: String = ""
-
+  private modal: boolean = false;
+  content: String = "";
 
   icons = {
     mdiDelete,
-    mdiPencil,
+    mdiPencil
   };
 
   get questions() {
     return this.questionRegisterModule.questions;
   }
 
-  get question(){
-    return this.questionRegisterModule.question
+  get question() {
+    return this.questionRegisterModule.question;
+  }
+
+  get snack() {
+    return this.validationMessageModule.snack;
+  }
+
+  set snack(newValue: boolean) {
+    this.validationMessageModule.setSnack(newValue);
   }
 
   get dialog() {
@@ -116,39 +118,50 @@ export default class QuestionList extends Vue {
     this.questionRegisterModule.setDialog(newValue);
   }
 
-  set question(newValue: QuestionRegister){
-    this.questionRegisterModule.setQuestion(newValue)
+  set question(newValue: QuestionRegister) {
+    this.questionRegisterModule.setQuestion(newValue);
+  }
+
+  removeDialog(i) {
+    this.index = i;
+    this.openRemoveDialog = true;
   }
 
   updateQuestion(i: number) {
-    this.questionRegisterModule.setQuestion(this.questionRegisterModule.questions[i])
-    this.questionRegisterModule.setRegisterStatus(RegisterStatus.UPDATE)
-    this.questionRegisterModule.setDialog(true)
-    this.questionRegisterModule.setValidUpdate(true)
-    console.log(this.questionRegisterModule.validUpdate)
+    this.questionRegisterModule.setQuestion( this.questionRegisterModule.questions[i]);
+    this.questionRegisterModule.setRegisterStatus(RegisterStatus.UPDATE);
+    this.questionRegisterModule.setValidUpdate(true);
+    this.openQuestionRegister = true
   }
 
-  deleteQuestion(i: number) {
-    this.questionRegisterModule.questions.splice(i, 1);
-    const v = new ValidationMessage("Questão removida com sucesso", TypeMessage.SUCCESS, true, "", 3000);
+  deleteQuestion() {
+    this.questionRegisterModule.questions.splice(this.index, 1);
+    this.openRemoveDialog = false;
+    this.validationMessageModule.setSnack(true);
+    const v = new ValidationMessage(
+      "Questão removida com sucesso",
+      TypeMessage.SUCCESS,
+      true,
+      "",
+      3000
+    );
     this.validationMessageModule.setValidation(v);
-
-
   }
 
   addQuestion() {
-    this.questionRegisterModule.setValidUpdate(false)
-    this.questionRegisterModule.setQuestion(new QuestionRegister())
-    this.questionRegisterModule.setDialog(true)
+    this.questionRegisterModule.setRegisterStatus(RegisterStatus.INSERT);
+    this.questionRegisterModule.setValidUpdate(false);
+    this.questionRegisterModule.setQuestion(new QuestionRegister());
+    this.openQuestionRegister = true;
+    //this.questionRegisterModule.setDialog(true)
   }
 
   openDialog() {
-    this.modal = true
+    this.modal = true;
   }
 
   created() {
-    this.questionRegisterModule.findAll()
-
+    this.questionRegisterModule.findAll();
   }
 }
 </script>

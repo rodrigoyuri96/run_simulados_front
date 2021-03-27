@@ -1,17 +1,24 @@
 <template>
   <div>
     <v-form v-model="valid" >
-    <v-autocomplete
-        v-model="exam"
-        :items="exams"
-        item-text="title"
-        label="Vestibulares"
-        :rules="[v=> !!v || 'campo obrigatório']"
-        outlined
-        dense
-        @change="handleValid()"
-        return-object
-    />
+      <v-autocomplete
+          v-model="exam"
+          :items="exams"
+          item-text="title"
+          label="Vestibulares"
+          :rules="[v=> !!v || 'campo obrigatório']"
+          outlined
+          dense
+          @change="handleValid()"
+          return-object
+      >
+        <template slot="selection" slot-scope="exam">
+          {{ exam.item.title }} - {{ exam.item.year }}
+        </template>
+        <template slot="item" slot-scope="exam">
+          {{ exam.item.title }} - {{ exam.item.year }}
+        </template>
+      </v-autocomplete>
     </v-form>
   </div>
 </template>

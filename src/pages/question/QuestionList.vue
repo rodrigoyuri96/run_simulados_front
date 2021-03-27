@@ -19,6 +19,7 @@
                 <thead>
                   <tr>
                     <th>Vestibular</th>
+                    <th>Ano Vestibular</th>
                     <th class="text-cenet">Disciplina</th>
                     <th class="text-center">Questão</th>
                     <th class="text-center">Ações</th>
@@ -27,6 +28,7 @@
                 <tbody>
                   <tr v-for="(question, i) in questions" :key="i">
                     <td>{{question.exam.title}}</td>
+                    <td>{{question.exam.year}}</td>
                     <td>{{question.discipline.name}}</td>
                     <td class="text-center">{{question.numberQuestion}}</td>
                     <td class="text-center">

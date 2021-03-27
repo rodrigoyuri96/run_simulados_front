@@ -1,11 +1,21 @@
 <template>
-  <v-container>
+  <v-dialog v-model="dialog" width="1200px" scrollable >
+
     <v-card class="form-group">
-      <v-card-title>Cadastro de questões</v-card-title>
+
+      <v-card-title 
+        class="headline teal lighten-2 white--text font-weight-regular">
+        {{ isInsert? 'Cadastro de Questão' : 'Atualização Questão' }}
+        <v-spacer></v-spacer>
+        <v-btn icon @click="dialog = !dialog" >
+          <v-icon class="white--text" >mdi-close</v-icon>
+        </v-btn>
+      </v-card-title>
+
       <v-card-text>
         <v-form ref="form" v-model="valid">
           <v-row class="mt-5">
-            <v-col>
+            <v-col cols="6">
               <v-text-field
                 :rules="[
                 (v) => !!v || 'Campo obrigatório',
@@ -20,12 +30,17 @@
                 v-model="question.numberQuestion"
               ></v-text-field>
             </v-col>
-          </v-row>
-          <v-row>
             <v-col cols="6">
               <run-exams
                 @valid="isValidExam = $event"
                 v-model="question.exam" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <run-subjects
+                @valid="isValidSubject = $event"
+                v-model="question.subjects" />
             </v-col>
             <v-col cols="6">
               <run-disciplines
@@ -33,11 +48,7 @@
                 v-model="question.discipline" />
             </v-col>
           </v-row>
-          <v-row>
-            <v-col cols="12">
-              <strong>Titulo</strong>
-            </v-col>
-          </v-row>
+
           <v-row>
             <v-col>
               <run-editor
@@ -51,11 +62,12 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn @click="dialog=true">
+              <v-btn @click="openQuestion = true" color="primary" class="white--text" >
                 Pré-visualização
               </v-btn>
             </v-col>
           </v-row>
+          
           <v-row>
             <v-col align-self="center"></v-col>
           </v-row>
@@ -64,63 +76,81 @@
              <!-- <run-option></run-option> -->
             </v-col>
           </v-row>
+
           <v-row>
             <v-col cols="6">
-              <v-btn
+              <v-btn 
+                block 
+                color="primary"
+                :disabled="!valid" 
                 class="white--text"
-                @click="save"
-                :disabled="!validForm"
-                dark
-                block
-                color="green"
-              >Salvar</v-btn>
+                @click="save()">
+                {{ isInsert ? 'Salvar' : 'Atualizar' }}
+              </v-btn>
             </v-col>
             <v-col cols="6">
-              <v-btn class="white--text" dark block color="secondary" @click="reset">Cancelar</v-btn>
+              <v-btn 
+                class="white--text" 
+                dark 
+                block 
+                color="secondary" 
+                @click="reset()">
+                Cancelar
+              </v-btn>
             </v-col>
           </v-row>
+
         </v-form>
       </v-card-text>
     </v-card>
-
-    <v-dialog v-model="dialog">
-      <run-question :content="content" />
-    </v-dialog>
-
-  </v-container>
+    <run-question v-model="openQuestion" :content="content" />
+  </v-dialog>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Emit } from "vue-property-decorator";
+import { Vue, Component, Emit, VModel } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { QuestionModule } from "@/store/modules/QuestionModule";
+import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
+import { TypeMessage } from "@/models/validation/TypeMessage";
+import { RegisterStatus } from '@/models/RegisterStatus'
 import QuestionRegister from "../../models/QuestionRegister";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunExams from "@/components/run/exam/Exams.vue";
-import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
+import RunSubjects from "@/components/run/Subjects.vue"
 import ValidationMessage from "@/models/validation/ValidationMessage";
-import { TypeMessage } from "@/models/validation/TypeMessage";
 import RunEditor from "@/components/run/editor/RunEditor.vue"
 import RunQuestion from "@/components/run/question/Question.vue";
 import RunOption from "@/components/run/question/options/Options.vue";
 
 
 @Component({
+
   name: "QuestionRegisters",
+
   components: {
-    RunDisciplines, RunExams, RunEditor, RunQuestion, RunOption
-  }})
+    RunDisciplines, 
+    RunExams, RunEditor, 
+    RunQuestion, 
+    RunOption, 
+    RunSubjects
+  }
+
+})
+
 export default class QuestionRegisters extends Vue {
 
   questionRegisterModule = getModule(QuestionModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
+
+  @VModel({ type: Boolean }) dialog: boolean | false
+
   content: String = ""
-  dialog: Boolean = false
   isValidDiscipline: boolean = false
   isValidExam: boolean = false
-
-
-  private valid: boolean = false;
+  isValidSubject: boolean = false
+  valid: boolean = false
+  openQuestion: boolean = false
 
   get questions() {
     return this.questionRegisterModule.questions;
@@ -131,7 +161,11 @@ export default class QuestionRegisters extends Vue {
   }
 
   get validForm(): boolean {
-    return this.valid && this.isValidDiscipline && this.isValidExam
+    return this.valid && this.isValidDiscipline && this.isValidExam && this.isValidSubject
+  }
+
+  get isInsert() {
+    return this.questionRegisterModule.registerStatus === RegisterStatus.INSERT
   }
 
   set question(question: QuestionRegister) {
@@ -144,22 +178,22 @@ export default class QuestionRegisters extends Vue {
 
   save() {
     if (this.questionRegisterModule.validUpdate == true) {
-      this.questionRegisterModule.setDialog(false);
+      this.dialog = false
       const v = new ValidationMessage("Questão editada com sucesso", TypeMessage.SUCCESS, true, "", 3000);
       this.validationMessageModule.setValidation(v);
     } else {
       this.questionRegisterModule.save(this.question);
       const v = new ValidationMessage("Questão salva com sucesso", TypeMessage.SUCCESS, true, "", 3000);
       this.validationMessageModule.setValidation(v);
-      this.questionRegisterModule.setDialog(false);
+      this.dialog = false
     }
-    console.log(this.question.exam)
   }
 
   reset() {
     this.question = new QuestionRegister();
-    this.questionRegisterModule.setDialog(false);
+    this.dialog = false
   }
+
 }
 </script>
 

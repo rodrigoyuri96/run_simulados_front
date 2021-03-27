@@ -8,7 +8,7 @@
         >Registro de Eventos</v-card-title
       >
       <v-card-text class="mt-5">
-        <v-form ref="form" v-model="valid">
+        <v-form v-model="validEvent">
           <v-row class="mt-5">
             <v-col cols="6">
               <v-text-field
@@ -26,21 +26,16 @@
                 label="Título do Evento"
               ></v-text-field>
             </v-col>
-            <v-col cols="2">
-              <v-text-field
-                v-model="event.typeEvent"
+            <v-col cols="4">
+               <v-select
+                v-model="event.eventType"
+                :items="TypeList"
                 outlined
                 dense
                 required
-                :rules="[
-                  (e) => !!e || 'Campo obrigatório',
-                  (e) =>
-                    (e && e.length <= 10) ||
-                    'O título do vestibular deve ter até 10 caracteres',
-                ]"
-                counter="10"
+                :rules="[(e) => !!e || 'Campo obrigatório']"
                 label="Tipo do evento"
-              ></v-text-field>
+              ></v-select>
             </v-col>
             <v-col cols="2">
               <v-text-field
@@ -98,13 +93,15 @@
                 v-model="event.disciplines"
                 @valid="validDisciplines = $event"
                 :multiple="true"
+                :rules="[i=> !!i || 'Campo obrigatório']"
               >
               </run-disciplines>
             </v-col>
             <v-col cols="6">
               <run-subjects
                 v-model="event.subjects"
-                @valid-field="validSubjects = $event"
+                @valid="validSubjects = $event"
+                :rules="[i=> !!i || 'Campo obrigatório']"
               >
               </run-subjects>
             </v-col>
@@ -119,7 +116,7 @@
               block
               color="primary"
               class="white--text"
-              :disabled="!validForm"
+              :disabled="!isValid"
               @click="save"
             >
               {{ isInsert ? "Salvar" : "Atualizar" }}
@@ -184,27 +181,20 @@ export default class EventRegister extends Vue {
   dateModule = getModule(DateModule, this.$store);
   validDisciplines: boolean = false;
   validSubjects: boolean = false;
-  validDate: boolean = false;
-  validDate1: boolean = false;
-  valid: boolean = false;
+  validEvent: boolean = false;
   errors: String[] = [];
+  TypeList: String[] = ["Geral","Comunidade", "Instituição"];
 
   @Watch('event.disciplines')
   onDisciplineEventChanged(newVal: Event, oldVal: Event){
-    console.log("Mudança no evento monitorada com sucesso", newVal)
-    console.log("Estado anterior", oldVal)
     this.subjectModule.setSubjects([])
     this.subjectModule.filterByDiscipline(this.event.disciplines).then(subjects=>{
-      if(subjects != null && subjects.length > 0)
-        this.subjectModule.setSubjects(subjects)
+      console.log(subjects)
     })
-
   }
 
   @Watch('event.subjects')
   onSubjectEventChanged(newVal: Event, oldVal: Event){
-    console.log("Mudança no evento monitorada com sucesso", newVal)
-    console.log("Estado anterior", oldVal)
     this.disciplineModule.filterBySubject(this.event.subjects).then(disciplines=>{
       if(disciplines != null && disciplines.length > 0)
         this.disciplineModule._setDisciplines(disciplines)
@@ -214,6 +204,14 @@ export default class EventRegister extends Vue {
 
   get isInsert() {
     return this.eventModule.registerStatus === RegisterStatus.INSERT;
+  }
+
+  get isValid(){
+    return this.validEvent && !this.validDate && this.validDisciplines 
+  }
+  
+  constructor() {
+    super()
   }
 
   get events() {
@@ -240,17 +238,8 @@ export default class EventRegister extends Vue {
     this.eventModule.setEventReviewDialog(true);
   }
 
-  get validForm(): boolean {
-    return this.valid && this.validDisciplines && this.validSubjects;
-  }
 
-  get validateUpdateAction(): boolean {
-    return this.eventModule.registerStatus == RegisterStatus.UPDATE
-      ? this.validForm
-      : true;
-  }
-
-  get validationDateSubscription(): boolean {
+  get validDate(): boolean {
     this.errors = []
     if(!DateUtil.isBiggersThanDate(this.event.endDateSubscription, this.event.startDateSubscription)){
       this.errors.push('A data final da inscrição não pode ser menor que a data inicial da inscrição.')
@@ -268,26 +257,44 @@ export default class EventRegister extends Vue {
     return this.errors.length > 0
   }
 
-  cancel() {
-    return this.eventModule.setDialog(false);
-  }
-
   save() {
-    if(!this.validationDateSubscription){
-      if (this.eventModule.registerStatus == RegisterStatus.INSERT) {
+    const v = new ValidationMessage('Evento salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000)
 
-        this.eventModule.save();
-        const v = new ValidationMessage("Evento salvo com sucesso", TypeMessage.SUCCESS, true, "", 3000);
+    console.log('Salvando Evento:', this.event)
+    if(this.eventModule.registerStatus == RegisterStatus.INSERT){
+      this.eventModule.save().then(res=>{
+        if(!(res.status == 201)){
+          v.message = "Erro ao salvar o evento"
+          v.type = TypeMessage.ERROR
+        }else{
+          this.eventModule._addToEvents(res.data)
+        }
+      })
 
-        this.validationMessageModule.setValidation(v);
-        this.eventModule.setDialog(false);
-      }
-      const v = new ValidationMessage("Evento atualizado com sucesso", TypeMessage.SUCCESS, true, "", 3000);
-
-      this.validationMessageModule.setValidation(v);
-      this.eventModule.setDialog(false);
+     }else{
+        this.eventModule.update().then(res=>{
+          if(!(res.status == 200)){
+            v.message = "Erro ao atualizar evento"
+            v.type = TypeMessage.ERROR
+          }
+        }).catch(error => {
+          console.log('error', error)
+        })
+      v.message = "Vestibular atualizado com sucesso"
     }
+
+    this.validationMessageModule.setValidation(v)
+    this.eventModule.setDialog(false)
+    this.eventModule.findAll()
   }
+
+  get validateUpdateAction(): Boolean {
+    return this.eventModule.registerStatus == RegisterStatus.UPDATE? this.isValid : new Boolean(true)
+  }
+    
+  cancel() {
+     return this.eventModule.setDialog(false);
+ }
 }
 </script>
 

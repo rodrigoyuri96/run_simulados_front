@@ -3,7 +3,7 @@
     <v-card class="form-group">
       <v-card-title class="headline teal lighten-2 white--text">{{ isInsert? 'Cadastro de Vestibular' : 'Atualização Vestibular' }}</v-card-title>
       <v-card-text class="mt-5">
-        <v-form v-model="valid" ref="formExam" lazy-validation>
+        <v-form v-model="validExam">
           <v-row>
             <v-col>
               <v-text-field
@@ -25,13 +25,12 @@
                 label="Ano do vestibular"
                 outlined
                 dense
-              >
-              </v-autocomplete>
+              />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="8">
-              <run-institution v-model="exam.institution" @valid="validInstitution = $event"/>
+              <run-institution v-model="exam.institution" @valid="validInstitution = $event" :rules="[i=> !!i || 'Campo obrigatório']"/>
             </v-col>
             <v-col cols="4">
               <v-text-field
@@ -145,7 +144,9 @@
       <v-card-actions>
         <v-row align="center" justify="center">
           <v-col cols="4" align-self="end">
-            <v-btn block color="primary" class="white--text"
+            <v-btn block color="primary"
+                   class="white--text"
+                   :disabled="!isValid"
                    @click="save">
               {{ isInsert ? 'Salvar' : 'Atualizar' }}
             </v-btn>
@@ -164,7 +165,6 @@
 </template>
 
 <script lang="ts">
-
 import {Component, Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
 import {ExamModule} from '@/store/modules/ExamModule'
@@ -178,7 +178,6 @@ import {ValidationMessageModule} from '@/store/modules/validation/ValidationMess
 import ValidationMessage from '@/models/validation/ValidationMessage'
 import {TypeMessage} from '@/models/validation/TypeMessage'
 import {RegisterStatus} from '@/models/RegisterStatus'
-import axios from '@/plugins/Axios'
 
 @Component({
   name: 'ExamRegister',
@@ -190,7 +189,7 @@ export default class ExamRegister extends Vue {
   validationMessageModule = getModule(ValidationMessageModule, this.$store)
   items = [1,2]
   validInstitution: boolean = false
-  valid = false
+  validExam = false
 
   icons = {
     mdiDelete,
@@ -201,24 +200,13 @@ export default class ExamRegister extends Vue {
     return this.examModule.registerStatus === RegisterStatus.INSERT
   }
 
+  get isValid(){
+    return this.validExam && this.validInstitution && this.exam.disciplinesRules.length > 0
+  }
+
   constructor() {
     super()
   }
-
-  /*get form(): RunForm{
-    return this.$refs.formExam as RunForm
-  }*/
-
-  //Os s' armazenam o status dos formularios
-
-  /*validateForm(): Boolean{
-    let s1 = this.form.validate()
-    let s2 = this.validInstitution
-    let s3 = this.exam.disciplinesRules.length > 0;
-
-    return s1 && s2 && s3;
-  }*/
-
 
   get years() {
     const years = []
@@ -265,23 +253,39 @@ export default class ExamRegister extends Vue {
   }
 
   save() {
+    const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
 
-    axios.post('/cadastro-vestibular', this.exam).then((res) => {
-      console.log("RESPOSTA", res.data)
-        if(res.status == 201){
-          const message = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
-          this.validationMessageModule.setValidation(message)
-          this.validationMessageModule.setSnack(true)
-          this.exam = res.data
-          this.examModule.setDialog(false)
-          console.log('SNACK', this.snack)
+    console.log(this.exam)
+    if(this.examModule.registerStatus == RegisterStatus.INSERT){
+      this.examModule.save().then(res=>{
+        if(!(res.status == 201)){
+          v.message = "Erro ao salvar vestibular"
+          v.type = TypeMessage.ERROR
+        }else{
+          this.examModule._addToExams(res.data)
         }
-    })
+      })
+
+    }else{
+        this.examModule.update().then(res=>{
+          if(!(res.status == 200)){
+            v.message = "Erro ao atualizar vestibular"
+            v.type = TypeMessage.ERROR
+          }
+        }).catch(error => {
+          console.log('error', error)
+        })
+      v.message = "Vestibular atualizado com sucesso"
+    }
+
+    this.validationMessageModule.setValidation(v)
+    this.examModule.setDialog(false)
+    this.examModule.findAll()
   }
 
-  /*get validateUpdateAction(): Boolean{
-    return this.examModule.registerStatus == RegisterStatus.UPDATE? this.validateForm() : new Boolean(true)
-  }*/
+  get validateUpdateAction(): Boolean{
+     return this.examModule.registerStatus == RegisterStatus.UPDATE? this.isValid : new Boolean(true)
+  }
 
   updateRule(index: number) {
     this.examModule.setDisciplineRule(this.examModule.exam.disciplinesRules[index])

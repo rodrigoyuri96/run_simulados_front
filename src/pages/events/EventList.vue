@@ -99,15 +99,27 @@ export default class EventList extends Vue {
   }
 
   deleteEvent(i: number) {
-    this.eventModule.events.splice(i, 1)
-    const v = new ValidationMessage("Evento removido com sucesso", TypeMessage.SUCCESS, true, "", 3000);
-    this.validationMessageModule.setValidation(v);
+    this.eventModule.setEvent(this.eventModule.events[i])
+    const message = new ValidationMessage('Evento deletado com sucesso', TypeMessage.SUCCESS, true, '', 3000)
+    this.eventModule.delete().then(res=>{
+      if(res){
+        this.eventModule.events.splice(i, 1)
+      }else{
+        message.message = "Erro ao deletar o evento"
+        message.type = TypeMessage.ERROR
+      }
+      this.validationMessageModule.setValidation(message)
+    })
   }
 
   addEvent() {
-    this.eventModule.setEvent(new Event)
     this.eventModule.setRegisterStatus(RegisterStatus.INSERT);
+    this.eventModule.setEvent(new Event())
     this.eventModule.setDialog(true);
+  }
+
+  created(){
+    this.eventModule.findAll()
   }
 }
 </script>

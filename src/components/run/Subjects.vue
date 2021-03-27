@@ -1,5 +1,5 @@
 <template>
-  <v-form v-model="validSubjects">
+  <v-form v-model="valid">
     <v-autocomplete
       v-model="subjects"
       :items="items"

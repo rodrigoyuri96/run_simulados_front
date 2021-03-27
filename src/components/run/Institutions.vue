@@ -23,11 +23,12 @@ import Institution from "@/models/Institution";
 
 @Component({
   name: 'Institutions'
-
 })
+
 export default class Institutions extends Vue {
   institutionModule = getModule(InstitutionModule, this.$store)
   @VModel({type: Institution, default: null}) institutions: any
+  @VModel() institution!: any
   @Prop({type:Array}) rules: any[]
   valid: boolean = false
 
@@ -39,11 +40,12 @@ export default class Institutions extends Vue {
   handleValid(){
     return this.valid
   }
+
   created() {
     this.institutionModule.findAll()
   }
 
-  mounted(){
+  updated(){
     this.handleValid()
   }
 }

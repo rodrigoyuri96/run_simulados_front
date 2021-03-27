@@ -59,8 +59,6 @@ export class DisciplineModule extends VuexModule {
       }))
     }
 
-    
-
     @Action
     filterBySubject(subjects: Subject[]){
       return new Promise<Subject[]>( (reject, resolve) =>{

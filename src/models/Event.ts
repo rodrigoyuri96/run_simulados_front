@@ -11,8 +11,6 @@ export default class Event {
     public startDateSubscription: String
     public endDateSubscription: String
     public startDateEvent: String
-
-
     public endDateEvent: String
 
     constructor(){

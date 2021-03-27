@@ -49,10 +49,7 @@ export class SubjectModule extends VuexModule {
         this.setSubjects(subjects)
       })
     }
-
-
-
-
+    
   @Action
   filterByDiscipline(disciplines: Discipline[]){
     return new Promise<Discipline[]>( (reject, resolve) =>{

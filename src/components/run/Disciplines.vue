@@ -6,7 +6,7 @@
         :items="items"
         item-text="name"
         label="Disciplinas"
-        :rules="[v=> !!v || 'campo obrigatório']"
+        :rules="rules"
         hide-no-data
         outlined
         dense
@@ -21,7 +21,7 @@
         :loading="loading"
         item-text="name"
         label="Disciplinas"
-        :rules="[v=> !!v || 'campo obrigatório']"
+        :rules="rules"
         outlined
         dense
         multiple
@@ -47,8 +47,6 @@
 import {Vue, Component, Emit, Prop, VModel} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { DisciplineModule } from '@/store/modules/DisciplineModule'
-import Discipline from '@/models/Discipline'
-import {SubjectModule} from "@/store/modules/SubjectModule";
 
 @Component({
   name: 'Disciplines'
@@ -57,8 +55,8 @@ export default class Disciplines extends Vue {
   disciplineModule = getModule(DisciplineModule, this.$store)
   @VModel() disciplines!: any
   @Prop({type:Boolean}) multiple!: Boolean
+  @Prop({type:Array}) rules: any[]
   valid: boolean = false;
-
 
   get items() {
     return this.disciplineModule.disciplines
@@ -73,8 +71,12 @@ export default class Disciplines extends Vue {
   }
 
   @Emit('valid')
-  handleValid(){
-    return this.valid
+  handleValid(event: boolean) {
+    if (event != null && event !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   created() {
@@ -87,7 +89,7 @@ export default class Disciplines extends Vue {
   }
 
   handleDiscipline(){
-    this.handleValid()
+    this.handleValid(this.valid)
   }
 
 }

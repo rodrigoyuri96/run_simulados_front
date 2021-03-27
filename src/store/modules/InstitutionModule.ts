@@ -1,5 +1,6 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import Institution from '@/models/Institution'
+import Axios from "axios"
 
 @Module({ name: 'InstitutionModule' , namespaced: true })
 export class InstitutionModule extends VuexModule {
@@ -39,21 +40,22 @@ export class InstitutionModule extends VuexModule {
       this._institutions = institutions
     }
 
-    @Action({ commit: '_setInstitutions' })
+    @Action
     findAll() {
-      const i1 = new Institution()
-
-      i1.name = 'USP'
-      i1.id = 1
-      const i2 = new Institution()
-
-      i2.name = 'UNICAMP'
-      i2.id = 2
-      const institutions: Institution[] = []
-
-      institutions.push(i1,i2)
-
-      return institutions
+      return new Promise(((resolve, reject) => {
+        Axios.get('/instituicoes').then(res=>{
+          const is: [] = res.data
+          let institutions: Institution[] = is.map(i =>{
+            let institution = new Institution();
+            Object.assign(institution, i);
+            return institution
+          })
+          this._setInstitutions(institutions)
+          resolve(true)
+        }).catch(error=>{
+          reject(false)
+        })
+      }))
     }
 
 }

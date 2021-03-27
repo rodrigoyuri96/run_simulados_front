@@ -3,7 +3,7 @@
     <v-card class="form-group">
       <v-card-title class="headline teal lighten-2 white--text">{{ isInsert? 'Cadastro de Vestibular' : 'Atualização Vestibular' }}</v-card-title>
       <v-card-text class="mt-5">
-        <v-form v-model="valid" ref="formExam">
+        <v-form v-model="validExam">
           <v-row>
             <v-col>
               <v-text-field
@@ -165,8 +165,6 @@
 </template>
 
 <script lang="ts">
-
-import vue from 'vue'
 import {Component, Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
 import {ExamModule} from '@/store/modules/ExamModule'
@@ -180,8 +178,6 @@ import {ValidationMessageModule} from '@/store/modules/validation/ValidationMess
 import ValidationMessage from '@/models/validation/ValidationMessage'
 import {TypeMessage} from '@/models/validation/TypeMessage'
 import {RegisterStatus} from '@/models/RegisterStatus'
-import type {VForm} from "@/commons/RunForm.ts"
-
 
 @Component({
   name: 'ExamRegister',
@@ -193,7 +189,7 @@ export default class ExamRegister extends Vue {
   validationMessageModule = getModule(ValidationMessageModule, this.$store)
   items = [1,2]
   validInstitution: boolean = false
-  valid = false
+  validExam = false
 
   icons = {
     mdiDelete,
@@ -205,26 +201,12 @@ export default class ExamRegister extends Vue {
   }
 
   get isValid(){
-    console.log("valid", this.valid)
-    console.log("validInstitution", this.validInstitution)
-    console.log("dr", this.examModule.disciplinesRules)
-    return this.valid && this.validInstitution && this.exam.disciplinesRules.length > 0
+    return this.validExam && this.validInstitution && this.exam.disciplinesRules.length > 0
   }
 
   constructor() {
     super()
   }
-
-  //Os s' armazenam o status dos formularios
-  validateForm(): Boolean{
-    let f: any = this.$refs.formExam
-    let s1 = f.validate()
-    let s2 = this.validInstitution
-    let s3 = this.exam.disciplinesRules.length > 0;
-
-    return s1 && s2 && s3;
-  }
-
 
   get years() {
     const years = []
@@ -263,10 +245,6 @@ export default class ExamRegister extends Vue {
   }
 
   save() {
-    if(!this.validateForm()){
-      console.log("formulário inválido")
-    }
-
     const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
 
     console.log(this.exam)
@@ -275,10 +253,20 @@ export default class ExamRegister extends Vue {
         if(!(res.status == 201)){
           v.message = "Erro ao salvar vestibular"
           v.type = TypeMessage.ERROR
+        }else{
+          this.examModule._addToExams(res.data)
         }
       })
 
     }else{
+        this.examModule.update().then(res=>{
+          if(!(res.status == 200)){
+            v.message = "Erro ao atualizar vestibular"
+            v.type = TypeMessage.ERROR
+          }
+        }).catch(error => {
+          console.log('error', error)
+        })
       v.message = "Vestibular atualizado com sucesso"
     }
 
@@ -288,7 +276,7 @@ export default class ExamRegister extends Vue {
   }
 
   get validateUpdateAction(): Boolean{
-     return this.examModule.registerStatus == RegisterStatus.UPDATE? this.validateForm() : new Boolean(true)
+     return this.examModule.registerStatus == RegisterStatus.UPDATE? this.isValid : new Boolean(true)
   }
 
   updateRule(index: number) {

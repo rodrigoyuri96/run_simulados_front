@@ -20,9 +20,8 @@
           append-icon="mdi-calendar"
           v-bind="attrs"
           @blur="date = parseDate(dateFormatted)"
-          @change="handleValid"
+          @change="handleValid()"
           v-on="on"
-          :rules="[(v) => !!v || 'campo obrigatório']"
         ></v-text-field>
       </template>
       <v-date-picker

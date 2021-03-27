@@ -8,7 +8,7 @@
         >Registro de Eventos</v-card-title
       >
       <v-card-text class="mt-5">
-        <v-form ref="formEvent" v-model="valid" lazy-validation>
+        <v-form v-model="validEvent">
           <v-row class="mt-5">
             <v-col cols="6">
               <v-text-field
@@ -26,7 +26,7 @@
                 label="Título do Evento"
               ></v-text-field>
             </v-col>
-            <v-col cols="2">
+            <v-col cols="4">
                <v-select
                 v-model="event.eventType"
                 :items="TypeList"
@@ -58,14 +58,14 @@
             <v-col>
               <run-date
                 v-model="event.startDateSubscription"
-                @valid="validationDateSubscription = $event"
+                @valid="validDate = $event"
                 label="Data inicio Inscrição"
               ></run-date>
             </v-col>
             <v-col>
               <run-date
                 v-model="event.endDateSubscription"
-                @valid="validationDateSubscription = $event"
+                @valid="validDate = $event"
                 label="Data fim Inscrição"
               ></run-date>
             </v-col>
@@ -75,14 +75,14 @@
             <v-col>
               <run-date
                 v-model="event.startDateEvent"
-                @valid="validationDateSubscription = $event"
+                @valid="validDate = $event"
                 label="Data inicio Evento"
               ></run-date>
             </v-col>
             <v-col>
               <run-date
                 v-model="event.endDateEvent"
-                 @valid="validationDateSubscription = $event"
+                 @valid="validDate = $event"
                 label="Data fim Evento"
               ></run-date>
             </v-col>
@@ -93,13 +93,15 @@
                 v-model="event.disciplines"
                 @valid="validDisciplines = $event"
                 :multiple="true"
+                :rules="[i=> !!i || 'Campo obrigatório']"
               >
               </run-disciplines>
             </v-col>
             <v-col cols="6">
               <run-subjects
                 v-model="event.subjects"
-                @valid-field="validSubjects = $event"
+                @valid="validSubjects = $event"
+                :rules="[i=> !!i || 'Campo obrigatório']"
               >
               </run-subjects>
             </v-col>
@@ -114,6 +116,7 @@
               block
               color="primary"
               class="white--text"
+              :disabled="!isValid"
               @click="save"
             >
               {{ isInsert ? "Salvar" : "Atualizar" }}
@@ -165,7 +168,6 @@ import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import RunError  from "@/components/run/validator/Error.vue"
 import {DateUtil} from "@/util/date"
-import {RunForm} from "@/commons/RunForm";
 
 @Component({
   name: "EventRegister",
@@ -179,10 +181,9 @@ export default class EventRegister extends Vue {
   dateModule = getModule(DateModule, this.$store);
   validDisciplines: boolean = false;
   validSubjects: boolean = false;
-  valid: boolean = false;
-  validade: boolean = false;
+  validEvent: boolean = false;
   errors: String[] = [];
-  TypeList: String[] = ["Comunidade", "Instituição"];
+  TypeList: String[] = ["Geral","Comunidade", "Instituição"];
 
   @Watch('event.disciplines')
   onDisciplineEventChanged(newVal: Event, oldVal: Event){
@@ -204,27 +205,13 @@ export default class EventRegister extends Vue {
   get isInsert() {
     return this.eventModule.registerStatus === RegisterStatus.INSERT;
   }
+
+  get isValid(){
+    return this.validEvent && !this.validDate && this.validDisciplines 
+  }
   
   constructor() {
     super()
-  }
-
-   get form(): RunForm{
-    return this.$refs.formEvent as RunForm
-  }
-
-  validateForm(): Boolean{
-    let s1 = this.form.validate()
-    let s2 = this.validDisciplines
-    let s3 = this.validSubjects
-    let s4 = this.validationDateSubscription
-
-    console.log(this.validDisciplines)
-    console.log(this.validSubjects)
-    console.log(this.validationDateSubscription)
-
-
-    return s1 && s2 && s3 != s4;
   }
 
   get events() {
@@ -252,7 +239,7 @@ export default class EventRegister extends Vue {
   }
 
 
-  get validationDateSubscription(): boolean {
+  get validDate(): boolean {
     this.errors = []
     if(!DateUtil.isBiggersThanDate(this.event.endDateSubscription, this.event.startDateSubscription)){
       this.errors.push('A data final da inscrição não pode ser menor que a data inicial da inscrição.')
@@ -271,30 +258,38 @@ export default class EventRegister extends Vue {
   }
 
   save() {
-    if(!this.validateForm())
-    return
-
     const v = new ValidationMessage('Evento salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000)
 
-    console.log(this.event)
+    console.log('Salvando Evento:', this.event)
     if(this.eventModule.registerStatus == RegisterStatus.INSERT){
       this.eventModule.save().then(res=>{
         if(!(res.status == 201)){
           v.message = "Erro ao salvar o evento"
           v.type = TypeMessage.ERROR
+        }else{
+          this.eventModule._addToEvents(res.data)
         }
       })
-    }else{
-      v.message = "Evento atualizado com sucesso"
+
+     }else{
+        this.eventModule.update().then(res=>{
+          if(!(res.status == 200)){
+            v.message = "Erro ao atualizar evento"
+            v.type = TypeMessage.ERROR
+          }
+        }).catch(error => {
+          console.log('error', error)
+        })
+      v.message = "Vestibular atualizado com sucesso"
     }
 
     this.validationMessageModule.setValidation(v)
-    this.eventModule.findAll()
     this.eventModule.setDialog(false)
+    this.eventModule.findAll()
   }
 
   get validateUpdateAction(): Boolean {
-    return this.eventModule.registerStatus == RegisterStatus.UPDATE? this.validateForm() : new Boolean(true)
+    return this.eventModule.registerStatus == RegisterStatus.UPDATE? this.isValid : new Boolean(true)
   }
     
   cancel() {

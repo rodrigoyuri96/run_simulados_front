@@ -143,5 +143,18 @@ export class ExamModule extends VuexModule {
         })
       })
     }
+    
+    @Action
+    update(){
+      return new Promise<AxiosResponse>((resolve, reject) => {
+        Axios.put('/vestibulares', this.exam).then(res=>{
+          if(res.status == 200){
+            resolve(res)
+          }
+        }).catch(error=>{
+          reject(null)
+        })
+      }) 
+    }
 
 }

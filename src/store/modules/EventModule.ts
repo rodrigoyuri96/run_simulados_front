@@ -118,4 +118,17 @@ export class EventModule extends VuexModule {
             })
         })
     }
+
+    @Action
+    update() {
+        return new Promise<AxiosResponse>((resolve, reject) => {
+            Axios.put('/eventos', this.event).then(res=>{
+                if(res.status == 200){
+                    resolve(res)
+                }
+            }).catch(error=>{
+                reject(null)
+            })
+        })
+    }
 }

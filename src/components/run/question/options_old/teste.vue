@@ -96,7 +96,7 @@ export default class Teste extends Vue{
   messageModule = getModule(ValidationMessageModule, this.$store)
   dialog: Boolean = false
   // @Prop({type:Array}) header: []
-  // @Prop({type:Array}) options: Option[]
+  // @Prop({type:Array}) options_old: Option[]
   header: string[] = ["http://plataformasessa.com.br/img/tests.png", "http://plataformasessa.com.br/img/tests.png"]
   options: Option[] = []
   deleteIcon = "mdi-delete"

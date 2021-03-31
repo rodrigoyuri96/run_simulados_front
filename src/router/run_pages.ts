@@ -30,7 +30,7 @@ export default [{
   {
     path: '/opcoes',
     name: 'opcoes',
-    component: () => import('@/components/run/question/options/Options.vue')
+    component: () => import('@/components/run/question/options_old/Options.vue')
   }
 
 ]

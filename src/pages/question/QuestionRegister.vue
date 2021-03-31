@@ -1,114 +1,120 @@
 <template>
-  <v-dialog v-model="dialog" width="1200px" scrollable >
+  <v-container>
+    <v-dialog v-model="dialog" width="1200px" scrollable >
 
-    <v-card class="form-group">
+      <v-card class="form-group">
 
-      <v-card-title 
-        class="headline teal lighten-2 white--text font-weight-regular">
-        {{ isInsert? 'Cadastro de Questão' : 'Atualização Questão' }}
-        <v-spacer></v-spacer>
-        <v-btn icon @click="dialog = !dialog" >
-          <v-icon class="white--text" >mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
+        <v-card-title
+          class="headline teal lighten-2 white--text font-weight-regular">
+          {{ isInsert? 'Cadastro de Questão' : 'Atualização Questão' }}
+          <v-spacer></v-spacer>
+          <v-btn icon @click="dialog = !dialog" >
+            <v-icon class="white--text" >mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
 
-      <v-card-text>
-        <v-form ref="form" v-model="valid">
-          <v-row class="mt-5">
-            <v-col cols="6">
-              <v-text-field
-                :rules="[
+        <v-card-text>
+          <v-form ref="form" v-model="valid">
+            <v-row class="mt-5">
+              <v-col cols="6">
+                <v-text-field
+                  :rules="[
                 (v) => !!v || 'Campo obrigatório',
                 (v) =>
                 (v && v <= 180 && v >= 1) ||
                 'O número da questão deve ser entre 1 a 180',
                 ]"
-                outlined
-                dense
-                required
-                label="Número da Questão do Caderno"
-                v-model="question.numberQuestion"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="6">
-              <run-exams
-                @valid="isValidExam = $event"
-                v-model="question.exam" />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="6">
-              <run-subjects
-                @valid="isValidSubject = $event"
-                v-model="question.subjects" />
-            </v-col>
-            <v-col cols="6">
-              <run-disciplines
-                @valid="isValidDiscipline = $event"
-                v-model="question.discipline" />
-            </v-col>
-          </v-row>
+                  outlined
+                  dense
+                  required
+                  label="Número da Questão do Caderno"
+                  v-model="question.numberQuestion"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <run-exams
+                  @valid="isValidExam = $event"
+                  v-model="question.exam" />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <run-disciplines
+                  @valid="isValidDiscipline = $event"
+                  v-model="question.discipline" />
+              </v-col>
+              <v-col cols="6">
+                <run-subjects
+                  @valid="isValidSubject = $event"
+                  v-model="question.subjects" />
+              </v-col>
+            </v-row>
 
-          <v-row>
-            <v-col>
-              <run-editor
-                v-model="content"
-                :exam="question.exam"
-                :numberQuestion="question.numberQuestion"
-                :discipline="question.discipline"
-                @dialog-status-change="dialog = $event"
-              ></run-editor>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-btn @click="openQuestion = true" color="primary" class="white--text" >
-                Pré-visualização
-              </v-btn>
-            </v-col>
-          </v-row>
-          
-          <v-row>
-            <v-col align-self="center"></v-col>
-          </v-row>
-          <v-row class="mt-5">
-            <v-col cols="12">
-             <!-- <run-option></run-option> -->
-            </v-col>
-          </v-row>
+            <v-row>
+              <v-col>
+                <run-editor
+                  v-model="content"
+                  :exam="question.exam"
+                  :numberQuestion="question.numberQuestion"
+                  :discipline="question.discipline"
+                  @dialog-status-change="dialog = $event"
+                ></run-editor>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="5">
+                <v-btn @click="optionDialog = true" block color="primary" class="white--text">Adicionar Opções</v-btn>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col align-self="center"></v-col>
+            </v-row>
+            <v-row class="mt-5">
+              <v-col cols="12">
+                <!-- <run-option></run-option> -->
+              </v-col>
+            </v-row>
 
-          <v-row>
-            <v-col cols="6">
-              <v-btn 
-                block 
-                color="primary"
-                :disabled="!valid" 
-                class="white--text"
-                @click="save()">
-                {{ isInsert ? 'Salvar' : 'Atualizar' }}
-              </v-btn>
-            </v-col>
-            <v-col cols="6">
-              <v-btn 
-                class="white--text" 
-                dark 
-                block 
-                color="secondary" 
-                @click="reset()">
-                Cancelar
-              </v-btn>
-            </v-col>
-          </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-btn
+                  block
+                  color="primary"
+                  :disabled="!valid"
+                  class="white--text"
+                  @click="save()">
+                  {{ isInsert ? 'Salvar' : 'Atualizar' }}
+                </v-btn>
+              </v-col>
+              <v-col cols="4">
+                <v-btn @click="openQuestion = true" color="yellow" class="black--text" block>
+                  Pré-visualização
+                </v-btn>
+              </v-col>
+              <v-col cols="4">
+                <v-btn
+                  class="white--text"
+                  dark
+                  block
+                  color="secondary"
+                  @click="reset()">
+                  Cancelar
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+      <run-question v-model="openQuestion" :content="content" />
+    </v-dialog>
 
-        </v-form>
-      </v-card-text>
-    </v-card>
-    <run-question v-model="openQuestion" :content="content" />
-  </v-dialog>
+    <run-option-register v-model="optionDialog" :is-insert="isInsert"></run-option-register>
+
+  </v-container>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Emit, VModel } from "vue-property-decorator";
+import { Vue, Component, VModel } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { QuestionModule } from "@/store/modules/QuestionModule";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
@@ -121,7 +127,7 @@ import RunSubjects from "@/components/run/Subjects.vue"
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import RunEditor from "@/components/run/editor/RunEditor.vue"
 import RunQuestion from "@/components/run/question/Question.vue";
-import RunOption from "@/components/run/question/options/Options.vue";
+import RunOptionRegister from "@/pages/question/options/OptionRegister.vue";
 
 
 @Component({
@@ -129,11 +135,11 @@ import RunOption from "@/components/run/question/options/Options.vue";
   name: "QuestionRegisters",
 
   components: {
-    RunDisciplines, 
-    RunExams, RunEditor, 
-    RunQuestion, 
-    RunOption, 
-    RunSubjects
+    RunDisciplines,
+    RunExams, RunEditor,
+    RunQuestion,
+    RunOptionRegister,
+    RunSubjects,
   }
 
 })
@@ -151,6 +157,7 @@ export default class QuestionRegisters extends Vue {
   isValidSubject: boolean = false
   valid: boolean = false
   openQuestion: boolean = false
+  optionDialog: boolean = false
 
   get questions() {
     return this.questionRegisterModule.questions;

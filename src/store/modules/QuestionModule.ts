@@ -1,10 +1,9 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import QuestionRegister from "@/models/QuestionRegister"
-import Discipline from "@/models/Discipline";
-import Exam from "@/models/Exam";
-import DisciplineRule from "@/models/DisciplineRule"
-import Institution from "@/models/Institution"
 import {RegisterStatus} from "@/models/RegisterStatus";
+import Axios, { AxiosResponse } from "axios";
+import Question from "@/models/question/Question";
+
 
 @Module({ name: 'QuestionModule', namespaced: true})
 export class QuestionModule extends VuexModule {
@@ -75,10 +74,27 @@ export class QuestionModule extends VuexModule {
         this._registerStatus = newValue
     }
 
+    @Action
+    deleteQuestion(id):Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
+          Axios.delete('/questoes/' + id).then(res=>{
+            resolve(res)
+          }).catch(error=>{
+            reject(error)
+          })
+      })
+    }
+
 
     @Action({commit: '_setQuestions'})
-    findAll(){
-        return []
+    async findAll(){
+      let questions: Question[] = []
+      await Axios.get("/questoes").then(res=>{
+        questions = res.data
+      })
+
+      console.log("questions", questions)
+        return questions
     }
 
     @Action({commit: '_addToQuestion'})

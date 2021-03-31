@@ -1,29 +1,31 @@
 <template>
   <div class="d-flex flex-grow-1 flex-column">
-    <v-row class="flex-grow-0" dense>
-      <v-col>
-        <v-btn @click="dialog = true">Adicionar Opção</v-btn>
-      </v-col>
-    </v-row>
-    <v-dialog v-model="dialog">
-      <v-card height="100%">
-        <v-card-title>Cadastro de Opções</v-card-title>
+    <v-dialog v-model="dialog" scrollable max-width="800">
+      <v-card>
+        <v-card-title
+          class="headline teal lighten-2 white--text font-weight-regular">
+          {{ isInsert? 'Registro de Opções' : 'Atualização de Opções' }}
+          <v-spacer></v-spacer>
+          <v-btn icon @click="dialog = !dialog" >
+            <v-icon class="white--text" >mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
         <v-card-text>
           <v-row >
-            <v-col cols="2">
+            <v-col cols="3">
               <v-switch
                 v-model="question.tableFlag"
                 label="Formato Tabela"
                 @change="verifyTableFlag"
               />
             </v-col>
-            <v-col cols="4">
+            <v-col cols="5">
               <v-switch
                 v-model="question.imageFlag"
                 label="Adicionar Imagem nas opções (obs: Limpa os campos abaixo)"
               />
             </v-col>
-            <v-col v-if="question.tableFlag" cols="3">
+            <v-col v-if="question.tableFlag" cols="4">
               <v-switch
                 v-model="question.headerImageFlag"
                 label="Adicionar Imagem no cabeçalho"
@@ -37,17 +39,27 @@
             </v-col>
           </v-row>
         </v-card-text>
+        <v-card-actions>
+          <v-row no-gutters class="ml-0 mr-0">
+            <v-col class="mr-1">
+              <v-btn class="white--text" block color="primary">Salvar</v-btn>
+            </v-col>
+            <v-col>
+              <v-btn block color="grey lighten-2">Cancelar</v-btn>
+            </v-col>
+          </v-row>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop} from "vue-property-decorator";
+import {Vue, Component, Prop, VModel} from "vue-property-decorator";
 import {getModule} from "vuex-module-decorators";
 import {QuestionModule} from "@/store/modules/QuestionModule";
-import RunSimpleOption from "@/components/run/question/options/SimpleOption.vue";
-import RunOptionTable from "@/components/run/question/options/OptionTable.vue";
+import RunSimpleOption from "@/components/run/question/options_old/SimpleOption.vue";
+import RunOptionTable from "@/components/run/question/options_old/OptionTable.vue";
 
 
 @Component({
@@ -56,8 +68,9 @@ import RunOptionTable from "@/components/run/question/options/OptionTable.vue";
 })
 export default class Options extends Vue {
   @Prop({type: String}) content: string | "";
+  @VModel({type:Boolean}) dialog: Boolean | false;
+  @Prop({type: Boolean}) isInsert: Boolean | false;
   questionModule = getModule(QuestionModule, this.$store)
-  dialog = false
   get question(){
     return this.questionModule.question
   }

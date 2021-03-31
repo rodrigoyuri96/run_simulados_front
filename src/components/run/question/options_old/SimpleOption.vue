@@ -2,7 +2,7 @@
   <v-form v-model="valid">
     <v-row class="mt-1 mr-3 mb-0" no-gutters>
       <v-col cols="12">
-        <run-editor v-model="option.description" v-if="imageFlag == false" :rules="[v=> !!v || 'Campo obrigatório']"></run-editor>
+        <run-editor v-model="description" v-if="imageFlag == false" :rules="[v=> !!v || 'Campo obrigatório']"></run-editor>
         <v-file-input v-model="files" v-else  prepend-icon append-icon="mdi-camera"
                       outlined label="Adicionar Imagem" multiple
                       :rules="[v=> !!v || 'Campo obrigatório', v=> v.length > 0 && v.length < 6 || 'Deve haver no máximo 5 imagens selecionadas']"/>
@@ -11,9 +11,7 @@
     <v-row class="mt-0" no-gutters align="end" justify="end">
       <v-spacer></v-spacer>
       <v-col cols="4" align-self="end" class="mr-3">
-        <v-btn block color="primary" class="mr-3 white--text"
-               @click="addOption"
-               :disabled="imageFlag? !valid ||  options.length >= 5 :!valid || options.length >= 5">Adicionar Opção</v-btn>
+        <v-btn block color="primary" class="mr-3 white--text" @click="addOption" :disabled="imageFlag? !valid ||  options.length >= 5 :!valid || options.length >= 5">Adicionar Opção</v-btn>
       </v-col>
     </v-row>
     <v-row class="mt-4">
@@ -42,7 +40,7 @@ export default class SimpleOption extends Vue {
   optionModule = getModule(OptionModule, this.$store)
   @Prop({type:Boolean, default:false}) imageFlag!:Boolean
   files: [] = []
-  option: Option = new Option()
+  description: String = ""
   descriptions: any[] = []
   valid: Boolean = false
 
@@ -56,23 +54,26 @@ export default class SimpleOption extends Vue {
 
   @Watch('imageFlag')
   whenImageFlagChanged(val: Boolean, oldVal: Boolean){
-    if(oldVal && !val && this.options.length > 0){
-      this.options.forEach(opt=>{
-        FirebaseStorageService.deleteImage(opt.description)
-          .then(res=>{
-            this.descriptions.slice(this.options.indexOf(opt), 1)
-            this.options = []
-            console.log("sucesso ao deletar imagem: ", res , this.options)
-          })
+      if(oldVal && !val && this.options.length > 0){
+        this.options.forEach(opt=>{
+          FirebaseStorageService.deleteImage(opt.description)
+            .then(res=>{
+              this.descriptions.slice(this.options.indexOf(opt), 1)
+              this.options = []
+              console.log("sucesso ao deletar imagem: ", res , this.options)
+            })
           .catch(error=>{
             console.log("Erro ao deletar imagem: ", error)
           }).finally(()=>{
-          this.descriptions = []
+            this.descriptions = []
+          })
         })
-      })
-    }else if(!oldVal && val ){
-      this.options = []
-    }
+      }else if(!oldVal && val ){
+        this.options = []
+      }else{
+        this.description = ""
+      }
+
 
   }
 
@@ -90,18 +91,16 @@ export default class SimpleOption extends Vue {
       })
       this.files = []
     }else{
-      if(this.options.length == 0)
-        this.option.isCorrectAnswer = true
-
-      this.options.push(this.option)
-      this.option = new Option();
+      this.descriptions.push(this.description)
+      this.description = ""
+      this.mapToOption()
     }
 
   }
 
 
   mapToOption(){
-    this.descriptions.forEach(des=>{
+   this.descriptions.forEach(des=>{
       const option = new Option()
       option.description = des
       option.isCorrectAnswer = false

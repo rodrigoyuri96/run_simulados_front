@@ -30,7 +30,7 @@
                     <td>{{question.exam.title}}</td>
                     <td>{{question.exam.year}}</td>
                     <td>{{question.discipline.name}}</td>
-                    <td class="text-center">{{question.numberQuestion}}</td>
+                    <td class="text-center">{{question.numberOfQuestion}}</td>
                     <td class="text-center">
                       <v-btn elevation="0" icon>
                         <v-icon @click="updateQuestion(i)">mdi-pencil</v-icon>
@@ -50,12 +50,12 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <run-question 
-      v-model="openQuestion" 
-      :card="false" 
+    <run-question
+      v-model="openQuestion"
+      :card="false"
       :content="content" />
-    <run-remove-dialog 
-      :method="deleteQuestion" 
+    <run-remove-dialog
+      :method="deleteQuestion"
       v-model="openRemoveDialog" />
   </v-container>
 </template>
@@ -73,6 +73,7 @@ import RunQuestionRegister from "@/pages/question/QuestionRegister.vue";
 import QuestionRegister from "../../models/QuestionRegister";
 import RunQuestion from "@/components/run/question/Question.vue";
 import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
+import Question from '@/models/question/Question';
 
 @Component({
   name: "QuestionList",
@@ -135,17 +136,31 @@ export default class QuestionList extends Vue {
   }
 
   deleteQuestion() {
-    this.questionRegisterModule.questions.splice(this.index, 1);
-    this.openRemoveDialog = false;
-    this.validationMessageModule.setSnack(true);
-    const v = new ValidationMessage(
-      "Questão removida com sucesso",
-      TypeMessage.SUCCESS,
-      true,
-      "",
-      3000
-    );
-    this.validationMessageModule.setValidation(v);
+    const question = this.questionRegisterModule.questions[this.index];
+    let message = null;
+    this.questionRegisterModule.deleteQuestion(question.id).then(res=>{
+      if(res.status == 200){
+        this.openRemoveDialog = false;
+        this.validationMessageModule.setSnack(true);
+         message = new ValidationMessage(
+          "Questão removida com sucesso",
+          TypeMessage.SUCCESS,
+          true,
+          "",
+          3000
+        );
+        this.questionRegisterModule.questions.splice(this.index, 1)
+      }
+    }).catch(()=>{
+      message = new ValidationMessage(
+        "Erro ao remover questão",
+        TypeMessage.ERROR,
+        true,
+        "",
+        3000
+      );
+    })
+    this.validationMessageModule.setValidation(message);
   }
 
   addQuestion() {

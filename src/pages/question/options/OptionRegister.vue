@@ -57,11 +57,10 @@
 <script lang="ts">
 import {Vue, Component, Prop, VModel} from "vue-property-decorator";
 import {getModule} from "vuex-module-decorators";
-import {QuestionModule} from "@/store/modules/QuestionModule";
+import {QuestionModule} from "@/store/modules/question.module";
 import RunSimpleOption from "@/components/run/question/options/SimpleOption.vue";
 import RunOptionTable from "@/components/run/question/options_old/OptionTable.vue";
-import Option from "@/models/question/Option";
-import {OptionModule} from "@/store/modules/OptionModule";
+import {OptionModule} from "@/store/modules/option.module";
 
 
 @Component({
@@ -106,6 +105,8 @@ export default class Options extends Vue {
   save(){
     this.question.options = this.options
     this.dialog = false
+
+    console.log("this.question", this.question)
   }
 
 }

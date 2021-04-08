@@ -1,4 +1,4 @@
-export default class Institution {
+export default class InstitutionModel {
 
    public id: number
    public name: string

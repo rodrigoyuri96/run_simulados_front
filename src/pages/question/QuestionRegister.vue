@@ -28,7 +28,7 @@
                   dense
                   required
                   label="Número da Questão do Caderno"
-                  v-model="question.numberQuestion"
+                  v-model="question.numberOfQuestion"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
@@ -53,7 +53,7 @@
             <v-row>
               <v-col>
                 <run-editor
-                  v-model="content"
+                  v-model="question.content"
                   :exam="question.exam"
                   :numberQuestion="question.numberQuestion"
                   :discipline="question.discipline"
@@ -63,7 +63,7 @@
             </v-row>
             <v-row>
               <v-col cols="5">
-                <v-btn @click="optionDialog = true" block color="primary" class="white--text">Adicionar Opções</v-btn>
+                <v-btn @click="optionDialog = true" block color="primary" class="white--text">{{ optionButton }}</v-btn>
               </v-col>
             </v-row>
             <v-row>
@@ -79,7 +79,7 @@
               <v-col cols="4">
                 <v-btn
                   block
-                  color="primary"
+                    color="primary"
                   :disabled="!valid"
                   class="white--text"
                   @click="save()">
@@ -105,7 +105,7 @@
           </v-form>
         </v-card-text>
       </v-card>
-      <run-question v-model="openQuestion" :content="content" />
+      <run-question v-model="openQuestion" :content=" question.content" />
     </v-dialog>
 
     <run-option-register v-model="optionDialog" :is-insert="isInsert"></run-option-register>
@@ -116,11 +116,11 @@
 <script lang="ts">
 import { Vue, Component, VModel } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { QuestionModule } from "@/store/modules/QuestionModule";
+import { QuestionModule } from "@/store/modules/question.module";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import { TypeMessage } from "@/models/validation/TypeMessage";
-import { RegisterStatus } from '@/models/RegisterStatus'
-import QuestionRegister from "../../models/QuestionRegister";
+import { RegisterStatusEnum } from '@/models/register.status.enum'
+import QuestionRegisterModel from "../../models/question.register.model";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunExams from "@/components/run/exam/Exams.vue";
 import RunSubjects from "@/components/run/Subjects.vue"
@@ -145,19 +145,21 @@ import RunOptionRegister from "@/pages/question/options/OptionRegister.vue";
 })
 
 export default class QuestionRegisters extends Vue {
+  @VModel({ type: Boolean }) dialog: boolean | false
 
   questionRegisterModule = getModule(QuestionModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
 
-  @VModel({ type: Boolean }) dialog: boolean | false
-
-  content: String = ""
   isValidDiscipline: boolean = false
   isValidExam: boolean = false
   isValidSubject: boolean = false
   valid: boolean = false
   openQuestion: boolean = false
   optionDialog: boolean = false
+
+  get optionButton(): String{
+    return this.question.options.length == 0 ? 'Adicionar Opções' : 'Editar Opções'
+  }
 
   get questions() {
     return this.questionRegisterModule.questions;
@@ -167,15 +169,11 @@ export default class QuestionRegisters extends Vue {
     return this.questionRegisterModule.question;
   }
 
-  get validForm(): boolean {
-    return this.valid && this.isValidDiscipline && this.isValidExam && this.isValidSubject
-  }
-
   get isInsert() {
-    return this.questionRegisterModule.registerStatus === RegisterStatus.INSERT
+    return this.questionRegisterModule.registerStatus === RegisterStatusEnum.INSERT
   }
 
-  set question(question: QuestionRegister) {
+  set question(question: QuestionRegisterModel) {
     this.questionRegisterModule.setQuestion(question);
   }
 
@@ -189,15 +187,20 @@ export default class QuestionRegisters extends Vue {
       const v = new ValidationMessage("Questão editada com sucesso", TypeMessage.SUCCESS, true, "", 3000);
       this.validationMessageModule.setValidation(v);
     } else {
-      this.questionRegisterModule.save(this.question);
-      const v = new ValidationMessage("Questão salva com sucesso", TypeMessage.SUCCESS, true, "", 3000);
-      this.validationMessageModule.setValidation(v);
-      this.dialog = false
+      this.questionRegisterModule.save().then(res=>{
+        const v = new ValidationMessage("Questão salva com sucesso", TypeMessage.SUCCESS, true, "", 3000);
+        this.validationMessageModule.setValidation(v);
+        this.dialog = false
+        console.log("questao", res)
+      }).catch(error=>{
+        const v = new ValidationMessage("Erro ao salvar questão", TypeMessage.ERROR, true, "", 3000);
+        console.log("Erro ao salvar questão", error)
+      });
     }
   }
 
   reset() {
-    this.question = new QuestionRegister();
+    this.question = new QuestionRegisterModel();
     this.dialog = false
   }
 

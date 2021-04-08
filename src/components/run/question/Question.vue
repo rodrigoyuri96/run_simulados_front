@@ -3,7 +3,7 @@
     <!-- cadastro-questão -->
     <v-card v-show="card == false">
       <v-card-title
-      class="headline teal lighten-2 white--text font-weight-regular" 
+      class="headline teal lighten-2 white--text font-weight-regular"
       >Pré-visualização
         <v-spacer></v-spacer>
         <v-btn
@@ -17,10 +17,10 @@
         <v-row>
           <v-col>
             <v-radio-group>
-              <v-radio 
+              <v-radio
                 disabled
-                v-for="(option, i) in options" 
-                :key="i" 
+                v-for="(option, i) in options"
+                :key="i"
                 :label="option.description">
               </v-radio>
             </v-radio-group>
@@ -38,7 +38,7 @@
           <v-radio-group>
             <v-radio
               disabled
-              v-for="(option, i) in options" 
+              v-for="(option, i) in options"
               :key="i"
               :label="option.description" ></v-radio>
           </v-radio-group>
@@ -51,7 +51,7 @@
 <script lang="ts">
 
 import { Vue, Component, Prop, VModel } from "vue-property-decorator";
-import { OptionModule } from "@/store/modules/OptionModule";
+import { OptionModule } from "@/store/modules/option.module";
 import { getModule } from "vuex-module-decorators";
 
 @Component({
@@ -74,7 +74,6 @@ export default class Question extends Vue {
   get options() {
     return this.optionModule.options;
   }
-
 
 
   created() {

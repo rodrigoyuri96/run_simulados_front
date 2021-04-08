@@ -40,10 +40,9 @@
 
 import {Component, Vue} from "vue-property-decorator";
 import RunInstitution from "@/components/run/Institutions.vue";
-import {TagModule} from "@/store/modules/TagModule"
 import {getModule} from "vuex-module-decorators";
 import RunTag from "@/components/run/Tags.vue"
-import {EventModule} from "@/store/modules/EventModule";
+import {EventModule} from "@/store/modules/event.module";
 import { DateUtil } from "@/util/date"
 
 @Component({

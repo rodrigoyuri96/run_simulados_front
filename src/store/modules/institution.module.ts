@@ -1,11 +1,11 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import Institution from '@/models/Institution'
+import InstitutionModel from '@/models/institution.model'
 import Axios from "axios"
 
 @Module({ name: 'InstitutionModule' , namespaced: true })
 export class InstitutionModule extends VuexModule {
-    _institutions: Institution[] = []
-    _institution: Institution = { id: 0, name: '' }
+    _institutions: InstitutionModel[] = []
+    _institution: InstitutionModel = { id: 0, name: '' }
     _validField = false
 
     get institutions() {
@@ -26,17 +26,17 @@ export class InstitutionModule extends VuexModule {
     }
 
     @Mutation
-    setInstitution(newInstitution: Institution) {
+    setInstitution(newInstitution: InstitutionModel) {
       this._institution = newInstitution
     }
 
     @Mutation
-    _addToInstitution(newDiscipline: Institution) {
+    _addToInstitution(newDiscipline: InstitutionModel) {
       this._institutions.push(newDiscipline)
     }
 
     @Mutation
-    _setInstitutions(institutions: Institution[]) {
+    _setInstitutions(institutions: InstitutionModel[]) {
       this._institutions = institutions
     }
 
@@ -45,8 +45,8 @@ export class InstitutionModule extends VuexModule {
       return new Promise(((resolve, reject) => {
         Axios.get('/instituicoes').then(res=>{
           const is: [] = res.data
-          let institutions: Institution[] = is.map(i =>{
-            let institution = new Institution();
+          let institutions: InstitutionModel[] = is.map(i =>{
+            let institution = new InstitutionModel();
             Object.assign(institution, i);
             return institution
           })

@@ -30,8 +30,8 @@
 <script lang="ts">
 import {Vue, Component, Emit, VModel, Prop} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { SubjectModule } from "../../store/modules/SubjectModule";
-import Subject from "../../models/Subject";
+import { SubjectModule } from "../../store/modules/subject.module";
+import SubjectsModel from "../../models/subjects.model";
 
 @Component({
   name: "Subjects",
@@ -40,7 +40,7 @@ export default class Subjects extends Vue {
   subjectModule= getModule(SubjectModule, this.$store)
   valid: boolean = false;
   validSubjects: boolean = false;
-  @VModel({type: Array}) subjects!: Subject[]
+  @VModel({type: Array}) subjects!: SubjectsModel[]
   @Prop({type:Array}) rules: any[]
 
   get items() {

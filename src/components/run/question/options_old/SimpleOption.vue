@@ -28,8 +28,8 @@ import {Vue, Component, Prop, Watch, VModel} from "vue-property-decorator";
 import {getModule} from "vuex-module-decorators";
 import FirebaseStorageService from "@/commons/FirebaseStorageService";
 import RunOption from "@/components/run/question/options_old/Option.vue";
-import Option from "@/models/question/Option"
-import {OptionModule} from "@/store/modules/OptionModule";
+import OptionModel from "@/models/question/option.model"
+import {OptionModule} from "@/store/modules/option.module";
 import RunEditor from "@/components/run/editor/RunEditor.vue";
 
 @Component({
@@ -101,7 +101,7 @@ export default class SimpleOption extends Vue {
 
   mapToOption(){
    this.descriptions.forEach(des=>{
-      const option = new Option()
+      const option = new OptionModel()
       option.description = des
       option.isCorrectAnswer = false
       this.options.push(option)

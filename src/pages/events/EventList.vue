@@ -1,28 +1,25 @@
 <template>
-  <v-row align="center" justify="center">
-    <v-dialog v-model="dialog">
-      <event-register></event-register>
-    </v-dialog>
-    <v-card class="form-group mt-0" width="80%" height="95%">
-      <v-card-title class="headline teal lighten-2 white--text"
-        >Cadastro de Eventos</v-card-title
-      >
-      <v-card-text class="mt-3">
-        <v-row alignament="end" justify="end" no-gutters>
-          <v-col align-self="end" class="ml-16" md="4">
-            <v-btn class="white--text" color="primary" @click="addEvent()">
-              Cadastrar Evento
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-simple-table fixed-header height="250px">
-          <template v-slot:default>
-            <thead class="mb-6">
+  <v-container>
+    <v-card class="form-group">
+        <v-card-title class="headline teal lighten-2 white--text">
+          Cadastro de Eventos
+        </v-card-title>
+        <v-card-text class="mt-3">
+          <v-row alignament="end" justify="end" no-gutters>
+            <v-col align-self="end" class="ml-16" md="4">
+              <v-btn class="white--text" color="primary" @click="addEvent()">
+                Cadastrar Evento
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-simple-table fixed-header height="250px">
+            <template v-slot:default>
+              <thead class="mb-6">
               <tr>
                 <th class="text-left">Cadastrar Evento</th>
               </tr>
-            </thead>
-            <tbody class="mt-6">
+              </thead>
+              <tbody class="mt-6">
               <tr
                 v-for="(event, i) in events"
                 :key="i"
@@ -44,25 +41,38 @@
                   </v-btn>
                 </td>
               </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </v-card-text>
-    </v-card>
-  </v-row>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-pagination
+          @next="nextPage()"
+          @previous="previousPage()"
+          v-model="page"
+          :length="4"
+          prev-icon="mdi-menu-left"
+          next-icon="mdi-menu-right" />
+      </v-card-actions>
+      </v-card>
+    <v-dialog v-model="dialog">
+      <event-register></event-register>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { EventModule } from "@/store/modules/EventModule";
+import { EventModule } from "@/store/modules/event.module";
 import EventRegister from "@/pages/events/EventRegister.vue";
-import { RegisterStatus } from "@/models/RegisterStatus";
+import { RegisterStatusEnum } from "@/models/register.status.enum";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import { mdiDelete, mdiPencil } from "@mdi/js";
-import Event from "@/models/Event";
+import EventModel from "@/models/event.model";
 
 @Component({
   name: "EventList",
@@ -94,7 +104,7 @@ export default class EventList extends Vue {
   updateEvent(i: number) {
     console.log(this.eventModule.events[i]);
     this.eventModule.setEvent(this.eventModule.events[i]);
-    this.eventModule.setRegisterStatus(RegisterStatus.UPDATE);
+    this.eventModule.setRegisterStatus(RegisterStatusEnum.UPDATE);
     this.eventModule.setDialog(true);
   }
 
@@ -113,8 +123,8 @@ export default class EventList extends Vue {
   }
 
   addEvent() {
-    this.eventModule.setRegisterStatus(RegisterStatus.INSERT);
-    this.eventModule.setEvent(new Event())
+    this.eventModule.setRegisterStatus(RegisterStatusEnum.INSERT);
+    this.eventModule.setEvent(new EventModel())
     this.eventModule.setDialog(true);
   }
 

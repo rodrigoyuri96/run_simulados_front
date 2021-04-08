@@ -1,19 +1,19 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
-import Event from "@/models/Event"
-import { RegisterStatus } from '@/models/RegisterStatus'
+import EventModel from "@/models/event.model"
+import { RegisterStatusEnum } from '@/models/register.status.enum'
 import Axios from "@/plugins/Axios"
 import { AxiosResponse } from 'axios'
 
 @Module({ name: 'EventModule', namespaced: true })
 export class EventModule extends VuexModule {
-    _events: Event[] = []
-    _event: Event = new Event()
+    _events: EventModel[] = []
+    _event: EventModel = new EventModel()
     _validField: boolean = false
     _dialog: boolean = false
     _eventReviewDialog = false
-    _registerStatus: RegisterStatus = RegisterStatus.INSERT
+    _registerStatus: RegisterStatusEnum = RegisterStatusEnum.INSERT
     _index = -1
-    
+
     get dialog(){
         return this._dialog
     }
@@ -21,7 +21,7 @@ export class EventModule extends VuexModule {
     get eventReviewDialog() {
         return this._eventReviewDialog
     }
-  
+
     get isUpdate() {
         return this._index > -1
     }
@@ -29,7 +29,7 @@ export class EventModule extends VuexModule {
     get index() {
         return this._index
     }
-    
+
     get events(){
         return this._events
     }
@@ -45,47 +45,47 @@ export class EventModule extends VuexModule {
     get registerStatus() {
         return this._registerStatus
       }
-  
+
     @Mutation
-    setRegisterStatus(newValue: RegisterStatus) {
+    setRegisterStatus(newValue: RegisterStatusEnum) {
         this._registerStatus = newValue
     }
-  
+
     @Mutation
     setValidField(newValue: boolean){
         this._validField = newValue
     }
-    
+
     @Mutation
     setDialog(newValue: boolean){
         this._dialog = newValue
     }
-    
+
     @Mutation
     setEventReviewDialog(newValue: boolean) {
         this._eventReviewDialog = newValue
     }
 
     @Mutation
-    setEvent(newEvent: Event) {
+    setEvent(newEvent: EventModel) {
       this._event = newEvent
     }
 
     @Mutation
-    _setEvents(events: Event[]){
+    _setEvents(events: EventModel[]){
         this._events = events
     }
-    
+
     @Mutation
     setIndex(newValue: number) {
         this._index = newValue
     }
-    
+
     @Mutation
-    _addToEvents(newEvent: Event) {
+    _addToEvents(newEvent: EventModel) {
         this._events.push(newEvent)
     }
-    
+
     @Action
     save() {
       return new Promise<AxiosResponse>(((resolve, reject) => {
@@ -97,7 +97,7 @@ export class EventModule extends VuexModule {
           })
       }))
     }
-    
+
 
     @Action
     findAll(){

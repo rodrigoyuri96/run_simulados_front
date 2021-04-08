@@ -95,8 +95,8 @@ import OnlyImage from "@/pages/question/options_old/OnlyImage.vue"
 import OnlyText from "@/pages/question/options_old/OnlyText.vue"
 import {Component,  Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
-import {OptionModule} from '@/store/modules/OptionModule'
-import Option from '@/models/question/Option'
+import {OptionModule} from '@/store/modules/option.module'
+import OptionModel from '@/models/question/option.model'
 
 @Component({
   components: { OnlyText, OnlyImage }
@@ -115,7 +115,7 @@ export default class Options extends Vue {
    return this.optionStore.option
  }
 
- set option(newOption: Option) {
+ set option(newOption: OptionModel) {
    this.optionStore.setOption(newOption)
  }
 
@@ -135,7 +135,7 @@ export default class Options extends Vue {
  }
 
  addOption() {
-   this.optionStore.setOption(new Option())
+   this.optionStore.setOption(new OptionModel())
    this.optionStore.validUpdateOption(false)
    this.optionStore.openDialog(true)
  }

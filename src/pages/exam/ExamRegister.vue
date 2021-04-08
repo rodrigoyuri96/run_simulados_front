@@ -167,17 +167,17 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
-import {ExamModule} from '@/store/modules/ExamModule'
-import {InstitutionModule} from '../../store/modules/InstitutionModule'
-import Exam from '@/models/Exam'
+import {ExamModule} from '@/store/modules/exam.module'
+import {InstitutionModule} from '../../store/modules/institution.module'
+import ExamModel from '@/models/exam.model'
 import RunInstitution from '@/components/run/Institutions.vue'
 import DisciplineRulesDialog from '@/pages/exam/DisciplineRulesDialog.vue'
 import {mdiDelete, mdiPencil} from '@mdi/js'
-import DisciplineRule from '@/models/DisciplineRule'
+import DisciplineRulesModel from '@/models/discipline.rules.model'
 import {ValidationMessageModule} from '@/store/modules/validation/ValidationMessageModule'
 import ValidationMessage from '@/models/validation/ValidationMessage'
 import {TypeMessage} from '@/models/validation/TypeMessage'
-import {RegisterStatus} from '@/models/RegisterStatus'
+import {RegisterStatusEnum} from '@/models/register.status.enum'
 
 @Component({
   name: 'ExamRegister',
@@ -197,7 +197,7 @@ export default class ExamRegister extends Vue {
   }
 
   get isInsert() {
-    return this.examModule.registerStatus === RegisterStatus.INSERT
+    return this.examModule.registerStatus === RegisterStatusEnum.INSERT
   }
 
   get isValid(){
@@ -222,7 +222,7 @@ export default class ExamRegister extends Vue {
     return this.examModule.exam
   }
 
-  set exam(exam: Exam) {
+  set exam(exam: ExamModel) {
     this.examModule.setExam(exam)
   }
 
@@ -247,7 +247,7 @@ export default class ExamRegister extends Vue {
   }
 
   addRule() {
-    this.examModule.setDisciplineRule(new DisciplineRule())
+    this.examModule.setDisciplineRule(new DisciplineRulesModel())
     this.examModule.setIndex(-1)
     this.dialogDisciplineRules = true
   }
@@ -256,7 +256,7 @@ export default class ExamRegister extends Vue {
     const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
 
     console.log(this.exam)
-    if(this.examModule.registerStatus == RegisterStatus.INSERT){
+    if(this.examModule.registerStatus == RegisterStatusEnum.INSERT){
       this.examModule.save().then(res=>{
         if(!(res.status == 201)){
           v.message = "Erro ao salvar vestibular"
@@ -284,7 +284,7 @@ export default class ExamRegister extends Vue {
   }
 
   get validateUpdateAction(): Boolean{
-     return this.examModule.registerStatus == RegisterStatus.UPDATE? this.isValid : new Boolean(true)
+     return this.examModule.registerStatus == RegisterStatusEnum.UPDATE? this.isValid : new Boolean(true)
   }
 
   updateRule(index: number) {

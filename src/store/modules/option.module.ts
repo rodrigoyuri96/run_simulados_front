@@ -1,15 +1,15 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
-import Option from "@/models/question/Option";
+import OptionModel from "@/models/question/option.model";
 
 @Module({ name: "OptionModule", namespaced: true })
 export class OptionModule extends VuexModule {
-    _option: Option = {
+    _option: OptionModel = {
         description: "",
         isCorrectAnswer: false,
         urlImage: "",
         row: []
     }
-    _opts: Option[] = [];
+    _opts: OptionModel[] = [];
 
   _dialog: Boolean = false
     _validUpdate: Boolean = false
@@ -45,12 +45,12 @@ export class OptionModule extends VuexModule {
     }
 
     @Mutation
-    setOption(newOption: Option) {
+    setOption(newOption: OptionModel) {
         this._option = newOption
     }
 
     @Mutation
-    addOption(newOption: Option) {
+    addOption(newOption: OptionModel) {
         this._opts.push(newOption)
     }
 
@@ -60,7 +60,7 @@ export class OptionModule extends VuexModule {
     }
 
     @Mutation
-    setOptions(options: Option[]) {
+    setOptions(options: OptionModel[]) {
         this._opts = options
     }
 
@@ -70,7 +70,7 @@ export class OptionModule extends VuexModule {
     }
 
     @Mutation
-    updateOption(newValue: Option, index: number) {
+    updateOption(newValue: OptionModel, index: number) {
         this.options[index] = newValue
     }
 

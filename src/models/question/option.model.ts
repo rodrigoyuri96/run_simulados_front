@@ -1,7 +1,7 @@
 
-export default class Option{
+export default class OptionModel{
     public description?: String
-    public isCorrectAnswer?: Boolean
+    public isCorrectAnswer: Boolean
     public urlImage?: string
     public row?: any[]
 

@@ -57,7 +57,7 @@
 <script lang="ts">
 import {Vue, Component, Prop, VModel} from "vue-property-decorator";
 import {getModule} from "vuex-module-decorators";
-import {QuestionModule} from "@/store/modules/QuestionModule";
+import {QuestionModule} from "@/store/modules/question.module";
 import RunSimpleOption from "@/components/run/question/options_old/SimpleOption.vue";
 import RunOptionTable from "@/components/run/question/options_old/OptionTable.vue";
 

@@ -1,9 +1,9 @@
-import Subject from "./Subject"
+import SubjectsModel from "./subjects.model"
 
 export default class Tag {
-    public subject: Subject
+    public subject: SubjectsModel
 
     constructor(){
-        this.subject = new Subject()
+        this.subject = new SubjectsModel()
     }
 }

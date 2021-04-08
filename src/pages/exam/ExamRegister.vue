@@ -254,15 +254,12 @@ export default class ExamRegister extends Vue {
 
   save() {
     const v = new ValidationMessage('Vestibular salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000 )
-
-    console.log(this.exam)
     if(this.examModule.registerStatus == RegisterStatusEnum.INSERT){
       this.examModule.save().then(res=>{
         if(!(res.status == 201)){
           v.message = "Erro ao salvar vestibular"
           v.type = TypeMessage.ERROR
-        }else{
-          this.examModule._addToExams(res.data)
+          this.examModule.addToExams(res.data)
         }
       })
 

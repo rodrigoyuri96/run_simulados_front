@@ -17,9 +17,9 @@
 <script lang="ts">
 
 import { Vue, VModel, Emit, Component } from 'vue-property-decorator'
-import { EventModule } from '@/store/modules/EventModule'
+import { EventModule } from '@/store/modules/event.module'
 import { getModule } from 'vuex-module-decorators'
-import Event from '@/models/Event'
+import EventModel from '@/models/event.model'
 
 @Component({
     name: "Events"

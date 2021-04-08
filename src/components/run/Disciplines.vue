@@ -46,7 +46,7 @@
 <script lang="ts">
 import {Vue, Component, Emit, Prop, VModel} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
-import { DisciplineModule } from '@/store/modules/DisciplineModule'
+import { DisciplineModule } from '@/store/modules/discipline.module'
 
 @Component({
   name: 'Disciplines'

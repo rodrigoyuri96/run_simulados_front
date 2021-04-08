@@ -18,8 +18,8 @@
 <script lang="ts">
 import {Vue, Component, VModel, Emit, Prop} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
-import { InstitutionModule } from '@/store/modules/InstitutionModule'
-import Institution from "@/models/Institution";
+import { InstitutionModule } from '@/store/modules/institution.module'
+import InstitutionModel from "@/models/institution.model";
 
 @Component({
   name: 'Institutions'
@@ -27,7 +27,7 @@ import Institution from "@/models/Institution";
 
 export default class Institutions extends Vue {
   institutionModule = getModule(InstitutionModule, this.$store)
-  @VModel({type: Institution, default: null}) institutions: any
+  @VModel() institutions: any
   @VModel() institution!: any
   @Prop({type:Array}) rules: any[]
   valid: boolean = false

@@ -50,7 +50,7 @@ import {getModule} from "vuex-module-decorators";
 import {
   mdiDelete,
 } from '@mdi/js'
-import {OptionModule} from "@/store/modules/OptionModule";
+import {OptionModule} from "@/store/modules/option.module";
 import FirebaseStorageService from "@/commons/FirebaseStorageService";
 import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
 

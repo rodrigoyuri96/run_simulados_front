@@ -1,7 +1,7 @@
-import Institution from '@/models/Institution'
-import DisciplineRule from '@/models/DisciplineRule'
+import InstitutionModel from '@/models/institution.model'
+import DisciplineRulesModel from '@/models/discipline.rules.model'
 
-export default class Exam {
+export default class ExamModel {
     public id: string
     public title: string
     public year: number
@@ -9,8 +9,8 @@ export default class Exam {
     public obs: string
     public semester: number
     public phase: number
-    public institution: Institution
-    public disciplinesRules: DisciplineRule []
+    public institution: InstitutionModel
+    public disciplinesRules: DisciplineRulesModel []
 
     constructor() {
       this.id = null

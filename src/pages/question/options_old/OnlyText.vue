@@ -63,8 +63,8 @@
 
 import {Component, Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
-import {OptionModule} from '@/store/modules/OptionModule'
-import Option from '@/models/question/Option'
+import {OptionModule} from '@/store/modules/option.module'
+import OptionModel from '@/models/question/option.model'
 
 @Component({
   name: 'OnlyText'
@@ -82,7 +82,7 @@ export default class OnlyText extends Vue {
    return this.optionStore.dialog
  }
 
- set option(newValue: Option) {
+ set option(newValue: OptionModel) {
    this.optionStore.setOption(newValue)
  }
 

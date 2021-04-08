@@ -3,8 +3,7 @@
     <v-snackbar
       right
       top
-      v-model="snack"
-      v-if="validation.active"
+      v-model="validation.active"
       :type="validation.type"
       :color="validation.type"
     >
@@ -29,9 +28,6 @@ export default class ValidationMessage extends Vue {
     return this.validationModule.validation
   }
 
-  get snack() {
-    return this.validationModule.snack
-  }
 
   @Watch('validation')
   updateValidation() {

@@ -55,7 +55,7 @@
 
 import {Component, Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
-import {OptionModule} from '@/store/modules/OptionModule'
+import {OptionModule} from '@/store/modules/option.module'
 
 @Component({ name: 'OnlyImage' })
 export default class OnlyImage extends Vue {

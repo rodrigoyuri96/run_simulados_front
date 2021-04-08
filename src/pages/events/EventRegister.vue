@@ -153,16 +153,16 @@
 <script lang="ts">
 import {Vue, Component, Emit, Watch} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { EventModule } from "@/store/modules/EventModule";
-import { SubjectModule } from "@/store/modules/SubjectModule";
-import { DisciplineModule } from "@/store/modules/DisciplineModule";
-import Event from "../../models/Event";
+import { EventModule } from "@/store/modules/event.module";
+import { SubjectModule } from "@/store/modules/subject.module";
+import { DisciplineModule } from "@/store/modules/discipline.module";
+import EventModel from "../../models/event.model";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunSubjects from "@/components/run/Subjects.vue";
 import EventReview from "@/pages/events/EventReview.vue";
 import RunDate from "@/components/run/Date.vue";
-import { DateModule } from "@/store/modules/DateModule";
-import { RegisterStatus } from "@/models/RegisterStatus";
+import { DateModule } from "@/store/modules/date.module";
+import { RegisterStatusEnum } from "@/models/register.status.enum";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
@@ -186,7 +186,7 @@ export default class EventRegister extends Vue {
   TypeList: String[] = ["Geral","Comunidade", "Instituição"];
 
   @Watch('event.disciplines')
-  onDisciplineEventChanged(newVal: Event, oldVal: Event){
+  onDisciplineEventChanged(newVal: EventModel, oldVal: EventModel){
     this.subjectModule.setSubjects([])
     this.subjectModule.filterByDiscipline(this.event.disciplines).then(subjects=>{
       console.log(subjects)
@@ -194,7 +194,7 @@ export default class EventRegister extends Vue {
   }
 
   @Watch('event.subjects')
-  onSubjectEventChanged(newVal: Event, oldVal: Event){
+  onSubjectEventChanged(newVal: EventModel, oldVal: EventModel){
     this.disciplineModule.filterBySubject(this.event.subjects).then(disciplines=>{
       if(disciplines != null && disciplines.length > 0)
         this.disciplineModule._setDisciplines(disciplines)
@@ -203,13 +203,13 @@ export default class EventRegister extends Vue {
   }
 
   get isInsert() {
-    return this.eventModule.registerStatus === RegisterStatus.INSERT;
+    return this.eventModule.registerStatus === RegisterStatusEnum.INSERT;
   }
 
   get isValid(){
-    return this.validEvent && !this.validDate && this.validDisciplines 
+    return this.validEvent && !this.validDate && this.validDisciplines
   }
-  
+
   constructor() {
     super()
   }
@@ -222,7 +222,7 @@ export default class EventRegister extends Vue {
     return this.eventModule.event;
   }
 
-  set event(event: Event) {
+  set event(event: EventModel) {
     this.eventModule.setEvent(event);
   }
 
@@ -261,7 +261,7 @@ export default class EventRegister extends Vue {
     const v = new ValidationMessage('Evento salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000)
 
     console.log('Salvando Evento:', this.event)
-    if(this.eventModule.registerStatus == RegisterStatus.INSERT){
+    if(this.eventModule.registerStatus == RegisterStatusEnum.INSERT){
       this.eventModule.save().then(res=>{
         if(!(res.status == 201)){
           v.message = "Erro ao salvar o evento"
@@ -289,9 +289,9 @@ export default class EventRegister extends Vue {
   }
 
   get validateUpdateAction(): Boolean {
-    return this.eventModule.registerStatus == RegisterStatus.UPDATE? this.isValid : new Boolean(true)
+    return this.eventModule.registerStatus == RegisterStatusEnum.UPDATE? this.isValid : new Boolean(true)
   }
-    
+
   cancel() {
      return this.eventModule.setDialog(false);
  }

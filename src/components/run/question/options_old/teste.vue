@@ -80,7 +80,7 @@
 
 import {Component, Prop, Vue} from "vue-property-decorator";
 
-import Option from "@/models/question/Option";
+import OptionModel from "@/models/question/option.model";
 import axios from "@/plugins/Axios"
 import {ValidationMessageModule} from "@/store/modules/validation/ValidationMessageModule";
 import {getModule} from "vuex-module-decorators";
@@ -96,9 +96,9 @@ export default class Teste extends Vue{
   messageModule = getModule(ValidationMessageModule, this.$store)
   dialog: Boolean = false
   // @Prop({type:Array}) header: []
-  // @Prop({type:Array}) options_old: Option[]
+  // @Prop({type:Array}) options_old: OptionModel[]
   header: string[] = ["http://plataformasessa.com.br/img/tests.png", "http://plataformasessa.com.br/img/tests.png"]
-  options: Option[] = []
+  options: OptionModel[] = []
   deleteIcon = "mdi-delete"
   insertIcon = "mdi-plus"
   event: any = {}
@@ -109,7 +109,7 @@ export default class Teste extends Vue{
   addRow(){
 
     if(!this.imageFlag){
-      const option = new Option()
+      const option = new OptionModel()
       option.row = this.descriptions
       option.isCorrectAnswer = this.isCorrectAnswer
       this.options.push(option)

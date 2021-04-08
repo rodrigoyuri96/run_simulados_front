@@ -1,11 +1,11 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import Subject from '@/models/Subject'
+import SubjectsModel from '@/models/subjects.model'
 import Axios from "@/plugins/Axios"
-import Discipline from "@/models/Discipline";
+import DisciplineModel from "@/models/discipline.model";
 
 @Module({ name: 'SubjectModule', namespaced: true })
 export class SubjectModule extends VuexModule {
-    _subjects: Subject[] = []
+    _subjects: SubjectsModel[] = []
     _idDiscipline: String = ""
     _loading: Boolean = false
 
@@ -33,7 +33,7 @@ export class SubjectModule extends VuexModule {
     }
 
     @Mutation
-    setSubjects(subjects: Subject[]) {
+    setSubjects(subjects: SubjectsModel[]) {
       this._subjects = subjects
     }
 
@@ -41,18 +41,18 @@ export class SubjectModule extends VuexModule {
     findAll() {
       Axios.get('/assuntos').then(res=>{
         const sjs: [] = res.data
-        let subjects: Subject[] = sjs.map(s =>{
-          let subject = new Subject();
+        let subjects: SubjectsModel[] = sjs.map(s =>{
+          let subject = new SubjectsModel();
           Object.assign(subject, s);
           return subject
         })
         this.setSubjects(subjects)
       })
     }
-    
+
   @Action
-  filterByDiscipline(disciplines: Discipline[]){
-    return new Promise<Discipline[]>( (reject, resolve) =>{
+  filterByDiscipline(disciplines: DisciplineModel[]){
+    return new Promise<DisciplineModel[]>( (reject, resolve) =>{
       Axios.post('/assuntos/filtro/disciplinas', disciplines).then(res=>{
         this.context.commit('SubjectModule/setSubjects', res.data, {root: true})
         resolve(res.data)

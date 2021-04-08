@@ -200,9 +200,9 @@ export default {
         'sortDescending': 'Absteigend sortiert.',
         'sortAscending': 'Aufsteigend sortiert.',
         'sortNone': 'Nicht sortiert.',
-        'activateNone': 'Aktivieren Sie diese Option, um die Sortierung zu entfernen.',
-        'activateDescending': 'Aktivieren Sie diese Option, um absteigend zu sortieren.',
-        'activateAscending': 'Aktivieren Sie diese Option, um aufsteigend zu sortieren.'
+        'activateNone': 'Aktivieren Sie diese OptionModel, um die Sortierung zu entfernen.',
+        'activateDescending': 'Aktivieren Sie diese OptionModel, um absteigend zu sortieren.',
+        'activateAscending': 'Aktivieren Sie diese OptionModel, um aufsteigend zu sortieren.'
       },
       'sortBy': 'Sortieren nach'
     },

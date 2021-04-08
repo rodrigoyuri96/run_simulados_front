@@ -40,7 +40,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import RunDiscipline from '@/components/run/Disciplines.vue'
-import { ExamModule } from '@/store/modules/ExamModule'
+import { ExamModule } from '@/store/modules/exam.module'
 import { getModule } from 'vuex-module-decorators'
 
 @Component({

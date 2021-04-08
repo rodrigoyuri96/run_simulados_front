@@ -2,10 +2,10 @@
   <v-container>
     <run-question-register v-model="openQuestionRegister" />
     <v-card class="form-group">
-      <v-card-title
-        class="headline teal lighten-2 white--text font-weight-regular"
-      >Cadastro de Questões</v-card-title>
-      <v-card-text>
+      <v-card-title class="headline teal lighten-2 white--text font-weight-regular">
+        Cadastro de Questões
+      </v-card-title>
+      <v-card-text class="mt-3">
         <v-card-actions class="mt-3 mb-3">
           <v-card-title class="ml-n1">Lista de Questões Cadastradas</v-card-title>
           <v-spacer></v-spacer>
@@ -49,6 +49,15 @@
           </v-col>
         </v-row>
       </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <run-pagination :page="page"
+                        :pagination="pagination"
+                        :nextPage="next"
+                        :previousPage="previous"
+                        :byPage="byPage"
+                        @page-size-changed="pageSize = $event"/>
+      </v-card-actions>
     </v-card>
     <run-question
       v-model="openQuestion"
@@ -61,39 +70,45 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import {Component, Vue, Watch} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { QuestionModule } from "@/store/modules/QuestionModule";
-import { RegisterStatus } from "@/models/RegisterStatus";
+import { QuestionModule } from "@/store/modules/question.module";
+import { RegisterStatusEnum } from "@/models/register.status.enum";
 import { mdiDelete, mdiPencil } from "@mdi/js";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import RunQuestionRegister from "@/pages/question/QuestionRegister.vue";
-import QuestionRegister from "../../models/QuestionRegister";
+import QuestionRegisterModel from "../../models/question.register.model";
 import RunQuestion from "@/components/run/question/Question.vue";
 import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
-import Question from '@/models/question/Question';
+import RunPagination from "@/components/run/pagination/RunPagination";
+
 
 @Component({
   name: "QuestionList",
-  components: { RunQuestionRegister, RunQuestion, RunRemoveDialog }
+  components: { RunQuestionRegister, RunQuestion, RunRemoveDialog, RunPagination }
 })
 export default class QuestionList extends Vue {
   questionRegisterModule = getModule(QuestionModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
   openRemoveDialog = false;
-  index = 0;
   openQuestionRegister = false;
-  openQuestion = false
-
-  private modal: boolean = false;
+  openQuestion = false;
+  pageSize = 0;
+  page = 1
+  index = 0;
+  modal: boolean = false;
   content: String = "";
 
   icons = {
     mdiDelete,
     mdiPencil
   };
+
+  get pagination(){
+    return this.questionRegisterModule.pagination
+  }
 
   get questions() {
     return this.questionRegisterModule.questions;
@@ -119,7 +134,7 @@ export default class QuestionList extends Vue {
     this.questionRegisterModule.setDialog(newValue);
   }
 
-  set question(newValue: QuestionRegister) {
+  set question(newValue: QuestionRegisterModel) {
     this.questionRegisterModule.setQuestion(newValue);
   }
 
@@ -130,7 +145,7 @@ export default class QuestionList extends Vue {
 
   updateQuestion(i: number) {
     this.questionRegisterModule.setQuestion( this.questionRegisterModule.questions[i]);
-    this.questionRegisterModule.setRegisterStatus(RegisterStatus.UPDATE);
+    this.questionRegisterModule.setRegisterStatus(RegisterStatusEnum.UPDATE);
     this.questionRegisterModule.setValidUpdate(true);
     this.openQuestionRegister = true
   }
@@ -164,11 +179,23 @@ export default class QuestionList extends Vue {
   }
 
   addQuestion() {
-    this.questionRegisterModule.setRegisterStatus(RegisterStatus.INSERT);
+    this.questionRegisterModule.setRegisterStatus(RegisterStatusEnum.INSERT);
     this.questionRegisterModule.setValidUpdate(false);
-    this.questionRegisterModule.setQuestion(new QuestionRegister());
+    this.questionRegisterModule.setQuestion(new QuestionRegisterModel());
     this.openQuestionRegister = true;
     //this.questionRegisterModule.setDialog(true)
+  }
+
+  next(){
+    this.questionRegisterModule.nextPage(this.pageSize);
+  }
+
+  previous(){
+    this.questionRegisterModule.previousPage(this.pageSize);
+  }
+
+  byPage(){
+    this.questionRegisterModule.findByPage(this.page, this.pageSize)
   }
 
   openDialog() {

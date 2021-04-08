@@ -4,7 +4,7 @@ import Router from 'vue-router'
 import PagesRoutes from './pages.routes'
 import UsersRoutes from './users.routes'
 import LandingRoutes from './landing.routes'
-import RunPages from './run_pages'
+import RunPages from './run.pages'
 Vue.use(Router)
 
 export const routes = [{

@@ -1,12 +1,12 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
-import Discipline from "@/models/Discipline";
+import DisciplineModel from "@/models/discipline.model";
 import Axios from "@/plugins/Axios"
-import Subject from "@/models/Subject";
+import SubjectsModel from "@/models/subjects.model";
 
 @Module({ name: 'DisciplineModule', namespaced: true })
 export class DisciplineModule extends VuexModule {
-    _disciplineList: Discipline[] = []
-    _discipline: Discipline = {id: 0, name: ""}
+    _disciplineList: DisciplineModel[] = []
+    _discipline: DisciplineModel = {id: 0, name: ""}
     _loading: Boolean = false
 
     get disciplines(){
@@ -27,17 +27,17 @@ export class DisciplineModule extends VuexModule {
     }
 
     @Mutation
-    setDiscipline(newDiscipline: Discipline){
+    setDiscipline(newDiscipline: DisciplineModel){
         this._discipline = newDiscipline
     }
 
     @Mutation
-    _addToDiscipline(newDiscipline: Discipline){
+    _addToDiscipline(newDiscipline: DisciplineModel){
         this._disciplineList.push(newDiscipline)
     }
 
     @Mutation
-    _setDisciplines(disciplines: Discipline[]){
+    _setDisciplines(disciplines: DisciplineModel[]){
         this._disciplineList = disciplines
     }
 
@@ -46,8 +46,8 @@ export class DisciplineModule extends VuexModule {
       return new Promise(((resolve, reject) => {
         Axios.get('/disciplinas').then(res=>{
           const ds: [] = res.data
-          let disciplines: Discipline[] = ds.map(d =>{
-            let discipline = new Discipline();
+          let disciplines: DisciplineModel[] = ds.map(d =>{
+            let discipline = new DisciplineModel();
             Object.assign(discipline, d);
             return discipline
           })
@@ -60,8 +60,8 @@ export class DisciplineModule extends VuexModule {
     }
 
     @Action
-    filterBySubject(subjects: Subject[]){
-      return new Promise<Subject[]>( (reject, resolve) =>{
+    filterBySubject(subjects: SubjectsModel[]){
+      return new Promise<SubjectsModel[]>( (reject, resolve) =>{
         Axios.post('/disciplinas/filtro/assuntos', subjects).then(res=>{
           resolve(res.data)
         }).catch(error=>{
@@ -70,6 +70,6 @@ export class DisciplineModule extends VuexModule {
         })
       })
     }
-    
+
 
 }

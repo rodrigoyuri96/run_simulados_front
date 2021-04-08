@@ -1,13 +1,13 @@
-import Discipline from "./Discipline"
-import Subject from "./Subject"
+import DisciplineModel from "./discipline.model"
+import SubjectsModel from "./subjects.model"
 
-export default class Event {
+export default class EventModel {
     public id: String
     public title: String
     public eventType: String
     public duration: Number
-    public disciplines: Discipline[]
-    public subjects: Subject[]
+    public disciplines: DisciplineModel[]
+    public subjects: SubjectsModel[]
     public startDateSubscription: String
     public endDateSubscription: String
     public startDateEvent: String

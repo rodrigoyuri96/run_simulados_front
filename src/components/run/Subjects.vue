@@ -5,11 +5,11 @@
       :items="items"
       item-text="name"
       label="Assuntos"
-      :rules="[(v) => !!v || 'campo obrigatório']"
+      :rules="rules"
       outlined
       multiple
       dense
-      @change="handleSubject"
+      @change="handleSubject()"
       return-object
       auto-select-first
       clearable
@@ -28,10 +28,10 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component, Emit, VModel} from "vue-property-decorator";
+import {Vue, Component, Emit, VModel, Prop} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { SubjectModule } from "../../store/modules/SubjectModule";
-import Subject from "../../models/Subject";
+import { SubjectModule } from "../../store/modules/subject.module";
+import SubjectsModel from "../../models/subjects.model";
 
 @Component({
   name: "Subjects",
@@ -40,7 +40,8 @@ export default class Subjects extends Vue {
   subjectModule= getModule(SubjectModule, this.$store)
   valid: boolean = false;
   validSubjects: boolean = false;
-  @VModel({type: Array}) subjects!: Subject[]
+  @VModel({type: Array}) subjects!: SubjectsModel[]
+  @Prop({type:Array}) rules: any[]
 
   get items() {
     return this.subjectModule.subjects;
@@ -50,7 +51,7 @@ export default class Subjects extends Vue {
     this.subjectModule.findAll();
   }
 
-  @Emit('valid-field')
+  @Emit('valid')
   handleValid(event: boolean) {
     if (event != null && event !== undefined) {
       return true;

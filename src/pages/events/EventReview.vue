@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-card class="form-group">
-      <v-card-title class="headline teal lighten-2 white--text">Revisão de evento</v-card-title>
+      <v-card-title class="headline teal lighten-2 white--text">Revisão de evento <v-spacer></v-spacer><v-icon x-large style="color: white" @click="close()">mdi-close</v-icon></v-card-title>
       <v-card-text>
         <v-form class="mt-5">
            <v-row>
@@ -22,7 +22,7 @@
            </v-row>
            <v-row>
               <v-col>
-             <h3 class="text-center"> Duração: {{event.duracao}}</h3>
+             <h3 class="text-center"> Duração: {{event.duration}} Horas</h3>
               </v-col>
            </v-row>
            <v-row>
@@ -32,18 +32,6 @@
            </v-row>
         </v-form>
       </v-card-text>
-      <v-card-actions>
-        <v-row align="center" justify="center">
-          <v-col cols="4" align-self="end">
-            <v-btn  block color="primary">Salvar</v-btn>
-          </v-col>
-            <v-col cols="4" align-self="start">
-            <v-btn block color="secondary" class="white--text" @click="cancel()">
-              Fechar
-            </v-btn>
-           </v-col>
-        </v-row>
-      </v-card-actions>
     </v-card>
   </v-container>
 </template>
@@ -52,10 +40,9 @@
 
 import {Component, Vue} from "vue-property-decorator";
 import RunInstitution from "@/components/run/Institutions.vue";
-import {TagModule} from "@/store/modules/TagModule"
 import {getModule} from "vuex-module-decorators";
 import RunTag from "@/components/run/Tags.vue"
-import {EventModule} from "@/store/modules/EventModule";
+import {EventModule} from "@/store/modules/event.module";
 import { DateUtil } from "@/util/date"
 
 @Component({
@@ -79,7 +66,7 @@ export default class EventReview extends Vue{
     return this.eventModule.event;
   }
 
-   cancel() {
+   close() {
     this.eventModule.setEventReviewDialog(false)
   }
 

@@ -65,15 +65,15 @@
 import
 {Component, VModel, Vue} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
-import { OptionModule } from "@/store/modules/OptionModule"
-import { SubjectModule } from "@/store/modules/SubjectModule"
-import { DisciplineModule } from '@/store/modules/DisciplineModule'
+import { OptionModule } from "@/store/modules/option.module"
+import { SubjectModule } from "@/store/modules/subject.module"
+import { DisciplineModule } from '@/store/modules/discipline.module'
 import Subjects from "@/components/run/Subjects.vue"
 import Disciplines from "@/components/run/Disciplines.vue"
-import Exam from "@/components/run/exam/Exams.vue"
+import ExamModel from "@/components/run/exam/Exams.vue"
 import RunQuestion from "@/components/run/question/Question.vue"
 import RunTags from "@/components/run/Tags.vue";
-import Subject from "@/models/Subject";
+import SubjectsModel from "@/models/subjects.model";
 
 @Component({
     name: "QuestionDetail",
@@ -88,7 +88,7 @@ import Subject from "@/models/Subject";
 })
 
 export default class QuestionDetail extends Vue {
-    @VModel({type:Array}) subjectsSelected!: Subject[]
+    @VModel({type:Array}) subjectsSelected!: SubjectsModel[]
     private subjectStore = getModule(SubjectModule, this.$store)
     private optionModule = getModule(OptionModule, this.$store)
     private disciplineModule = getModule(DisciplineModule, this.$store)

@@ -116,16 +116,15 @@ export class ExamModule extends VuexModule {
     }
 
     @Action({commit:"addToExams"})
-    async save() {
-       await this.service.save(this.exam).then(res=>{
-          if(res.status == 201){
-            console.log("vestibular salvo com sucesso")
-            return res.data
-          }
-       }).catch(error=>{
-         console.log("error: ", error)
-       })
+    save():Promise<AxiosResponse> {
+       return new Promise<AxiosResponse>((resolve, reject) => {
+         this.service.save(this.exam).then(res=>{
 
+             resolve(res)
+         }).catch(error=>{
+           reject(error)
+         })
+       })
     }
 
     @Action({commit:"setExams"})

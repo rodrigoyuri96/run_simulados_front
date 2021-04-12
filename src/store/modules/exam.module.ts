@@ -18,6 +18,7 @@ export class ExamModule extends VuexModule {
     _disciplineRulesDialog = false
     _registerStatus: RegisterStatusEnum = RegisterStatusEnum.INSERT
     _index = -1
+    _validUpdate: boolean = false
 
   get dialog() {
       return this._dialog
@@ -54,6 +55,15 @@ export class ExamModule extends VuexModule {
     get registerStatus() {
       return this._registerStatus
     }
+
+    get validUpdate(){
+      return this._validUpdate
+  }
+
+  @Mutation
+  setValidUpdate(newValue: boolean){
+      this._validUpdate = newValue
+  }
 
     @Mutation
     setRegisterStatus(newValue: RegisterStatusEnum) {
@@ -141,15 +151,13 @@ export class ExamModule extends VuexModule {
     }
 
     @Action
-    delete(){
-      return new Promise<Boolean>((resolve, reject) => {
-        Axios.delete('/vestibulares/' + this.exam.id).then(res=>{
-          if(res.status == 200){
-              resolve(true)
-          }
-        }).catch(error=>{
-          reject(false)
-        })
+    delete(id):Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
+          Axios.delete('/vestibulares/' + id).then(res=>{
+            resolve(res)
+          }).catch(error=>{
+            reject(error)
+          })
       })
     }
 

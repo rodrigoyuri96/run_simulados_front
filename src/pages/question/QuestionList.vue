@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <run-question-register v-model="openQuestionRegister" />
+    
     <v-card class="form-group">
       <v-card-title class="headline teal lighten-2 white--text font-weight-regular">
         Cadastro de Questões
@@ -82,7 +83,7 @@ import RunQuestionRegister from "@/pages/question/QuestionRegister.vue";
 import QuestionRegisterModel from "../../models/question.register.model";
 import RunQuestion from "@/components/run/question/Question.vue";
 import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
-import RunPagination from "@/components/run/pagination/RunPagination";
+import RunPagination from "@/components/run/pagination/RunPagination.vue";
 
 
 @Component({
@@ -146,7 +147,6 @@ export default class QuestionList extends Vue {
   updateQuestion(i: number) {
     this.questionRegisterModule.setQuestion( this.questionRegisterModule.questions[i]);
     this.questionRegisterModule.setRegisterStatus(RegisterStatusEnum.UPDATE);
-    this.questionRegisterModule.setValidUpdate(true);
     this.openQuestionRegister = true
   }
 
@@ -180,7 +180,6 @@ export default class QuestionList extends Vue {
 
   addQuestion() {
     this.questionRegisterModule.setRegisterStatus(RegisterStatusEnum.INSERT);
-    this.questionRegisterModule.setValidUpdate(false);
     this.questionRegisterModule.setQuestion(new QuestionRegisterModel());
     this.openQuestionRegister = true;
     //this.questionRegisterModule.setDialog(true)

@@ -1,64 +1,53 @@
 <template>
   <v-container>
+    <run-event-register v-model="openEventRegister" />
+
     <v-card class="form-group">
-        <v-card-title class="headline teal lighten-2 white--text">
-          Cadastro de Eventos
-        </v-card-title>
-        <v-card-text class="mt-3">
-          <v-row alignament="end" justify="end" no-gutters>
-            <v-col align-self="end" class="ml-16" md="4">
-              <v-btn class="white--text" color="primary" @click="addEvent()">
-                Cadastrar Evento
-              </v-btn>
-            </v-col>
-          </v-row>
-          <v-simple-table fixed-header height="250px">
-            <template v-slot:default>
-              <thead class="mb-6">
-              <tr>
-                <th class="text-left">Cadastrar Evento</th>
-              </tr>
-              </thead>
-              <tbody class="mt-6">
-              <tr
-                v-for="(event, i) in events"
-                :key="i"
-                class="text-center mt-1"
-              >
-                <td>{{ event.title }}</td>
-                <td class="ml-5">
-                  <v-btn text color="teal" @click="updateEvent(i)">
-                    <v-icon>{{ icons.mdiPencil }}</v-icon>
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="deep-orange accent-4"
-                    @click="deleteEvent(i)"
-                  >
-                    <v-icon>
-                      {{ icons.mdiDelete }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-              </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-pagination
-          @next="nextPage()"
-          @previous="previousPage()"
-          v-model="page"
-          :length="4"
-          prev-icon="mdi-menu-left"
-          next-icon="mdi-menu-right" />
-      </v-card-actions>
-      </v-card>
-    <v-dialog v-model="dialog">
-      <event-register></event-register>
-    </v-dialog>
+      <v-card-title
+        class="headline teal lighten-2 white--text font-weight-regular"
+      >
+        Cadastro de Eventos
+      </v-card-title>
+      <v-card-text class="mt-3">
+        <v-card-actions class="mt-3 mb-3">
+          <v-card-title class="ml-n1"
+            >Lista de Eventos Cadastrados</v-card-title
+          >
+          <v-spacer></v-spacer>
+          <v-btn class="white--text ml-n1" color="primary" @click="addEvent()"
+            >Cadastrar Evento</v-btn
+          >
+        </v-card-actions>
+        <v-row>
+          <v-col cols="12">
+            <v-simple-table>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th>Nome do evento</th>
+                    <th class="text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(event, i) in events" :key="i">
+                    <td>{{ event.title }}</td>
+                    <td class="text-center">
+                      <v-btn elevation="0" icon>
+                        <v-icon @click="updateEvent(i)">mdi-pencil</v-icon>
+                      </v-btn>
+                      <v-btn @click="removeDialog(i)" elevation="0" icon>
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+    <run-remove-dialog :method="deleteEvent" v-model="openRemoveDialog" />
   </v-container>
 </template>
 
@@ -66,23 +55,25 @@
 import { Component, Vue } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { EventModule } from "@/store/modules/event.module";
-import EventRegister from "@/pages/events/EventRegister.vue";
+import RunEventRegister from "@/pages/events/EventRegister.vue";
 import { RegisterStatusEnum } from "@/models/register.status.enum";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import { mdiDelete, mdiPencil } from "@mdi/js";
 import EventModel from "@/models/event.model";
+import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
 
 @Component({
   name: "EventList",
-  components: { EventRegister },
+  components: { RunEventRegister, RunRemoveDialog },
 })
 export default class EventList extends Vue {
-
   eventModule = getModule(EventModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
-
+  index = 0;
+  openRemoveDialog = false;
+  openEventRegister = false;
 
   icons = {
     mdiDelete,
@@ -101,35 +92,57 @@ export default class EventList extends Vue {
     this.eventModule.setDialog(newValue);
   }
 
+  removeDialog(i) {
+    this.index = i;
+    this.openRemoveDialog = true;
+  }
+
   updateEvent(i: number) {
     console.log(this.eventModule.events[i]);
     this.eventModule.setEvent(this.eventModule.events[i]);
     this.eventModule.setRegisterStatus(RegisterStatusEnum.UPDATE);
-    this.eventModule.setDialog(true);
+    this.openEventRegister = true;
   }
 
-  deleteEvent(i: number) {
-    this.eventModule.setEvent(this.eventModule.events[i])
-    const message = new ValidationMessage('Evento deletado com sucesso', TypeMessage.SUCCESS, true, '', 3000)
-    this.eventModule.delete().then(res=>{
-      if(res){
-        this.eventModule.events.splice(i, 1)
-      }else{
-        message.message = "Erro ao deletar o evento"
-        message.type = TypeMessage.ERROR
-      }
-      this.validationMessageModule.setValidation(message)
-    })
+  deleteEvent() {
+    const event = this.eventModule.events[this.index];
+    this.eventModule
+      .delete(event.id)
+      .then((res) => {
+        if (res.status == 200) {
+          this.openRemoveDialog = false;
+          this.validationMessageModule.setSnack(true);
+          const v = new ValidationMessage(
+            "Evento excluído com sucesso",
+            TypeMessage.SUCCESS,
+            true,
+            "",
+            3000
+          );
+          this.validationMessageModule.setValidation(v);
+          this.eventModule.events.splice(this.index, 1);
+        }
+      })
+      .catch(() => {
+        const v = new ValidationMessage(
+          "Erro ao remover o evento",
+          TypeMessage.SUCCESS,
+          true,
+          "",
+          3000
+        );
+        this.validationMessageModule.setValidation(v);
+      });
   }
 
   addEvent() {
     this.eventModule.setRegisterStatus(RegisterStatusEnum.INSERT);
-    this.eventModule.setEvent(new EventModel())
-    this.eventModule.setDialog(true);
+    this.eventModule.setEvent(new EventModel());
+    this.openEventRegister = true;
   }
 
-  created(){
-    this.eventModule.findAll()
+  created() {
+    this.eventModule.findAll();
   }
 }
 </script>

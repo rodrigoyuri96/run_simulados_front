@@ -19,7 +19,6 @@
 import {Vue, Component, VModel, Emit, Prop} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { InstitutionModule } from '@/store/modules/institution.module'
-import InstitutionModel from "@/models/institution.model";
 
 @Component({
   name: 'Institutions'

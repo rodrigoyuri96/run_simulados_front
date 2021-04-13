@@ -30,7 +30,7 @@ import {Pagination} from "@/models/Pagination";
 })
 export default class RunPagination extends Vue{
   pageSize: 10
-  @VModel page = 1
+  @VModel() page = 1
   @Prop({type:Pagination}) pagination: Pagination
   @Prop({type:Function}) nextPage: Function
   @Prop({type:Function}) previousPage: Function

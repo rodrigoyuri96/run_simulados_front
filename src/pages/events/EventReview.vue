@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <v-dialog v-model="dialog" width="1000" scrollable>
     <v-card class="form-group">
-      <v-card-title class="headline teal lighten-2 white--text">Revisão de evento <v-spacer></v-spacer><v-icon x-large style="color: white" @click="close()">mdi-close</v-icon></v-card-title>
+      <v-card-title class="headline teal lighten-2 white--text">Revisão de evento <v-spacer></v-spacer><v-icon x-large style="color: white" @click="dialog = !dialog">mdi-close</v-icon></v-card-title>
       <v-card-text>
         <v-form class="mt-5">
            <v-row>
@@ -33,12 +33,12 @@
         </v-form>
       </v-card-text>
     </v-card>
-  </v-container>
+  </v-dialog>
 </template>
 
 <script lang="ts">
 
-import {Component, Vue} from "vue-property-decorator";
+import {Component, Vue, VModel} from "vue-property-decorator";
 import RunInstitution from "@/components/run/Institutions.vue";
 import {getModule} from "vuex-module-decorators";
 import RunTag from "@/components/run/Tags.vue"
@@ -52,10 +52,9 @@ import { DateUtil } from "@/util/date"
 
 export default class EventReview extends Vue{
 
-  tagModule = getModule(TagModule, this.$store)
   eventModule = getModule(EventModule, this.$store)
 
-
+  @VModel({ type: Boolean }) dialog: boolean | false
   valid: boolean = false
 
    get events() {
@@ -64,10 +63,6 @@ export default class EventReview extends Vue{
 
   get event() {
     return this.eventModule.event;
-  }
-
-   close() {
-    this.eventModule.setEventReviewDialog(false)
   }
 
   transformDate(date: String){

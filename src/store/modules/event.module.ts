@@ -1,11 +1,14 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import EventModel from "@/models/event.model"
 import { RegisterStatusEnum } from '@/models/register.status.enum'
+import {RunService} from "@/service/run.service";
+import {EventService} from "@/service/event.service";
 import Axios from "@/plugins/Axios"
 import { AxiosResponse } from 'axios'
 
 @Module({ name: 'EventModule', namespaced: true })
 export class EventModule extends VuexModule {
+    private service: RunService<EventModel> = new EventService()
     _events: EventModel[] = []
     _event: EventModel = new EventModel()
     _validField: boolean = false
@@ -82,22 +85,20 @@ export class EventModule extends VuexModule {
     }
 
     @Mutation
-    _addToEvents(newEvent: EventModel) {
+    addToEvents(newEvent: EventModel) {
         this._events.push(newEvent)
     }
 
-    @Action
-    save() {
-      return new Promise<AxiosResponse>(((resolve, reject) => {
-          Axios.post("/eventos", this.event).then(res=>{
-              resolve(res)
-          }).catch(error=>{
-              console.log("erro: ", error)
-              reject(null)
-          })
-      }))
+    @Action({commit:"addToEvents"})
+    save():Promise<AxiosResponse> {
+       return new Promise<AxiosResponse>((resolve, reject) => {
+         this.service.save(this.event).then(res=>{
+             resolve(res)
+         }).catch(error=>{
+           reject(error)
+         })
+       })
     }
-
 
     @Action
     findAll(){
@@ -107,16 +108,14 @@ export class EventModule extends VuexModule {
     }
 
     @Action
-    delete(){
-        return new Promise<Boolean>((resolve, reject) => {
-            Axios.delete('/eventos/' + this.event.id).then(res=>{
-                if(res.status == 200){
-                    resolve(true)
-                }
-            }).catch(error=>{
-                reject(false)
-            })
-        })
+    delete(id):Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
+          Axios.delete('/eventos/' + id).then(res=>{
+            resolve(res)
+          }).catch(error=>{
+            reject(error)
+          })
+      })
     }
 
     @Action

@@ -70,7 +70,7 @@ import { SubjectModule } from "@/store/modules/subject.module"
 import { DisciplineModule } from '@/store/modules/discipline.module'
 import Subjects from "@/components/run/Subjects.vue"
 import Disciplines from "@/components/run/Disciplines.vue"
-import ExamModel from "@/components/run/exam/Exams.vue"
+import Exam from "@/components/run/exam/Exams.vue"
 import RunQuestion from "@/components/run/question/Question.vue"
 import RunTags from "@/components/run/Tags.vue";
 import SubjectsModel from "@/models/subjects.model";

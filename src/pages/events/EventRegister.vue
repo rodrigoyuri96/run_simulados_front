@@ -1,13 +1,17 @@
 <template>
-  <v-container>
-    <v-dialog v-model="dialogEventReview">
-      <EventReview></EventReview>
-    </v-dialog>
+  <v-dialog v-model="dialog" width="1500px" scrollable>
     <v-card class="form-group">
-      <v-card-title class="headline teal lighten-2 white--text"
-        >Registro de Eventos</v-card-title
+      <v-card-title
+        class="headline teal lighten-2 white--text font-weight-regular"
       >
-      <v-card-text class="mt-5">
+        {{ isInsert ? "Registro de evento" : "Atualização do evento" }}
+        <v-spacer></v-spacer>
+        <v-btn icon @click="dialog = !dialog">
+          <v-icon class="white--text">mdi-close</v-icon>
+        </v-btn>
+      </v-card-title>
+
+      <v-card-text>
         <v-form v-model="validEvent">
           <v-row class="mt-5">
             <v-col cols="6">
@@ -27,7 +31,7 @@
               ></v-text-field>
             </v-col>
             <v-col cols="4">
-               <v-select
+              <v-select
                 v-model="event.eventType"
                 :items="TypeList"
                 outlined
@@ -82,7 +86,7 @@
             <v-col>
               <run-date
                 v-model="event.endDateEvent"
-                 @valid="validDate = $event"
+                @valid="validDate = $event"
                 label="Data fim Evento"
               ></run-date>
             </v-col>
@@ -93,7 +97,7 @@
                 v-model="event.disciplines"
                 @valid="validDisciplines = $event"
                 :multiple="true"
-                :rules="[i=> !!i || 'Campo obrigatório']"
+                :rules="[(i) => !!i || 'Campo obrigatório']"
               >
               </run-disciplines>
             </v-col>
@@ -101,57 +105,58 @@
               <run-subjects
                 v-model="event.subjects"
                 @valid="validSubjects = $event"
-                :rules="[i=> !!i || 'Campo obrigatório']"
+                :rules="[(i) => !!i || 'Campo obrigatório']"
               >
               </run-subjects>
             </v-col>
           </v-row>
         </v-form>
         <run-error v-if="errors.length > 0" :errors="errors"></run-error>
+        <v-card-actions>
+          <v-row align="center" justify="center">
+            <v-col cols="4" align-self="end">
+              <v-btn
+                block
+                color="primary"
+                class="white--text"
+                :disabled="!isValid"
+                @click="save"
+              >
+                {{ isInsert ? "Salvar" : "Atualizar" }}
+              </v-btn>
+            </v-col>
+            <v-col cols="4" align-self="start">
+              <v-btn
+                :disabled="!validateUpdateAction"
+                block
+                color="yellow"
+                class="black--text"
+                @click="openReviewQuestion = true"
+              >
+                Revisão
+              </v-btn>
+            </v-col>
+            <v-col cols="4" align-self="start">
+              <v-btn
+                :disabled="!validateUpdateAction"
+                block
+                color="secondary"
+                class="white--text"
+                @click="cancel()"
+              >
+                Cancelar
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-actions>
       </v-card-text>
-      <v-card-actions>
-        <v-row align="center" justify="center">
-          <v-col cols="4" align-self="end">
-            <v-btn
-              block
-              color="primary"
-              class="white--text"
-              :disabled="!isValid"
-              @click="save"
-            >
-              {{ isInsert ? "Salvar" : "Atualizar" }}
-            </v-btn>
-          </v-col>
-          <v-col cols="4" align-self="start">
-            <v-btn
-              :disabled="!validateUpdateAction"
-              block
-              color="yellow"
-              class="black--text"
-              @click="reviewEvent()"
-            >
-              Revisão
-            </v-btn>
-          </v-col>
-          <v-col cols="4" align-self="start">
-            <v-btn
-              :disabled="!validateUpdateAction"
-              block
-              color="secondary"
-              class="white--text"
-              @click="cancel()"
-            >
-              Cancelar
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-card-actions>
     </v-card>
-  </v-container>
+    <run-event-review v-model="openReviewQuestion" />
+  </v-dialog>
 </template>
 
 <script lang="ts">
-import {Vue, Component, Emit, Watch} from "vue-property-decorator";
+import { Vue, Component, Watch, VModel } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { EventModule } from "@/store/modules/event.module";
 import { SubjectModule } from "@/store/modules/subject.module";
@@ -159,21 +164,23 @@ import { DisciplineModule } from "@/store/modules/discipline.module";
 import EventModel from "../../models/event.model";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunSubjects from "@/components/run/Subjects.vue";
-import EventReview from "@/pages/events/EventReview.vue";
+import RunEventReview from "@/pages/events/EventReview.vue";
 import RunDate from "@/components/run/Date.vue";
 import { DateModule } from "@/store/modules/date.module";
 import { RegisterStatusEnum } from "@/models/register.status.enum";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
-import RunError  from "@/components/run/validator/Error.vue"
-import {DateUtil} from "@/util/date"
+import RunError from "@/components/run/validator/Error.vue";
+import { DateUtil } from "@/util/date";
 
 @Component({
   name: "EventRegister",
-  components: { RunDisciplines, RunSubjects, EventReview, RunDate, RunError },
+  components: { RunDisciplines, RunSubjects, RunEventReview, RunDate, RunError },
 })
 export default class EventRegister extends Vue {
+  @VModel({ type: Boolean }) dialog: boolean | false;
+
   eventModule = getModule(EventModule, this.$store);
   subjectModule = getModule(SubjectModule, this.$store);
   disciplineModule = getModule(DisciplineModule, this.$store);
@@ -183,35 +190,39 @@ export default class EventRegister extends Vue {
   validSubjects: boolean = false;
   validEvent: boolean = false;
   errors: String[] = [];
-  TypeList: String[] = ["Geral","Comunidade", "Instituição"];
+  TypeList: String[] = ["Geral", "Comunidade", "Instituição"];
+  openReviewQuestion: boolean = false
 
-  @Watch('event.disciplines')
-  onDisciplineEventChanged(newVal: EventModel, oldVal: EventModel){
-    this.subjectModule.setSubjects([])
-    this.subjectModule.filterByDiscipline(this.event.disciplines).then(subjects=>{
-      console.log(subjects)
-    })
+  @Watch("event.disciplines")
+  onDisciplineEventChanged(newVal: EventModel, oldVal: EventModel) {
+    this.subjectModule.setSubjects([]);
+    this.subjectModule
+      .filterByDiscipline(this.event.disciplines)
+      .then((subjects) => {
+        console.log(subjects);
+      });
   }
 
-  @Watch('event.subjects')
-  onSubjectEventChanged(newVal: EventModel, oldVal: EventModel){
-    this.disciplineModule.filterBySubject(this.event.subjects).then(disciplines=>{
-      if(disciplines != null && disciplines.length > 0)
-        this.disciplineModule._setDisciplines(disciplines)
-    })
-
+  @Watch("event.subjects")
+  onSubjectEventChanged(newVal: EventModel, oldVal: EventModel) {
+    this.disciplineModule
+      .filterBySubject(this.event.subjects)
+      .then((disciplines) => {
+        if (disciplines != null && disciplines.length > 0)
+          this.disciplineModule._setDisciplines(disciplines);
+      });
   }
 
   get isInsert() {
     return this.eventModule.registerStatus === RegisterStatusEnum.INSERT;
   }
 
-  get isValid(){
-    return this.validEvent && !this.validDate && this.validDisciplines
+  get isValid() {
+    return this.validEvent && !this.validDate && this.validDisciplines;
   }
 
   constructor() {
-    super()
+    super();
   }
 
   get events() {
@@ -226,75 +237,99 @@ export default class EventRegister extends Vue {
     this.eventModule.setEvent(event);
   }
 
-  get dialogEventReview() {
-    return this.eventModule.eventReviewDialog;
-  }
-
-  set dialogEventReview(newValue: boolean) {
-    this.eventModule.setEventReviewDialog(newValue);
-  }
-
-  reviewEvent() {
-    this.eventModule.setEventReviewDialog(true);
-  }
-
-
   get validDate(): boolean {
-    this.errors = []
-    if(!DateUtil.isBiggersThanDate(this.event.endDateSubscription, this.event.startDateSubscription)){
-      this.errors.push('A data final da inscrição não pode ser menor que a data inicial da inscrição.')
+    this.errors = [];
+    if (
+      !DateUtil.isBiggersThanDate(
+        this.event.endDateSubscription,
+        this.event.startDateSubscription
+      )
+    ) {
+      this.errors.push(
+        "A data final da inscrição não pode ser menor que a data inicial da inscrição."
+      );
     }
-    if(!DateUtil.isBiggersThanDate(this.event.startDateEvent, this.event.endDateSubscription)){
-      this.errors.push('A data fim de inscrição não pode ser depois da data inicio do evento.')
+    if (
+      !DateUtil.isBiggersThanDate(
+        this.event.startDateEvent,
+        this.event.endDateSubscription
+      )
+    ) {
+      this.errors.push(
+        "A data fim de inscrição não pode ser depois da data inicio do evento."
+      );
     }
-    if(!DateUtil.isBiggersThanDate(this.event.startDateEvent, this.event.startDateSubscription)){
-      this.errors.push('A data inicial inscrição não pode ser depois do inicio do evento.')
+    if (
+      !DateUtil.isBiggersThanDate(
+        this.event.startDateEvent,
+        this.event.startDateSubscription
+      )
+    ) {
+      this.errors.push(
+        "A data inicial inscrição não pode ser depois do inicio do evento."
+      );
     }
-    if(!DateUtil.isBiggersThanDate(this.event.endDateEvent, this.event.startDateEvent)){
-      this.errors.push('A data final do evento não pode ser menor que a data inicial do evento.')
+    if (
+      !DateUtil.isBiggersThanDate(
+        this.event.endDateEvent,
+        this.event.startDateEvent
+      )
+    ) {
+      this.errors.push(
+        "A data final do evento não pode ser menor que a data inicial do evento."
+      );
     }
 
-    return this.errors.length > 0
+    return this.errors.length > 0;
   }
 
   save() {
-    const v = new ValidationMessage('Evento salvo com sucesso', TypeMessage.SUCCESS, true, '', 3000)
-
-    console.log('Salvando Evento:', this.event)
-    if(this.eventModule.registerStatus == RegisterStatusEnum.INSERT){
-      this.eventModule.save().then(res=>{
-        if(!(res.status == 201)){
-          v.message = "Erro ao salvar o evento"
-          v.type = TypeMessage.ERROR
-        }else{
-          this.eventModule._addToEvents(res.data)
+    const v = new ValidationMessage(
+      "Evento salvo com sucesso",
+      TypeMessage.SUCCESS,
+      true,
+      "",
+      3000
+    );
+    this.dialog = false;
+    if (this.eventModule.registerStatus == RegisterStatusEnum.INSERT) {
+      this.eventModule.save().then((res) => {
+        if (!(res.status == 201)) {
+          v.message = "Erro ao salvar evento";
+          v.type = TypeMessage.ERROR;
+          this.eventModule.addToEvents(res.data);
         }
-      })
-
-     }else{
-        this.eventModule.update().then(res=>{
-          if(!(res.status == 200)){
-            v.message = "Erro ao atualizar evento"
-            v.type = TypeMessage.ERROR
+      });
+    } else {
+      this.eventModule
+        .update()
+        .then((res) => {
+          if (!(res.status == 200)) {
+            v.message = "Erro ao atualizar evento";
+            v.type = TypeMessage.ERROR;
           }
-        }).catch(error => {
-          console.log('error', error)
         })
-      v.message = "Vestibular atualizado com sucesso"
+        .catch((error) => {
+          console.log("error", error);
+        });
+      v.message = "Evento atualizado com sucesso";
     }
 
-    this.validationMessageModule.setValidation(v)
-    this.eventModule.setDialog(false)
-    this.eventModule.findAll()
+    this.validationMessageModule.setValidation(v);
+    this.eventModule.findAll();
+    this.eventModule.setDialog(false);
   }
 
   get validateUpdateAction(): Boolean {
-    return this.eventModule.registerStatus == RegisterStatusEnum.UPDATE? this.isValid : new Boolean(true)
+    return this.eventModule.registerStatus == RegisterStatusEnum.UPDATE
+      ? this.isValid
+      : new Boolean(true);
   }
 
   cancel() {
-     return this.eventModule.setDialog(false);
- }
+    this.event = new EventModel();
+    this.dialog = false;
+  }
 }
 </script>
 

@@ -2,8 +2,8 @@ export default [{
   path: '/register/exams',
   name: 'exam-register',
   meta:{
-    profile: 'CLIENT',
-    public: false
+    public: false,
+    profile: 'ADMIN'
   },
   component: () => import('@/pages/exam/ExamList.vue'),
 },
@@ -22,6 +22,7 @@ export default [{
     name: 'events-register',
     component: () => import('@/pages/events/EventList.vue'),
     meta: {
+      profile: 'ADMIN',
       public: false
     }
   },
@@ -30,6 +31,7 @@ export default [{
     name: 'questions-register',
     component: () => import('@/pages/question/QuestionList.vue'),
     meta: {
+      profile: 'ADMIN',
       public: false
     }
 

@@ -5,22 +5,26 @@ import PagesRoutes from './pages.routes'
 import UsersRoutes from './users.routes'
 import LandingRoutes from './landing.routes'
 import RunPages from './run.pages'
+
 import FirebaseService from "@/service/firebase.service";
 import store from "@/store";
+
 Vue.use(Router)
 
 export const routes = [{
   path: '/',
   redirect: '/dashboard/analytics',
   meta: {
-    public: false
+    public: false,
+    profile: 'ADMIN'
   }
 }, {
   path: '/dashboard/analytics',
   name: 'dashboard-analytics',
   component: () => import(/* webpackChunkName: "dashboard" */ '@/pages/dashboard/DashboardPage.vue'),
   meta: {
-    public: false
+    public: false,
+    profile: 'ADMIN'
   }
 },
 ...RunPages,

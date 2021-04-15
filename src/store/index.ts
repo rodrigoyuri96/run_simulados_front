@@ -7,6 +7,7 @@ import {SubjectModule} from "@/store/modules/subject.module";
 import {ValidationMessageModule} from "@/store/modules/validation/ValidationMessageModule";
 import {EventModule} from "@/store/modules/event.module";
 import {OptionModule} from "@/store/modules/option.module"
+import { UserModule } from './modules/user.module';
 
 // Global vuex
 import AppModule from './app'
@@ -28,6 +29,7 @@ const store = new Vuex.Store({
     EventModule,
     OptionModule,
     QuestionModule,
+    UserModule
   }
 })
 

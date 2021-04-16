@@ -1,6 +1,6 @@
 export default [{
   path: '/run',
-  name: 'home',
+  name: 'run',
   component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/landing/HomePage.vue'),
   meta: {
     layout: 'landing',

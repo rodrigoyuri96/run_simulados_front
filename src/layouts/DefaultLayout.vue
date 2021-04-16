@@ -24,10 +24,21 @@
               <v-img v-if="user.picture && user.picture !== '' " :src="user.picture"></v-img>
               <span v-else class="white--text headline">RUN</span>
             </v-avatar><br>
-            <span class="teal--text lighten-1--text mb-0 pa-0 title text-uppercase"> {{ user.name }} </span>
-            <small class="pink--text darken-3--text mt-0 mb-0 pa-0 subtitle-2"> <br>
-              Plano: </small><small class="subtitle-2">{{userPlan(user)}}</small><br>
+            <span class="teal--text lighten-1--text mb-0 pa-0 title text-uppercase"> {{ user.name }} </span> <br>
+            <div v-if="hasPermission(profile.client)">
+              <small class="pink--text darken-3--text mt-0 mb-0 pa-0 subtitle-2">
+                Plano:
+              </small>
+              <small class="subtitle-2">{{userPlan(user)}}</small><br>
+            </div>
+            <div v-else>
+              <small class="pink--text darken-3--text mt-0 mb-0 pa-0 subtitle-2">
+                Acesso:
+              </small>
+              <small class="subtitle-2">{{userAccess(user)}}</small><br>
+            </div>
             <small class="caption"> {{user.email}}</small>
+
           </div>
         </div>
       </template>
@@ -153,6 +164,8 @@ import ToolbarApps from '../components/toolbar/ToolbarApps'
 import ToolbarCurrency from '../components/toolbar/ToolbarCurrency'
 import ToolbarNotifications from '../components/toolbar/ToolbarNotifications'
 import RunValidationMessage from '@/components/run/messages/ValidationMessage'
+import {Profile} from "@/models/user/profile.enum";
+import UserCommons from "@/commons/user.commons";
 
 export default{
   components: {
@@ -165,6 +178,12 @@ export default{
   },
   data() {
     return {
+      profile:{
+        client: Profile.CLIENT,
+        admin: Profile.ADMIN,
+        developer: Profile.DEVELOPER,
+        teacher: Profile.TEACHER
+      },
       drawer: null,
       showSearch: false,
 
@@ -181,17 +200,28 @@ export default{
       this.$refs.search.focus()
     },
 
+    userAccess(user){
+      if(UserCommons.hasPermission(user, Profile.ADMIN)){
+        return "ADMNISTRADOR(A)"
+      }else if(UserCommons.hasPermission(user, Profile.TEACHER)){
+        return "PROFESSOR(A)"
+      }else if(UserCommons.hasPermission(user, Profile.DEVELOPER)){
+        return "DESENVOLVEDOR(A)"
+      }
+    },
+
     userPlan(user){
      let plan
      switch (user.accountSettings.accountPlan){
        case "BASIC":
          plan = "Sossegado"
          break;
-
      }
-
-
       return plan
+    },
+
+    hasPermission(profile){
+     return UserCommons.hasPermission(this.user, profile)
     },
 
     logout(){

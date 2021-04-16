@@ -1,42 +1,45 @@
 <template>
   <v-list nav dense>
     <div v-for="(item, index) in menu" :key="index">
-     
-      <nav-menu :menu="item.user" />
-
-      <nav-menu :menu="item.developer" 
-        v-if="user.profile !== profile.CLIENT && user.profile !== profile.ADMIN"  />
-
-      <nav-menu :menu="item.admin" v-if="user.profile !== profile.CLIENT"  />
-
+      <nav-menu :menu="item.user" v-if="hasPermission(profile.client)" />
+      <nav-menu :menu="item.developer" v-if="hasPermission(profile.developer)" />
+      <nav-menu :menu="item.admin" v-if="hasPermission(profile.admin)" />
     </div>
   </v-list>
 </template>
 
-<script>
+<script lang="ts">
 
-import NavMenu from './NavMenu'
-import { User } from '@/models/user/user.model'
 import { Profile } from '@/models/user/profile.enum'
+import {Component, Prop, Vue} from "vue-property-decorator";
+import NavMenu from "@/components/navigation/NavMenu.vue";
+import {getModule} from "vuex-module-decorators";
+import {UserModule} from "@/store/modules/user.module";
+import UserCommons from "@/commons/user.commons";
 
-export default {
-
+@Component({
+  name:'MainMenu',
   components: {
     NavMenu
-  },
+  }
+})
+export default class MainMenu extends Vue{
+  @Prop({type: Array, default:[]}) menu
+  userModule = getModule(UserModule, this.$store)
+  profile = {
+    client: Profile.CLIENT,
+    admin: Profile.ADMIN,
+    developer: Profile.DEVELOPER,
+    teacher: Profile.TEACHER
+  }
 
-  props: {
-    menu: {
-      type: Array,
-      default: () => []
-    },
-  },
+  get user(){
+    return this.userModule.user
+  }
 
-  data() {
-    return {
-      user: new User(),
-      profile: Profile
-    }
-  },
+  hasPermission(profile: Profile): boolean{
+    return UserCommons.hasPermission(this.user, profile)
+  }
+
 }
 </script>

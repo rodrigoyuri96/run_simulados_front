@@ -56,7 +56,7 @@
 <script lang="ts">
 
 import {Component, Vue, Prop} from "vue-property-decorator";
-import FirebaseStorageService from "@/commons/FirebaseStorageService";
+import FirebaseStorageService from "@/service/firebase.storage.service";
 import teste from "@/components/run/question/options_old/teste.vue";
 import Teste from "@/components/run/question/options_old/teste.vue";
 

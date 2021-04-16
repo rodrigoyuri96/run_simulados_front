@@ -43,7 +43,7 @@ import RunInstitution from "@/components/run/Institutions.vue";
 import {getModule} from "vuex-module-decorators";
 import RunTag from "@/components/run/Tags.vue"
 import {EventModule} from "@/store/modules/event.module";
-import { DateUtil } from "@/util/date"
+import { DateUtil } from "@/commons/date.commons"
 
 @Component({
   name: "EventReview",

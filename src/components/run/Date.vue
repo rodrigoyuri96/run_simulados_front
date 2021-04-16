@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch, VModel, Prop, Emit } from "vue-property-decorator";
-import {DateUtil} from "@/util/date"
+import {DateUtil} from "@/commons/date.commons"
 
 @Component({
   name: "RunDate",
@@ -74,7 +74,7 @@ export default class RunDate extends Vue {
   parseDate(date: String) {
       return DateUtil.parseDate(date)
   }
-  
+
   @Emit('valid')
   handleValid(event: boolean) {
     if (event != null && event !== undefined) {

@@ -1,36 +1,38 @@
 export default [{
-  path: '/cadastro-vestibular',
-  name: 'cadastro-vestibular',
+  path: '/register/exams',
+  name: 'exam-register',
   meta:{
-    profile: 'CLIENT'
+    profile: 'CLIENT',
+    public: false
   },
   component: () => import('@/pages/exam/ExamList.vue'),
 },
   {
-    path: '/editor',
-    name: 'editor',
-    component: () => import('@/components/run/editor/RunEditor.vue'),
-  },
-  {
-    path: '/cadastro-evento',
-    name: 'cadastro-evento',
-    component: () => import('@/pages/events/EventList.vue'),
-  },
-  {
-    path: '/cadastro-questao',
-    name: 'cadastro-questao',
-    component: () => import('@/pages/question/QuestionList.vue'),
+    path: '/home',
+    name: 'home',
+    meta:{
+      profile: 'CLIENT',
+      public: false
 
+    },
+    component: () => import('@/pages/home/Home.vue')
   },
   {
-    path: '/detalhe-questao',
-    name: 'detalhe-questao',
-    component: () => import('@/pages/question/QuestionDetail.vue')
+    path: '/register/events',
+    name: 'events-register',
+    component: () => import('@/pages/events/EventList.vue'),
+    meta: {
+      public: false
+    }
   },
   {
-    path: '/opcoes',
-    name: 'opcoes',
-    component: () => import('@/components/run/question/options_old/Options.vue')
+    path: '/register/questions',
+    name: 'questions-register',
+    component: () => import('@/pages/question/QuestionList.vue'),
+    meta: {
+      public: false
+    }
+
   }
 
 ]

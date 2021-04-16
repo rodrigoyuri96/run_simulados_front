@@ -2,7 +2,7 @@
   <div>
     <v-card class="text-center pa-1">
       <v-card-title class="justify-center display-1 mb-2">{{ $t('register.title') }}</v-card-title>
-      <v-card-subtitle>Let's build amazing products</v-card-subtitle>
+      <v-card-subtitle>Crie sua conta para ter acesso aos nossos conteúdos</v-card-subtitle>
 
       <!-- sign up form -->
       <v-card-text>
@@ -46,9 +46,25 @@
             @change="resetErrors"
             @keyup.enter="submit"
             @click:append="showPassword = !showPassword"
+          >
+
+          </v-text-field><v-text-field
+            v-model="password"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[rules.required]"
+            :type="showPassword ? 'text' : 'password'"
+            :error="errorPassword"
+            :error-messages="errorPasswordMessage"
+            :label="$t('register.password')"
+            name="password"
+            outlined
+            @change="resetErrors"
+            @keyup.enter="submit"
+            @click:append="showPassword = !showPassword"
           ></v-text-field>
 
           <v-btn
+            class="white--text"
             :loading="isLoading"
             :disabled="isSignUpDisabled"
             block
@@ -65,7 +81,7 @@
             :key="provider.id"
             :loading="provider.isLoading"
             :disabled="isSignUpDisabled"
-            class="mb-2 primary lighten-2 primary--text text--darken-3"
+            class="mb-2 primary lighten-2 primary--text text--darken-3 white--text"
             block
             x-large
             @click="signInProvider(provider)"
@@ -145,7 +161,7 @@ export default {
 
       // input rules
       rules: {
-        required: (value) => (value && Boolean(value)) || 'Required'
+        required: (value) => (value && Boolean(value)) || 'Campo obrigatório'
       }
     }
   },

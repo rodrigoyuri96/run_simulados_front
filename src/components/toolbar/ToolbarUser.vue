@@ -9,8 +9,9 @@
           offset-x="10"
           offset-y="10"
         >
-          <v-avatar size="40">
-            <v-img src="/images/avatars/avatar1.svg"></v-img>
+          <v-avatar size="40" v-bind:style="user.picture? 'background-color: white': 'pink'">
+            <v-img v-if="user.picture" :src="user.picture"></v-img>
+            <span v-else class="caption white--text headline">RUN</span>
           </v-avatar>
         </v-badge>
       </v-btn>
@@ -50,6 +51,7 @@
 
 <script>
 import config from '../../configs'
+import {mapGetters} from "vuex";
 /*
 |---------------------------------------------------------------------
 | Toolbar User Component
@@ -63,6 +65,11 @@ export default {
     return {
       menu: config.toolbar.user
     }
-  }
+  },
+
+  computed: {
+    ...mapGetters('UserModule', ['user'])
+  },
+
 }
 </script>

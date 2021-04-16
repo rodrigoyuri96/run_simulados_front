@@ -167,7 +167,7 @@ import { ValidationMessageModule } from "@/store/modules/validation/ValidationMe
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import RunError  from "@/components/run/validator/Error.vue"
-import {DateUtil} from "@/util/date"
+import {DateUtil} from "@/commons/date.commons"
 
 @Component({
   name: "EventRegister",

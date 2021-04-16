@@ -5,25 +5,28 @@ import PagesRoutes from './pages.routes'
 import UsersRoutes from './users.routes'
 import LandingRoutes from './landing.routes'
 import RunPages from './run.pages'
+import FirebaseService from "@/service/firebase.service";
+import store from "@/store";
 Vue.use(Router)
 
 export const routes = [{
   path: '/',
-  redirect: '/dashboard/analytics'
+  redirect: '/dashboard/analytics',
+  meta: {
+    public: false
+  }
 }, {
   path: '/dashboard/analytics',
   name: 'dashboard-analytics',
-  component: () => import(/* webpackChunkName: "dashboard" */ '@/pages/dashboard/DashboardPage.vue')
+  component: () => import(/* webpackChunkName: "dashboard" */ '@/pages/dashboard/DashboardPage.vue'),
+  meta: {
+    public: false
+  }
 },
 ...RunPages,
 ...PagesRoutes,
 ...UsersRoutes,
 ...LandingRoutes,
-{
-  path: '/blank',
-  name: 'blank',
-  component: () => import(/* webpackChunkName: "blank" */ '@/pages/BlankPage.vue')
-},
 {
   path: '*',
   name: 'error',
@@ -48,8 +51,20 @@ const router = new Router({
  * Before each route update
  */
 router.beforeEach((to, from, next) => {
+  console.log(to)
+  if(!to.meta.public){
+    FirebaseService.getUser().then(isAuthenticated=>{
+      if(isAuthenticated){
+        store.commit('UserModule/setUser', JSON.parse(sessionStorage.getItem('user')))
+        return next()
+      }else{
+        return next('/auth/signin')
+      }
+    }).catch(()=>{
+      return next('/auth/signin')
+    })
+  } else{next()}
 
-  return next()
 })
 
 /**

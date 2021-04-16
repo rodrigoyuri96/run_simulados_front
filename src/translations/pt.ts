@@ -63,7 +63,7 @@ export default {
   },
   'usermenu': {
     'profile': 'Perfil',
-    'signin': 'Assinar em',
+    'signin': 'Entrar',
     'dashboard': 'painel de controle',
     'signout': 'Sair'
   },
@@ -89,10 +89,10 @@ export default {
     'backtosign': 'Voltar para Entrar'
   },
   'login': {
-    'title': 'Assinar em',
+    'title': 'Entrar',
     'email': 'O email',
     'password': 'Senha',
-    'button': 'Assinar em',
+    'button': 'Entrar',
     'orsign': 'Ou faça login com',
     'forgot': 'Esqueceu a senha?',
     'noaccount': 'Não tem conta?',
@@ -101,14 +101,14 @@ export default {
   },
   'register': {
     'title': 'Criar Conta',
-    'name': 'Nome completo',
+    'name': 'Nome e Sobrenome',
     'email': 'O email',
     'password': 'Senha',
     'button': 'Criar Conta',
     'orsign': 'Ou inscreva-se com',
     'agree': 'Ao se inscrever, você concorda com os',
     'account': 'já tem uma conta?',
-    'signin': 'Assinar em'
+    'signin': 'Entrar'
   },
   'utility': {
     'maintenance': 'Em manutenção'

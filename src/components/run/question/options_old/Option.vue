@@ -51,7 +51,7 @@ import {
   mdiDelete,
 } from '@mdi/js'
 import {OptionModule} from "@/store/modules/option.module";
-import FirebaseStorageService from "@/commons/FirebaseStorageService";
+import FirebaseStorageService from "@/service/firebase.storage.service";
 import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
 
 

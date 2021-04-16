@@ -28,7 +28,7 @@
 <script lang="ts">
 import {Vue, Component, Prop, Watch, VModel} from "vue-property-decorator";
 import {getModule} from "vuex-module-decorators";
-import FirebaseStorageService from "@/commons/FirebaseStorageService";
+import FirebaseStorageService from "@/service/firebase.storage.service";
 import RunOption from "@/components/run/question/options_old/Option.vue";
 import OptionModel from "@/models/question/option.model"
 import {OptionModule} from "@/store/modules/option.module";

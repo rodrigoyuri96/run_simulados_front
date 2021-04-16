@@ -1,47 +1,46 @@
 <template>
   <div class="my-2">
     <div>
-      <v-card v-if="user.disabled" class="warning mb-4" light>
-        <v-card-title>User Disabled</v-card-title>
-        <v-card-subtitle>This user has been disabled! Login accesss has been revoked.</v-card-subtitle>
+      <v-card v-if="user.accountSettings.blocked == 'NAO'" class="warning mb-4" light>
+        <v-card-title>Usuário Bloqueado</v-card-title>
+        <v-card-subtitle>Seu usuário foi banido da RUN</v-card-subtitle>
         <v-card-text>
-          <v-btn dark @click="user.disabled = false">
-            <v-icon left small>mdi-account-check</v-icon>Enable User
-          </v-btn>
+          <span>Isso acontece quando você viola nossas políticas de acesso, privacidade, linguagem entrou outros motivos. Para saber mais....</span>
         </v-card-text>
       </v-card>
 
       <v-card>
-        <v-card-title>Basic Information</v-card-title>
+        <v-card-title>Informações da Conta</v-card-title>
         <v-card-text>
           <div class="d-flex flex-column flex-sm-row">
             <div>
               <v-img
-                :src="user.avatar"
+                :src="user.picture"
                 aspect-ratio="1"
                 class="blue-grey lighten-4 rounded elevation-3"
                 max-width="90"
                 max-height="90"
               ></v-img>
-              <v-btn class="mt-1" small>Edit Avatar</v-btn>
+              <v-btn class="mt-1" small>Editar imagem</v-btn>
             </div>
             <div class="flex-grow-1 pt-2 pa-sm-2">
-              <v-text-field v-model="user.name" label="Display name" placeholder="name"></v-text-field>
-              <v-text-field v-model="user.email" label="Email" hide-details></v-text-field>
+              <v-text-field v-model="user.name" label="Nome" placeholder="name"></v-text-field>
+              <v-text-field disabled v-model="user.email" label="Email" hide-details></v-text-field>
 
               <div class="d-flex flex-column">
-                <v-checkbox v-model="user.verified" dense label="Email Verified"></v-checkbox>
+                <v-checkbox v-model="user.verified" dense label="Email Verificado"></v-checkbox>
                 <div>
                   <v-btn
                     v-if="!user.verified"
+                    @click="sendEmailVerify()"
                   >
-                    <v-icon left small>mdi-email</v-icon>Send Verification Email
+                    <v-icon left small>mdi-email</v-icon>Enviar e-mail de verificação
                   </v-btn>
                 </div>
               </div>
 
               <div class="mt-2">
-                <v-btn color="primary" @click>Save</v-btn>
+                <v-btn color="primary" @click class="white--text">Atualizar informações</v-btn>
               </div>
             </div>
           </div>
@@ -50,16 +49,16 @@
 
       <v-expansion-panels v-model="panel" multiple class="mt-3">
         <v-expansion-panel>
-          <v-expansion-panel-header class="title">Actions</v-expansion-panel-header>
+          <v-expansion-panel-header class="title">Ações da conta</v-expansion-panel-header>
           <v-expansion-panel-content>
             <div class="mb-2">
-              <div class="title">Reset User Password</div>
-              <div class="subtitle mb-2">Sends a reset password email to the user.</div>
+              <div class="title">Alterar Senha</div>
+              <div class="subtitle mb-2">Modifique sua senha de acesso em poucos passos.</div>
               <v-btn
                 class="mb-2"
-                @click
+                @click="sendEmailUpdatePassword()"
               >
-                <v-icon left small>mdi-email</v-icon>Send Reset Password Email
+                <v-icon left small>mdi-email</v-icon>Enviar e-mail para alteração de senha
               </v-btn>
             </div>
 
@@ -169,20 +168,24 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    user: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-  data() {
-    return {
-      panel: [1],
-      deleteDialog: false,
-      disableDialog: false
-    }
+<script lang="ts">
+import {Component, Prop, Vue} from "vue-property-decorator";
+
+@Component({
+  name:'AccountTab'
+})
+export default class AccountTab extends Vue{
+  @Prop({type: Object, default: {}}) user
+  panel: [1]
+  deleteDialog: false
+  disableDialog: false
+
+  sendEmailVerify(){
+
+  }
+
+  sendEmailUpdatePassword(){
+
   }
 }
 </script>

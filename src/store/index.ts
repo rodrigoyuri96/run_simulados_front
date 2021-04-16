@@ -11,6 +11,7 @@ import {OptionModule} from "@/store/modules/option.module"
 // Global vuex
 import AppModule from './app'
 import {QuestionModule} from "@/store/modules/question.module";
+import {UserModule} from "@/store/modules/user.module";
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   modules: {
     app: AppModule,
+    UserModule,
     ExamModule,
     InstitutionModule,
     DisciplineModule,

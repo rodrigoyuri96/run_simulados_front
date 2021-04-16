@@ -55,20 +55,21 @@ const router = new Router({
  * Before each route update
  */
 router.beforeEach((to, from, next) => {
-  console.log(to)
-  if(!to.meta.public){
-    FirebaseService.getUser().then(isAuthenticated=>{
-      if(isAuthenticated){
-        store.commit('UserModule/setUser', JSON.parse(sessionStorage.getItem('user')))
-        return next()
-      }else{
-        return next('/auth/signin')
-      }
-    }).catch(()=>{
-      return next('/auth/signin')
-    })
-  } else{next()}
 
+   FirebaseService.getUser().then(isAuthenticated=>{
+      store.commit('UserModule/setUser', JSON.parse(sessionStorage.getItem('user')))
+      if(isAuthenticated && !to.meta.public || to.meta.public == undefined){
+        next()
+      }else{
+        next('/home')
+      }
+   }).catch(()=>{
+     if(to.meta.public || to.meta.public == undefined){
+       next()
+     }else{
+       next('/auth/signin')
+     }
+   })
 })
 
 /**

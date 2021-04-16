@@ -44,7 +44,6 @@ export default [{
   component: () => import(/* webpackChunkName: "error-not-found" */ '@/pages/error/NotFoundPage.vue'),
   meta: {
     layout: 'error',
-    public: true
   }
 }, {
   path: '/error/unexpected',
@@ -52,7 +51,6 @@ export default [{
   component: () => import(/* webpackChunkName: "error-unexpected" */ '@/pages/error/UnexpectedPage.vue'),
   meta: {
     layout: 'error',
-    public: true
   }
 }, {
   path: '/utility/maintenance',
@@ -60,7 +58,6 @@ export default [{
   component: () => import(/* webpackChunkName: "utility-maintenance" */ '@/pages/utility/MaintenancePage.vue'),
   meta: {
     layout: 'auth',
-    public: true
   }
 }, {
   path: '/utility/coming-soon',
@@ -68,13 +65,11 @@ export default [{
   component: () => import(/* webpackChunkName: "utility-soon" */ '@/pages/utility/SoonPage.vue'),
   meta: {
     layout: 'auth',
-    public: true
   }
 }, {
   path: '/utility/help',
   name: 'utility-help',
   component: () => import(/* webpackChunkName: "utility-help" */ '@/pages/utility/HelpPage.vue'),
   meta: {
-    public: true
   }
 }]

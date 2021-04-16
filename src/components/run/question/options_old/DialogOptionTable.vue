@@ -12,16 +12,15 @@
 
 <script lang="ts">
 
-import {Component, VModel, Vue} from "vue-property-decorator";
-import {Prop} from "vue/types/options";
+import {Component, VModel, Vue, Prop} from "vue-property-decorator";
 
 @Component({
   name: "DialogOptionTable"
 })
 export default class DialogOptionTable extends Vue{
-  @Prop({type:Array}) header
-  @Prop({type: Boolean}) imageFlag;
-  @VModel({type:Boolean}) dialog;
+  @Prop({type: Array}) header: any[]
+  @Prop({type: Boolean}) imageFlag!: Boolean;
+  @VModel({type: Boolean}) dialog! : any;
 
 
 }

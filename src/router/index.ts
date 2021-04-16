@@ -8,6 +8,8 @@ import RunPages from './run.pages'
 
 import FirebaseService from "@/service/firebase.service";
 import store from "@/store";
+import UserModel from "@/models/user/user.model";
+import UserCommons from "@/commons/user.commons";
 
 Vue.use(Router)
 
@@ -57,7 +59,8 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
 
    FirebaseService.getUser().then(isAuthenticated=>{
-      store.commit('UserModule/setUser', JSON.parse(sessionStorage.getItem('user')))
+      const user:UserModel = JSON.parse(sessionStorage.getItem('user'))
+      store.commit('UserModule/setUser', user)
       if(isAuthenticated && !to.meta.public || to.meta.public == undefined){
         next()
       }else{

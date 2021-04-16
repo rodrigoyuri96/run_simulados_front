@@ -11,9 +11,7 @@ export default [{
     path: '/home',
     name: 'home',
     meta:{
-      profile: 'CLIENT',
       public: false
-
     },
     component: () => import('@/pages/home/Home.vue')
   },

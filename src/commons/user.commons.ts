@@ -10,7 +10,7 @@ export default class UserCommons{
 
     console.log("permissão: ", authority)
 
-    if(authority)
+    if(authority !== null && authority !== undefined)
       return true
     return false
   }

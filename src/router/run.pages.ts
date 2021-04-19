@@ -5,7 +5,8 @@ export default [{
     public: false,
     profile: 'ADMIN'
   },
-  component: () => import('@/pages/exam/ExamList.vue'),
+  component: () => import('@/pages/admin/exam/ExamList.vue'),
+
 },
   {
     path: '/home',
@@ -18,7 +19,7 @@ export default [{
   {
     path: '/register/events',
     name: 'events-register',
-    component: () => import('@/pages/events/EventList.vue'),
+    component: () => import('@/pages/admin/events/EventList.vue'),
     meta: {
       profile: 'ADMIN',
       public: false
@@ -27,7 +28,7 @@ export default [{
   {
     path: '/register/questions',
     name: 'questions-register',
-    component: () => import('@/pages/question/QuestionList.vue'),
+    component: () => import('@/pages/admin/question/QuestionList.vue'),
     meta: {
       profile: 'ADMIN',
       public: false

@@ -1,9 +1,10 @@
 <template>
   <v-list nav dense>
     <div v-for="(item, index) in menu" :key="index">
-      <nav-menu :menu="item.user" v-if="hasPermission(profile.client)" />
+      <nav-menu :menu="item.client" v-if="hasPermission(profile.client)" />
       <nav-menu :menu="item.developer" v-if="hasPermission(profile.developer)" />
       <nav-menu :menu="item.admin" v-if="hasPermission(profile.admin)" />
+      <nav-menu :menu="item.pedagogue" v-if="hasPermission(profile.pedagogue)" />
     </div>
   </v-list>
 </template>
@@ -30,7 +31,8 @@ export default class MainMenu extends Vue{
     client: Profile.CLIENT,
     admin: Profile.ADMIN,
     developer: Profile.DEVELOPER,
-    teacher: Profile.TEACHER
+    teacher: Profile.TEACHER,
+    pedagogue: Profile.PEDAGOGUE
   }
 
   get user(){

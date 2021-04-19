@@ -185,10 +185,10 @@
 import { Component, Vue, VModel } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { ExamModule } from "@/store/modules/exam.module";
-import { InstitutionModule } from "../../store/modules/institution.module";
+import { InstitutionModule } from "../../../store/modules/institution.module";
 import ExamModel from "@/models/exam.model";
 import RunInstitution from "@/components/run/Institutions.vue";
-import DisciplineRulesDialog from "@/pages/exam/DisciplineRulesDialog.vue";
+import DisciplineRulesDialog from "@/pages/admin/exam/DisciplineRulesDialog.vue";
 import { mdiDelete, mdiPencil } from "@mdi/js";
 import DisciplineRulesModel from "@/models/discipline.rules.model";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";

@@ -1,28 +1,28 @@
-import menuPages from './menus/pages.menu'
+import developerPages from './menus/developer.menu'
+import adminPages from './menus/admin.menu'
+import clientPages from './menus/client.menu'
+import pedagoguePages from './menus/pedagogue.menu'
+
 
 export default {
-  
+
   menu: [
     {
-      user: [
-        {icon: 'mdi-view-dashboard-outline', key: 'Painel de Controle', text: 'Dashboard', link: '/dashboard/analytics'},
-      ]
+      developer: developerPages
     },
-    
     {
-      developer: menuPages
+      pedagogue: pedagoguePages
     },
-    
     {
-      admin: [
-        {icon: 'mdi-file-cog-outline', key: 'Cadastro de Vestibulares', text: 'Cadastro Vestibular', link: '/register/exams'},
-        {icon: 'mdi-file-cog-outline', key: 'Cadastro de Questão', text: 'Cadastro Questão', link: '/register/questions'},
-        {icon: 'mdi-file-cog-outline', key: 'Cadastro de Eventos', text: 'Cadastro Evento', link: '/register/events'}
-      ]
+      client: clientPages
+    },
+
+    {
+      admin: adminPages
     },
   ],
 
   footer: [
-    { text: 'Docs', key: 'menu.docs', href: 'https://vuetifyjs.com', target: '_blank' }
+    { text: 'Docs', key: 'menu.docs', href: '/', target: '_blank' }
   ]
 }

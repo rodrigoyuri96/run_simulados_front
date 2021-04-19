@@ -1,9 +1,12 @@
 export enum Profile {
-
     CLIENT = "CLIENT",
     ADMIN = "ADMIN",
     USER = "USER",
     TEACHER = "TEACHER",
-    DEVELOPER = "DEVELOPER"
+    PEDAGOGUE = "PEDAGOGUE",
+    DEVELOPER = "DEVELOPER",
+    SUPPORT = "SUPPORT",
+    MONITOR = "MONITOR"
+
 
 }

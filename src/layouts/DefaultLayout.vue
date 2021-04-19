@@ -19,7 +19,7 @@
         <div class="pa-1">
           <div class="title font-weight-bold text-lowercase text-center">
             <v-avatar
-              v-bind:style="user.picture? 'background-color: white': 'pink'"
+              v-bind:style="user.picture !== null? 'background-color: white': 'pink'"
               size="80">
               <v-img v-if="user.picture && user.picture !== '' " :src="user.picture"></v-img>
               <span v-else class="white--text headline">RUN</span>
@@ -207,6 +207,15 @@ export default{
         return "PROFESSOR(A)"
       }else if(UserCommons.hasPermission(user, Profile.DEVELOPER)){
         return "DESENVOLVEDOR(A)"
+      }else if(UserCommons.hasPermission(user, Profile.PEDAGOGUE)){
+        return "PEDAGOGO(A)"
+      }else if(UserCommons.hasPermission(user, Profile.MONITOR)){
+        return "MONITOR(A)"
+      }else if(UserCommons.hasPermission(user, Profile.SUPPORT)){
+        return "SUPORTE"
+      }
+      else{
+        return "NÃO AUTORIZADO"
       }
     },
 
@@ -227,7 +236,8 @@ export default{
     logout(){
       FirebaseService.signOut().then(status=>{
         if(status){
-          this.$router.push('/auth/signin')
+          sessionStorage.setItem('user', null)
+          this.$router.push('/run')
         }
       })
     }

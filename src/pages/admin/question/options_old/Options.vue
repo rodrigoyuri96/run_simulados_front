@@ -91,8 +91,8 @@
 
 <script lang="ts">
 
-import OnlyImage from "@/pages/question/options_old/OnlyImage.vue"
-import OnlyText from "@/pages/question/options_old/OnlyText.vue"
+import OnlyImage from "@/pages/admin/question/options_old/OnlyImage.vue"
+import OnlyText from "@/pages/admin/question/options_old/OnlyText.vue"
 import {Component,  Vue} from 'vue-property-decorator'
 import {getModule} from 'vuex-module-decorators'
 import {OptionModule} from '@/store/modules/option.module'

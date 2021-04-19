@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <run-question-register v-model="openQuestionRegister" />
-    
+
     <v-card class="form-group">
       <v-card-title class="headline teal lighten-2 white--text font-weight-regular">
         Cadastro de Questões
@@ -79,8 +79,8 @@ import { mdiDelete, mdiPencil } from "@mdi/js";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import ValidationMessage from "@/models/validation/ValidationMessage";
-import RunQuestionRegister from "@/pages/question/QuestionRegister.vue";
-import QuestionRegisterModel from "../../models/question.register.model";
+import RunQuestionRegister from "@/pages/admin/question/QuestionRegister.vue";
+import QuestionRegisterModel from "../../../models/question.register.model";
 import RunQuestion from "@/components/run/question/Question.vue";
 import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
 import RunPagination from "@/components/run/pagination/RunPagination.vue";

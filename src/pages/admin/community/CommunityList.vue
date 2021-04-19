@@ -1,11 +1,11 @@
 <template>
-  
+
 </template>
 
 <script lang="ts">
 
 import {Component, Vue} from 'vue-property-decorator'
-import CommunityRegister from '@/pages/community/CommunityRegister.vue'
+import CommunityRegister from '@/pages/admin/community/CommunityRegister.vue'
 
 
 @Component({

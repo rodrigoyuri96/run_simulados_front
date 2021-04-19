@@ -1,46 +1,39 @@
 <template>
   <v-container>
-    <run-exam-register v-model="openExamRegister" />
+    <run-event-register v-model="openEventRegister" />
 
     <v-card class="form-group">
       <v-card-title
         class="headline teal lighten-2 white--text font-weight-regular"
       >
-        Cadastro de Vestibulares
+        Cadastro de Eventos
       </v-card-title>
       <v-card-text class="mt-3">
         <v-card-actions class="mt-3 mb-3">
           <v-card-title class="ml-n1"
-            >Lista de Vestibulares Cadastrados</v-card-title
+            >Lista de Eventos Cadastrados</v-card-title
           >
           <v-spacer></v-spacer>
-          <v-btn class="white--text ml-n1" color="primary" @click="addExam()"
-            >Cadastrar Vestibular</v-btn
+          <v-btn class="white--text ml-n1" color="primary" @click="addEvent()"
+            >Cadastrar Evento</v-btn
           >
         </v-card-actions>
-
         <v-row>
           <v-col cols="12">
             <v-simple-table>
               <template v-slot:default>
                 <thead>
                   <tr>
-                    <th>Vestibular</th>
-                    <th>Ano</th>
-                    <th class="text-center">Semestre</th>
-                    <th class="text-center">Fase</th>
+                    <th>Nome do evento</th>
                     <th class="text-center">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(exam, i) in exams" :key="i">
-                    <td>{{ exam.title }}</td>
-                    <td>{{ exam.year }}</td>
-                    <td class="text-center">{{ exam.semester }}</td>
-                    <td class="text-center">{{ exam.phase }}</td>
+                  <tr v-for="(event, i) in events" :key="i">
+                    <td>{{ event.title }}</td>
                     <td class="text-center">
                       <v-btn elevation="0" icon>
-                        <v-icon @click="updateExam(i)">mdi-pencil</v-icon>
+                        <v-icon @click="updateEvent(i)">mdi-pencil</v-icon>
                       </v-btn>
                       <v-btn @click="removeDialog(i)" elevation="0" icon>
                         <v-icon>mdi-delete</v-icon>
@@ -54,57 +47,49 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <run-remove-dialog :method="deleteExam" v-model="openRemoveDialog" />
+    <run-remove-dialog :method="deleteEvent" v-model="openRemoveDialog" />
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { ExamModule } from "@/store/modules/exam.module";
-import RunExamRegister from "@/pages/exam/ExamRegister.vue";
+import { EventModule } from "@/store/modules/event.module";
+import RunEventRegister from "@/pages/admin/events/EventRegister.vue";
 import { RegisterStatusEnum } from "@/models/register.status.enum";
-import { mdiDelete, mdiPencil } from "@mdi/js";
-import ExamModel from "@/models/exam.model";
+import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
-import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
+import { mdiDelete, mdiPencil } from "@mdi/js";
+import EventModel from "@/models/event.model";
 import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
 
 @Component({
-  name: "ExamList",
-  components: { RunExamRegister, RunRemoveDialog },
+  name: "EventList",
+  components: { RunEventRegister, RunRemoveDialog },
 })
-export default class ExamList extends Vue {
-  examModule = getModule(ExamModule, this.$store);
+export default class EventList extends Vue {
+  eventModule = getModule(EventModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
-  page = 0;
   index = 0;
   openRemoveDialog = false;
-  openExamRegister = false;
+  openEventRegister = false;
+
   icons = {
     mdiDelete,
     mdiPencil,
   };
 
-  get exams() {
-    return this.examModule.exams;
-  }
-
-  get snack() {
-    return this.validationMessageModule.snack;
-  }
-
-  set snack(newValue: boolean) {
-    this.validationMessageModule.setSnack(newValue);
+  get events() {
+    return this.eventModule.events;
   }
 
   get dialog() {
-    return this.examModule.dialog;
+    return this.eventModule.dialog;
   }
 
   set dialog(newValue) {
-    this.examModule.setDialog(newValue);
+    this.eventModule.setDialog(newValue);
   }
 
   removeDialog(i) {
@@ -112,34 +97,35 @@ export default class ExamList extends Vue {
     this.openRemoveDialog = true;
   }
 
-  updateExam(i: number) {
-    this.examModule.setExam(this.examModule.exams[i]);
-    this.examModule.setRegisterStatus(RegisterStatusEnum.UPDATE);
-    this.openExamRegister = true;
+  updateEvent(i: number) {
+    console.log(this.eventModule.events[i]);
+    this.eventModule.setEvent(this.eventModule.events[i]);
+    this.eventModule.setRegisterStatus(RegisterStatusEnum.UPDATE);
+    this.openEventRegister = true;
   }
 
-  deleteExam() {
-    const exam = this.examModule.exams[this.index];
-    this.examModule
-      .delete(exam.id)
+  deleteEvent() {
+    const event = this.eventModule.events[this.index];
+    this.eventModule
+      .delete(event.id)
       .then((res) => {
         if (res.status == 200) {
           this.openRemoveDialog = false;
           this.validationMessageModule.setSnack(true);
           const v = new ValidationMessage(
-            "Vetibular excluído com sucesso",
+            "Evento excluído com sucesso",
             TypeMessage.SUCCESS,
             true,
             "",
             3000
           );
           this.validationMessageModule.setValidation(v);
-          this.examModule.exams.splice(this.index, 1);
+          this.eventModule.events.splice(this.index, 1);
         }
       })
       .catch(() => {
         const v = new ValidationMessage(
-          "Erro ao remover vestibular",
+          "Erro ao remover o evento",
           TypeMessage.SUCCESS,
           true,
           "",
@@ -149,14 +135,14 @@ export default class ExamList extends Vue {
       });
   }
 
-  addExam() {
-    this.examModule.setRegisterStatus(RegisterStatusEnum.INSERT);
-    this.examModule.setExam(new ExamModel());
-    this.openExamRegister = true;
+  addEvent() {
+    this.eventModule.setRegisterStatus(RegisterStatusEnum.INSERT);
+    this.eventModule.setEvent(new EventModel());
+    this.openEventRegister = true;
   }
 
   created() {
-    this.examModule.findAll();
+    this.eventModule.findAll();
   }
 }
 </script>

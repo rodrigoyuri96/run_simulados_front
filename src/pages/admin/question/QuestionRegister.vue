@@ -120,14 +120,14 @@ import { QuestionModule } from "@/store/modules/question.module";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import { RegisterStatusEnum } from '@/models/register.status.enum'
-import QuestionRegisterModel from "../../models/question.register.model";
+import QuestionRegisterModel from "../../../models/question.register.model";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunExams from "@/components/run/exam/Exams.vue";
 import RunSubjects from "@/components/run/Subjects.vue"
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import RunEditor from "@/components/run/editor/RunEditor.vue"
 import RunQuestion from "@/components/run/question/Question.vue";
-import RunOptionRegister from "@/pages/question/options/OptionRegister.vue";
+import RunOptionRegister from "@/pages/admin/question/options/OptionRegister.vue";
 
 
 @Component({

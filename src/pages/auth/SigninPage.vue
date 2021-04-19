@@ -165,7 +165,7 @@ export default {
     redirectHomePage(){
       FirebaseService.getUser(true).then(isAuthenticated=>{
         if(isAuthenticated){
-          this.$router.push("/home")
+          this.$router.push("/")
         }
       })
     },

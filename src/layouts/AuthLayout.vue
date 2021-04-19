@@ -1,14 +1,14 @@
 <template>
   <div class="d-flex text-center flex-column flex-md-row flex-grow-1">
-<!--    <v-sheet class="layout-side mx-auto mx-md-1 d-none d-md-flex flex-md-column justify-space-between px-2">-->
-<!--      <div class="mt-3 mt-md-10 pa-2">-->
-<!--        <div class="display-2 font-weight-bold primary&#45;&#45;text">-->
+<!--    <v-sheet classrooms="layout-side mx-auto mx-md-1 d-none d-md-flex flex-md-column justify-space-between px-2">-->
+<!--      <div classrooms="mt-3 mt-md-10 pa-2">-->
+<!--        <div classrooms="display-2 font-weight-bold primary&#45;&#45;text">-->
 <!--          {{ product.name }}-->
 <!--        </div>-->
-<!--        <div class="title my-2">Seja bem vindo.</div>-->
-<!--        <v-btn to="/" class="my-4">Take me back</v-btn>-->
+<!--        <div classrooms="title my-2">Seja bem vindo.</div>-->
+<!--        <v-btn to="/" classrooms="my-4">Take me back</v-btn>-->
 <!--      </div>-->
-<!--      <img class="w-full" src="/images/illustrations/signin-illustration.svg" />-->
+<!--      <img classrooms="w-full" src="/images/illustrations/signin-illustration.svg" />-->
 <!--    </v-sheet>-->
 
     <div class="pa-2 pa-md-4 flex-grow-1 align-center justify-center d-flex flex-column">

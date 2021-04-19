@@ -4,14 +4,16 @@ import UserModel from "@/models/user/user.model";
 export default class UserCommons{
 
   static hasPermission(user: UserModel, profile: Profile): boolean{
-    let authority = user.authorities.find(auth=>{
-      return profile == auth.authority
-    })
 
-    console.log("permissão: ", authority)
+    if(user !== undefined && user !== null && user.authorities !== undefined){
+      let authority = user.authorities.find(auth=>{
+        return profile == auth.authority
+      })
+      console.log("permissão: ", authority)
+      if(authority !== null && authority !== undefined)
+        return true
 
-    if(authority !== null && authority !== undefined)
-      return true
+    }
     return false
   }
 

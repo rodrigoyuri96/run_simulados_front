@@ -223,12 +223,10 @@ import { getModule } from "vuex-module-decorators";
 import { EventModule } from "@/store/modules/event.module";
 import { SubjectModule } from "@/store/modules/subject.module";
 import { DisciplineModule } from "@/store/modules/discipline.module";
-import EventModel from "../../models/event.model";
+import EventModel from "@/models/event.model";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunSubjects from "@/components/run/Subjects.vue";
-import RunEventReview from "@/pages/events/EventReview.vue";
 import RunDate from "@/components/run/Date.vue";
-import { DateModule } from "@/store/modules/date.module";
 import { RegisterStatusEnum } from "@/models/register.status.enum";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
@@ -236,7 +234,9 @@ import { TypeMessage } from "@/models/validation/TypeMessage";
 import RunError from "@/components/run/validator/Error.vue";
 import RunInstitution from "@/components/run/Institutions.vue"
 import RunWatch from "@/components/run/Watch.vue"
-import { DateUtil } from "@/util/date";
+import { DateUtil } from "@/commons/date.commons";
+import RunEventReview from "@/pages/admin/events/EventReview.vue"
+
 
 @Component({
   name: "EventRegister",
@@ -249,7 +249,6 @@ export default class EventRegister extends Vue {
   subjectModule = getModule(SubjectModule, this.$store);
   disciplineModule = getModule(DisciplineModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
-  dateModule = getModule(DateModule, this.$store);
   validDisciplines: boolean = false;
   validSubjects: boolean = false;
   validEvent: boolean = false;

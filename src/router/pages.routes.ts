@@ -72,4 +72,10 @@ export default [{
   component: () => import(/* webpackChunkName: "utility-help" */ '@/pages/utility/HelpPage.vue'),
   meta: {
   }
-}]
+},
+  {
+    path:'/schedule',
+    component: () => import ('@/components/run/calendar/Calendar.vue')
+  }
+
+]

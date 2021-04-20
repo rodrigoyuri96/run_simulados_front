@@ -47,9 +47,11 @@
 import {Vue, Component, Emit, Prop, VModel} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { DisciplineModule } from '@/store/modules/discipline.module'
+import Institutions from "@/components/run/Institutions.vue";
 
 @Component({
-  name: 'Disciplines'
+  name: 'Disciplines',
+  components: {Institutions}
 })
 export default class Disciplines extends Vue {
   disciplineModule = getModule(DisciplineModule, this.$store)
@@ -91,6 +93,26 @@ export default class Disciplines extends Vue {
   handleDiscipline(){
     this.handleValid(this.valid)
   }
+
+
+  /*
+  *   <template>
+  *     <div>teste<div>
+  *   </template>
+  *   <script>
+  *        let i = i + 1
+  *    < /script>
+  *   <style>  </style>
+  *
+  *
+  *
+  *
+  *
+  *
+  *
+  *
+  *
+  * */
 
 }
 </script>

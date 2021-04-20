@@ -42,6 +42,14 @@
           </v-toolbar-title>
           <v-spacer></v-spacer>
 
+          <v-btn
+            outlined
+            class="ml-1"
+            color="grey darken-2"
+            @click="changeRegisterFlag()"
+          >
+            Cadastrar Novo Evento
+          </v-btn>
 
           <v-menu
             bottom
@@ -76,14 +84,7 @@
             </v-list>
           </v-menu>
 
-          <v-btn
-            outlined
-            class="ml-1"
-            color="grey darken-2"
-            @click="changeRegisterFlag()"
-          >
-            Cadastrar Novo Evento
-          </v-btn>
+
         </v-toolbar>
       </v-card>
       <v-card height="600" class="ml-2 mr-2 mb-1">

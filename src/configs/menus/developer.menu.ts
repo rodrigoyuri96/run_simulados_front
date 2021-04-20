@@ -1,5 +1,5 @@
 export default [
-  
+
   { icon: 'mdi-file-lock-outline', key: 'menu.auth', text: 'Auth Pages', regex: /^\/auth/,
     items: [
       { icon: 'mdi-file-outline', key: 'menu.authLogin', text: 'Signin / Login', link: '/auth/signin' },
@@ -33,4 +33,16 @@ export default [
       {icon: 'mdi-file-outline', key: 'menu.blank', text: 'Blank Page', link: '/blank'},
     ]
   },
+  {
+    icon: 'mdi-file-cog-outline', key: 'cadastro-vestibular', text: 'Cadastro Vestibular', link: '/cadastro-vestibular',
+  },
+  {
+    icon: 'mdi-file-cog-outline', key: 'cadastro-questao', text: 'Cadastro Questão', link: '/cadastro-questao',
+  },
+  {
+    icon: 'mdi-file-cog-outline', key: 'cadastro-evento', text: 'Cadastro Evento', link: '/cadastro-evento',
+  },
+  {
+    icon: 'mdi-file-cog-outline', key: 'cadastro-comunidade', text: 'Cadastro Comunidade', link: '/cadastro-comunidade',
+  }
 ]

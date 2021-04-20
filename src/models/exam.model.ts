@@ -17,6 +17,8 @@ export default class ExamModel {
       this.title = ''
       this.year = 0
       this.book = ''
+      this.semester = 0
+      this.phase = 0
       this.obs = ''
       this.institution = null
       this.disciplinesRules = []

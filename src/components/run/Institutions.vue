@@ -1,17 +1,43 @@
 <template>
-  <v-form v-model="valid">
-    <v-autocomplete
+  <v-form  v-model="valid">
+    <v-select
+      v-if="multiple == false"
       v-model="institutions"
       :items="items"
-      :rules="rules"
       item-text="name"
+      label="Instituições"
+      :rules="rules"
       outlined
-      label="instituições"
       dense
-      @change="handleValid()"
+      :loading="loading"
+      @change="handleInstitution()"
       return-object
-      auto-select-first
     />
+    <v-select
+      v-if="multiple == true"
+      v-model="institutions"
+      :items="items"
+      :loading="loading"
+      item-text="name"
+      label="Instituições"
+      :rules="rules"
+      outlined
+      dense
+      multiple
+      return-object
+      @change="handleInstitution()"
+      clearable
+      chips
+      deletable-chips
+      small-chips
+      hide-no-data
+    >
+    <template v-slot:selection="{ index }">
+          <span v-if="index == 0" class="pink--text">
+            ({{ institutions.length}} institutições selecionadas)
+          </span>
+        </template>
+    </v-select>
   </v-form>
 </template>
 
@@ -26,8 +52,8 @@ import { InstitutionModule } from '@/store/modules/institution.module'
 
 export default class Institutions extends Vue {
   institutionModule = getModule(InstitutionModule, this.$store)
-  @VModel() institutions: any
-  @VModel() institution!: any
+  @VModel() institutions!: any
+  @Prop({type:Boolean}) multiple!: Boolean
   @Prop({type:Array}) rules: any[]
   valid: boolean = false
 
@@ -35,17 +61,35 @@ export default class Institutions extends Vue {
     return this.institutionModule.institutions
   }
 
+  get loading(){
+    return this.institutionModule.loading
+  }
+
+  set loading(status: Boolean){
+    this.institutionModule.setLoading(status)
+  }
+
+  
   @Emit('valid')
-  handleValid(){
-    return this.valid
+  handleValid(event: boolean) {
+    if (event != null && event !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  created() {
-    this.institutionModule.findAll()
+   created() {
+    this.loading = true
+    this.institutionModule.findAll().then(()=>{}).catch(error=>{
+      console.log(error)
+    }).finally(()=>{
+      this.loading = false
+    })
   }
 
-  updated(){
-    this.handleValid()
+  handleInstitution(){
+    this.handleValid(this.valid)
   }
 }
 </script>

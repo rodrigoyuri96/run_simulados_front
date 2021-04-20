@@ -53,7 +53,7 @@ import { DisciplineModule } from '@/store/modules/discipline.module'
 })
 export default class Disciplines extends Vue {
   disciplineModule = getModule(DisciplineModule, this.$store)
-  @VModel() disciplines!: any
+  @VModel() disciplines!: any[]
   @Prop({type:Boolean}) multiple!: Boolean
   @Prop({type:Array}) rules: any[]
   valid: boolean = false;

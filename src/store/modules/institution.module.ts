@@ -7,6 +7,7 @@ export class InstitutionModule extends VuexModule {
     _institutions: InstitutionModel[] = []
     _institution: InstitutionModel = { id: 0, name: '' }
     _validField = false
+    _loading: Boolean = false
 
     get institutions() {
       return this._institutions
@@ -20,6 +21,15 @@ export class InstitutionModule extends VuexModule {
       return this._validField
     }
 
+    get loading(){
+      return this._loading
+    }
+
+    @Mutation
+    setLoading(newStatus: Boolean){
+      this._loading = newStatus
+    }
+
     @Mutation
     setValidField(newValue: boolean) {
       this._validField = newValue
@@ -31,8 +41,8 @@ export class InstitutionModule extends VuexModule {
     }
 
     @Mutation
-    _addToInstitution(newDiscipline: InstitutionModel) {
-      this._institutions.push(newDiscipline)
+    _addToInstitution(newInstitution: InstitutionModel) {
+      this._institutions.push(newInstitution)
     }
 
     @Mutation

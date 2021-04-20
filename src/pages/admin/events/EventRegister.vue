@@ -13,7 +13,8 @@
 
       <v-card-text>
         <v-form v-model="validEvent">
-          <v-row class="mt-5">
+
+           <v-row class="mt-5">
             <v-col cols="6">
               <v-text-field
                 v-model="event.title"
@@ -34,6 +35,7 @@
               <v-select
                 v-model="event.eventType"
                 :items="TypeList"
+                :options="TypeList"
                 outlined
                 dense
                 required
@@ -43,20 +45,62 @@
             </v-col>
             <v-col cols="2">
               <v-text-field
-                v-model="event.duration"
+                v-model="event.numberSubscribers"
                 outlined
                 dense
                 required
                 :rules="[
                   (e) => !!e || 'Campo obrigatório',
                   (e) =>
-                    (e && e <= 5 && e >= 1) ||
-                    'A duração deve ser entre uma a cinco horas',
+                    (e && e <= 100 && e >= 10) ||
+                    'O número de inscritos deve ser entre 10 a 100',
                 ]"
-                label="Duração"
+                label="Inscritos"
               ></v-text-field>
             </v-col>
           </v-row>
+
+          <v-row>
+            <v-col v-if="event.eventType == 'Aula'" cols="6">
+              <v-select
+                v-model="event.category"
+                :items="classCategory"
+                outlined
+                dense
+                required
+                :rules="[(e) => !!e || 'Campo obrigatório']"
+                label="Categoria aula"
+              ></v-select>
+            </v-col>
+            <v-col v-else-if="event.eventType == 'Simulado'" cols="6">
+              <v-select
+                v-model="event.category"
+                :items="simulatedCategory"
+                outlined
+                dense
+                required
+                :rules="[(e) => !!e || 'Campo obrigatório']"
+                label="Categoria Simulado"
+              ></v-select>
+            </v-col>
+            <v-col v-if="event.eventType == 'Aula'" cols="6">
+               <run-institution
+                v-model="event.institutions"
+                @valid="validInstitution = $event"
+                :multiple="false"
+                :rules="[(i) => !!i || 'Campo obrigatório']"
+              />
+            </v-col>
+            <v-col v-else-if="event.eventType == 'Simulado'" cols="6">
+               <run-institution
+                v-model="event.institutions"
+                @valid="validInstitution = $event"
+                :multiple="true"
+                :rules="[(i) => !!i || 'Campo obrigatório']"
+              />
+            </v-col>
+          </v-row>
+
 
           <v-row>
             <v-col>
@@ -110,6 +154,24 @@
               </run-subjects>
             </v-col>
           </v-row>
+
+          <v-row>
+            <v-col cols="6">
+                <run-watch
+                v-model="event.startTimeEvent"
+                @valid="validWatch = $event"
+                label="Horário inicio Evento"
+              ></run-watch>
+            </v-col>
+            <v-col cols="6">
+                <run-watch
+                v-model="event.endTimeEvent"
+                @valid="validWatch = $event"
+                label="Horário fim Evento"
+              ></run-watch>
+            </v-col>
+          </v-row>
+
         </v-form>
         <run-error v-if="errors.length > 0" :errors="errors"></run-error>
         <v-card-actions>
@@ -161,21 +223,24 @@ import { getModule } from "vuex-module-decorators";
 import { EventModule } from "@/store/modules/event.module";
 import { SubjectModule } from "@/store/modules/subject.module";
 import { DisciplineModule } from "@/store/modules/discipline.module";
-import EventModel from "../../../models/event.model";
+import EventModel from "../../models/event.model";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunSubjects from "@/components/run/Subjects.vue";
-import RunEventReview from "@/pages/admin/events/EventReview.vue";
+import RunEventReview from "@/pages/events/EventReview.vue";
 import RunDate from "@/components/run/Date.vue";
+import { DateModule } from "@/store/modules/date.module";
 import { RegisterStatusEnum } from "@/models/register.status.enum";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import RunError from "@/components/run/validator/Error.vue";
-import { DateUtil } from "@/commons/date.commons"
+import RunInstitution from "@/components/run/Institutions.vue"
+import RunWatch from "@/components/run/Watch.vue"
+import { DateUtil } from "@/util/date";
 
 @Component({
   name: "EventRegister",
-  components: { RunDisciplines, RunSubjects, RunEventReview, RunDate, RunError },
+  components: { RunDisciplines, RunSubjects, RunEventReview, RunDate, RunError, RunInstitution, RunWatch },
 })
 export default class EventRegister extends Vue {
   @VModel({ type: Boolean }) dialog: boolean | false;
@@ -184,13 +249,19 @@ export default class EventRegister extends Vue {
   subjectModule = getModule(SubjectModule, this.$store);
   disciplineModule = getModule(DisciplineModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
+  dateModule = getModule(DateModule, this.$store);
   validDisciplines: boolean = false;
   validSubjects: boolean = false;
   validEvent: boolean = false;
+  validInstitution: boolean = false;
+  validWatch: boolean = false;
   errors: String[] = [];
-  TypeList: String[] = ["Geral", "Comunidade", "Instituição"];
+  TypeList: String[] = ["Aula", "Simulado"];
+  classCategory: String[] = ["Normal", "Revisão", "Palestra", "Correção de Prova"];
+  simulatedCategory: String[] = ["Simulado 1º fase", "Simulado 2º fase"];
   openReviewQuestion: boolean = false
 
+/*
   @Watch("event.disciplines")
   onDisciplineEventChanged(newVal: EventModel, oldVal: EventModel) {
     this.subjectModule.setSubjects([]);
@@ -210,13 +281,14 @@ export default class EventRegister extends Vue {
           this.disciplineModule._setDisciplines(disciplines);
       });
   }
+  */
 
   get isInsert() {
     return this.eventModule.registerStatus === RegisterStatusEnum.INSERT;
   }
 
   get isValid() {
-    return this.validEvent && !this.validDate && this.validDisciplines;
+    return this.validEvent && this.validDisciplines && this.validInstitution && this.validWatch && !this.validDate;
   }
 
   constructor() {

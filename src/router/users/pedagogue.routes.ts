@@ -12,6 +12,7 @@ import UserModel from "@/models/user/user.model";
 import store from "@/store";
 import UserCommons from "@/commons/user.commons";
 import {Profile} from "@/models/user/profile.enum";
+import TeacherList from "@/pages/pedagogue/teachers/TeachersList.vue"
 
 export default [
   {
@@ -32,6 +33,10 @@ export default [
       {
         path: ':id',
         component: PedagogueHome
+      },
+      {
+        path: 'manage/teachers',
+        component: TeacherList
       },
       {
         path: 'manage/schedule',

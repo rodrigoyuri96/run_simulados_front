@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; height: 100%">
     <run-calendar v-model="registerFlag" :profile="user.authorities" :events="teams[0].events"></run-calendar>
-    <run-event-register v-model="registerFlag" />
+    <run-class-register v-model="registerFlag" />
   </div>
 </template>
 
@@ -11,13 +11,13 @@ import {getModule} from "vuex-module-decorators";
 import {Component, Vue} from "vue-property-decorator";
 import {TeamModule} from "@/store/modules/team.module";
 import {UserModule} from "@/store/modules/user.module";
-import RunCalendar from "@/components/run/calendar/Calendar";
-import RunEventRegister from "@/pages/admin/events/EventRegister.vue";
+import RunCalendar from "@/components/run/calendar/Calendar.vue";
+import RunClassRegister from "@/pages/pedagogue/class/ClassRegister.vue";
 
 
 @Component({
   name: 'SchedulerTeacher',
-  components: {RunCalendar, RunEventRegister}
+  components: {RunCalendar, RunClassRegister}
 })
 export default class ScheduleTeacher extends Vue{
   private registerFlag = false

@@ -2,12 +2,12 @@ import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import {TeamModel} from "@/models/team.model";
 import Axios from "@/plugins/Axios"
 import {TeacherTeam} from "@/models/teacher.team.model";
+import {rejects} from "assert";
 
 @Module({ name: 'TeamModule', namespaced: true })
 export class TeamModule extends VuexModule {
   _teams: TeamModel[] = []
   _team: TeamModel
-  _loading: Boolean = false
 
   get teams(){
     return this._teams
@@ -17,14 +17,6 @@ export class TeamModule extends VuexModule {
     return this._team
   }
 
-  get loading(){
-    return this._loading
-  }
-
-  @Mutation
-  setLoading(newStatus: Boolean){
-    this._loading = newStatus
-  }
 
   @Mutation
   setTeam(newTeam: TeamModel){
@@ -42,7 +34,7 @@ export class TeamModule extends VuexModule {
   }
 
   @Action
-  findAll(){
+  findAll(): Promise<any>{
     let events: any[] = []
     let teacher = new TeacherTeam()
     events.push({
@@ -64,8 +56,8 @@ export class TeamModule extends VuexModule {
     }, {
       teacher: "Benito Mussoline",
       name: "Aula - Literatura",
-      start: "2021-04-01T13:30:00",
-      end: "2021-04-01T15:40:00",
+      start: "2022-04-21T15:00:25",
+      end: "2022-04-29T15:00:25",
       color: "purple lighten-2",
       timed: true,
       details: "Programa da Aula: Romantismo no Brasil "
@@ -78,6 +70,14 @@ export class TeamModule extends VuexModule {
 
     console.log("this.teams", this.teams)
 
+
+
+    return new Promise((resolve, reject) => {
+      setTimeout(()=>{
+        resolve(true)
+      }, 3000)
+
+    })
   }
 
 }

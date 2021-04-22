@@ -1,17 +1,9 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1">
-    <div class="d-flex align-center py-3">
-      <div>
-        <div class="display-1">Users</div>
-        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
-      </div>
-      <v-spacer></v-spacer>
-      <v-btn color="primary">
-        Create User
-      </v-btn>
-    </div>
-
+  <div class="d-flex flex-column flex-grow-1 ml-3 mr-3 mt-2">
     <v-card>
+      <div>
+        <div class="ml-2 mt-1">Funcionários</div>
+      </div>
       <!-- users list -->
       <v-row dense class="pa-2 align-center">
         <v-col cols="6">
@@ -26,20 +18,20 @@
             </template>
             <v-list dense>
               <v-list-item @click>
-                <v-list-item-title>Verify</v-list-item-title>
+                <v-list-item-title>Verificar</v-list-item-title>
               </v-list-item>
               <v-list-item @click>
-                <v-list-item-title>Disable</v-list-item-title>
+                <v-list-item-title>Desabilitar</v-list-item-title>
               </v-list-item>
               <v-divider></v-divider>
               <v-list-item @click>
-                <v-list-item-title>Delete</v-list-item-title>
+                <v-list-item-title>Excluir</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
 
         </v-col>
-        <v-col cols="6" class="d-flex text-right align-center">
+        <v-col cols="8" class="d-flex text-right align-center ml-15 " >
           <v-text-field
             v-model="searchQuery"
             append-icon="mdi-magnify"
@@ -48,17 +40,13 @@
             hide-details
             dense
             clearable
-            placeholder="e.g. filter for id, email, name, etc"
+            placeholder="filtrar por nome, e-mail"
             @keyup.enter="searchUser(searchQuery)"
           ></v-text-field>
-          <v-btn
-            :loading="isLoading"
-            icon
-            small
-            class="ml-2"
-            @click
-          >
-            <v-icon>mdi-refresh</v-icon>
+        </v-col>
+        <v-col align-self="end" justify="end">
+          <v-btn color="primary" class="white--text">
+            Cadastrar Professor
           </v-btn>
         </v-col>
       </v-row>
@@ -86,24 +74,24 @@
           </div>
         </template>
 
-        <template v-slot:item.verified="{ item }">
-          <v-icon v-if="item.verified" small color="success">
-            mdi-check-circle
-          </v-icon>
-          <v-icon v-else small>
-            mdi-circle-outline
-          </v-icon>
-        </template>
+<!--        <template v-slot:item.verified="{ item }">-->
+<!--          <v-icon v-if="item.verified" small color="success">-->
+<!--            mdi-check-circle-->
+<!--          </v-icon>-->
+<!--          <v-icon v-else small>-->
+<!--            mdi-circle-outline-->
+<!--          </v-icon>-->
+<!--        </template>-->
 
-        <template v-slot:item.disabled="{ item }">
-          <div>{{ item.disabled.toString() | capitalize }}</div>
-        </template>
+<!--        <template v-slot:item.disabled="{ item }">-->
+<!--          <div>{{ item.disabled.toString() | capitalize }}</div>-->
+<!--        </template>-->
 
         <template v-slot:item.role="{ item }">
           <v-chip
             label
             small
-            class="font-weight-bold"
+            :class="item.role === 'ADMIN' ? 'white--text font-weight-bold' : 'font-weight-bold'"
             :color="item.role === 'ADMIN' ? 'primary' : undefined"
           >{{ item.role | capitalize }}</v-chip>
         </template>
@@ -118,46 +106,39 @@
 
         <template v-slot:item.action="{ }">
           <div class="actions">
-            <v-btn icon to="/users/edit">
+            <v-btn @click="openDialog = true" icon>
               <v-icon>mdi-open-in-new</v-icon>
             </v-btn>
           </div>
         </template>
       </v-data-table>
     </v-card>
+    <run-teachers-list v-model="openDialog"></run-teachers-list>
   </div>
 </template>
 
 <script>
 import users from './content/users'
 import CopyLabel from '../../components/common/CopyLabel'
+import RunTeachersList from "@/pages/pedagogue/teachers/TeachersList.vue"
 
 export default {
   components: {
-    CopyLabel
+    CopyLabel,
+    RunTeachersList
   },
   data() {
     return {
+      openDialog: false,
       isLoading: false,
-      breadcrumbs: [{
-        text: 'Users',
-        disabled: false,
-        href: '#'
-      }, {
-        text: 'List'
-      }],
-
       searchQuery: '',
       selectedUsers: [],
       headers: [
         { text: 'Id', align: 'left', value: 'id' },
         { text: 'Email', value: 'email' },
-        { text: 'Verified', value: 'verified' },
-        { text: 'Name', align: 'left', value: 'name' },
-        { text: 'Role', value: 'role' },
-        { text: 'Created', value: 'created' },
-        { text: 'Last SignIn', value: 'lastSignIn' },
-        { text: 'Disabled', value: 'disabled' },
+        { text: 'Nome', align: 'left', value: 'name' },
+        { text: 'Perfil', value: 'role' },
+        { text: 'Data Criação', value: 'created' },
         { text: '', sortable: false, align: 'right', value: 'action' }
       ],
 

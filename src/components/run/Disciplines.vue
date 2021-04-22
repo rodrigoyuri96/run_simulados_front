@@ -47,11 +47,9 @@
 import {Vue, Component, Emit, Prop, VModel} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { DisciplineModule } from '@/store/modules/discipline.module'
-import Institutions from "@/components/run/Institutions.vue";
 
 @Component({
   name: 'Disciplines',
-  components: {Institutions}
 })
 export default class Disciplines extends Vue {
   disciplineModule = getModule(DisciplineModule, this.$store)

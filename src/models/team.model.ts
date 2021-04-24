@@ -1,18 +1,20 @@
-import {TeacherTeam} from "@/models/teacher.team.model";
+import {TeacherTeam} from "@/models/teacher/teacher.team.model";
 
 export class TeamModel{
-  uid: string
-  title: string
+  id: string
+  name: string
   teachers: TeacherTeam[]
   students: string[]
   events: any[]
+  period: string
+  category: string
+  startDate: string
 
-
-  constructor(uid: string, name: string, teachers: TeacherTeam[], students: string[], events: any[]) {
-    this.uid = uid;
-    this.title = name;
-    this.teachers = teachers;
-    this.students = students;
-    this.events = events;
+  constructor() {
+    this.id = null;
+    this.name = "";
+    this.teachers = [];
+    this.students = [];
+    this.events = [];
   }
 }

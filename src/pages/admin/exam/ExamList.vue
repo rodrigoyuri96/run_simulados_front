@@ -129,9 +129,6 @@ export default class ExamList extends Vue {
           const v = new ValidationMessage(
             "Vetibular excluído com sucesso",
             TypeMessage.SUCCESS,
-            true,
-            "",
-            3000
           );
           this.validationMessageModule.setValidation(v);
           this.examModule.exams.splice(this.index, 1);
@@ -141,9 +138,6 @@ export default class ExamList extends Vue {
         const v = new ValidationMessage(
           "Erro ao remover vestibular",
           TypeMessage.SUCCESS,
-          true,
-          "",
-          3000
         );
         this.validationMessageModule.setValidation(v);
       });

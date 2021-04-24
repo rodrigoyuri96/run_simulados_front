@@ -118,12 +118,12 @@ export default class CommunityList extends Vue {
       if(res.status == 200){
         this.openRemoveDialog = false;
         this.validationMessageModule.setSnack(true);
-        const v = new ValidationMessage("Comunidade salva com sucesso", TypeMessage.SUCCESS, true, "", 3000);
+        const v = new ValidationMessage("Comunidade salva com sucesso", TypeMessage.SUCCESS);
         this.validationMessageModule.setValidation(v);
         this.communityModule.communities.splice(this.index, 1);
       }
     }).catch(() => {
-      const v = new ValidationMessage("Erro ao remover a comunidade", TypeMessage.WARNING, true, "", 3000);
+      const v = new ValidationMessage("Erro ao remover a comunidade", TypeMessage.WARNING);
       this.validationMessageModule.setValidation(v);
     });
   }

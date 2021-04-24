@@ -160,9 +160,6 @@ export default class QuestionList extends Vue {
          message = new ValidationMessage(
           "Questão removida com sucesso",
           TypeMessage.SUCCESS,
-          true,
-          "",
-          3000
         );
         this.questionRegisterModule.questions.splice(this.index, 1)
       }
@@ -170,9 +167,6 @@ export default class QuestionList extends Vue {
       message = new ValidationMessage(
         "Erro ao remover questão",
         TypeMessage.ERROR,
-        true,
-        "",
-        3000
       );
     })
     this.validationMessageModule.setValidation(message);

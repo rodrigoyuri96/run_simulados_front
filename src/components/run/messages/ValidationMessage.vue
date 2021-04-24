@@ -3,7 +3,7 @@
     <v-snackbar
       right
       top
-      v-model="validation.active"
+      v-model="validation.type == 'disabled' ? false : validation.active"
       :type="validation.type"
       :color="validation.type"
     >

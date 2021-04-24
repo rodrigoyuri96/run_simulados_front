@@ -184,16 +184,16 @@ export default class QuestionRegisters extends Vue {
   save() {
     if (this.questionRegisterModule.validUpdate == true) {
       this.dialog = false
-      const v = new ValidationMessage("Questão editada com sucesso", TypeMessage.SUCCESS, true, "", 3000);
+      const v = new ValidationMessage("Questão editada com sucesso", TypeMessage.SUCCESS);
       this.validationMessageModule.setValidation(v);
     } else {
       this.questionRegisterModule.save().then(res=>{
-        const v = new ValidationMessage("Questão salva com sucesso", TypeMessage.SUCCESS, true, "", 3000);
+        const v = new ValidationMessage("Questão salva com sucesso", TypeMessage.SUCCESS);
         this.validationMessageModule.setValidation(v);
         this.dialog = false
         console.log("questao", res)
       }).catch(error=>{
-        const v = new ValidationMessage("Erro ao salvar questão", TypeMessage.ERROR, true, "", 3000);
+        const v = new ValidationMessage("Erro ao salvar questão", TypeMessage.ERROR);
         console.log("Erro ao salvar questão", error)
       });
     }

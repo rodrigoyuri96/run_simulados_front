@@ -1,6 +1,8 @@
 <template>
   <div style="width: 100%; height: 100%">
-    <run-calendar v-model="registerFlag" :profile="user.authorities" :events="teams[0].events"></run-calendar>
+    <v-card height="64" class="ml-2 mr-2 mt-1">
+    </v-card>
+    <run-calendar v-model="registerFlag" :profile="user.authorities" :schedule-type="scheduleType" ></run-calendar>
     <run-class-register v-model="registerFlag" />
   </div>
 </template>
@@ -21,6 +23,7 @@ import RunClassRegister from "@/pages/pedagogue/class/ClassRegister.vue";
 })
 export default class ScheduleTeacher extends Vue{
   private registerFlag = false
+  private scheduleType = "TEACHER"
   private teamModule = getModule(TeamModule, this.$store)
   private userModule = getModule(UserModule, this.$store)
 
@@ -36,8 +39,9 @@ export default class ScheduleTeacher extends Vue{
   }
 
   created() {
-    this.teamModule.findAll()
-    console.log("TURMAS::::", this.teamModule.teams)
+    this.teamModule.findAll().then(res=>{
+      this.teamModule._setTeams(res.data)
+    })
   }
 }
 </script>

@@ -279,9 +279,6 @@ export default class ExamRegister extends Vue {
     const v = new ValidationMessage(
       "Vestibular salvo com sucesso",
       TypeMessage.SUCCESS,
-      true,
-      "",
-      3000
     );
     this.dialog = false;
     if (this.examModule.registerStatus == RegisterStatusEnum.INSERT) {

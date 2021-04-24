@@ -160,10 +160,7 @@ export default class CommunityRegister extends Vue {
   save() {
     const v = new ValidationMessage(
       "Comunidade salva com sucesso",
-      TypeMessage.SUCCESS,
-      true,
-      "",
-      3000
+      TypeMessage.SUCCESS
     );
     this.dialog = false;
     if (this.communityModule.registerStatus == RegisterStatusEnum.INSERT) {

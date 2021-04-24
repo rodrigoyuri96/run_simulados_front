@@ -5,15 +5,18 @@
         <v-toolbar
           flat
         >
+          <run-teams v-model="team" class="mt-3" />
           <v-btn
             outlined
-            class="mr-4"
-            color="grey darken-2"
-            @click="setToday"
+            class="ml-1 white--text"
+            color="primary"
+            @click="changeRegisterFlag()"
           >
-            Hoje
-
+            Novo Evento
           </v-btn>
+
+
+          <v-spacer></v-spacer>
 
           <v-btn
             fab
@@ -26,6 +29,9 @@
               mdi-chevron-left
             </v-icon>
           </v-btn>
+          <v-toolbar-title v-if="$refs.calendar">
+            {{ $refs.calendar.title }}
+          </v-toolbar-title>
           <v-btn
             fab
             text
@@ -37,18 +43,15 @@
               mdi-chevron-right
             </v-icon>
           </v-btn>
-          <v-toolbar-title v-if="$refs.calendar">
-            {{ $refs.calendar.title }}
-          </v-toolbar-title>
-          <v-spacer></v-spacer>
 
           <v-btn
             outlined
-            class="ml-1"
+            class="mr-1"
             color="grey darken-2"
-            @click="changeRegisterFlag()"
+            @click="setToday"
           >
-            Cadastrar Novo Evento
+            Hoje
+
           </v-btn>
 
           <v-menu
@@ -83,8 +86,6 @@
               </v-list-item>
             </v-list>
           </v-menu>
-
-
         </v-toolbar>
       </v-card>
       <v-card height="600" class="ml-2 mr-2 mb-1">
@@ -93,7 +94,7 @@
           ref="calendar"
           v-model="focus"
           color="primary"
-          :events="events"
+          :events="team.events"
           :event-color="getEventColor"
           :type="type"
           @click:event="showEvent"
@@ -120,7 +121,8 @@
               <v-btn icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+              <v-toolbar-title v-if="scheduleType == 'TEACHER'">{{selectedEvent.team? selectedEvent.team.name : ''}}</v-toolbar-title>
+              <v-toolbar-title v-else v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn icon>
                 <v-icon>mdi-heart</v-icon>
@@ -130,7 +132,8 @@
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <span v-html="selectedEvent.details"></span>
+              <span v-if="scheduleType == 'TEACHER'">{{teacherDescription}}</span>
+              <span v-else>{{teamDescription}}</span>
             </v-card-text>
             <v-card-actions>
               <v-btn
@@ -150,8 +153,13 @@
 </template>
 
 <script>
+import RunTeams from "@/components/run/Teams";
+
 
 export default {
+  components:{
+    RunTeams
+  },
   data: () => ({
     focus: '',
     type: 'month',
@@ -171,9 +179,29 @@ export default {
   props:[
     'events',
     'profile',
-    'value'
+    'value',
+    'scheduleType'
   ],
   computed: {
+    team:{
+      get(){
+        return this.$store.state.TeamModule._team
+      },
+      set(value){
+        this.$store.state.TeamModule._team = value
+      }
+    },
+
+    teacherDescription(){
+      return `Disciplina: ${this.selectedEvent.discipline ? this.selectedEvent.discipline.name : '' } <br>
+            Programa da aula: ${this.selectedEvent.lessonProgram ? this.selectedEvent.lessonProgram: '(pendente)' }`
+
+    },
+
+    teamDescription(){
+      return `Programa da aula: ${this.selectedEvent.lessonProgram ? this.selectedEvent.lessonProgram: '(pendente)' }`
+    },
+
     name: {
       get() {
         return this.value
@@ -227,7 +255,6 @@ export default {
       console.log("start", start)
       console.log("end", end)
 
-      this.events = events
     },
     rnd (a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a

@@ -115,9 +115,6 @@ export default class EventList extends Vue {
           const v = new ValidationMessage(
             "Evento excluído com sucesso",
             TypeMessage.SUCCESS,
-            true,
-            "",
-            3000
           );
           this.validationMessageModule.setValidation(v);
           this.eventModule.events.splice(this.index, 1);
@@ -127,9 +124,6 @@ export default class EventList extends Vue {
         const v = new ValidationMessage(
           "Erro ao remover o evento",
           TypeMessage.SUCCESS,
-          true,
-          "",
-          3000
         );
         this.validationMessageModule.setValidation(v);
       });

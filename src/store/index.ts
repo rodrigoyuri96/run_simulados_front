@@ -15,6 +15,7 @@ import AppModule from './app'
 import {QuestionModule} from "@/store/modules/question.module";
 import {UserModule} from "@/store/modules/user.module";
 import {TeamModule} from '@/store/modules/team.module.ts'
+import {TeacherModule} from "@/store/modules/teacher.module";
 
 Vue.use(Vuex)
 
@@ -35,7 +36,8 @@ const store = new Vuex.Store({
     QuestionModule,
     TeamModule,
     CourseModule,
-    CommunityModule
+    CommunityModule,
+    TeacherModule
   }
 })
 

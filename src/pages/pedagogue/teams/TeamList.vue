@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <run-team-detail v-model="openDialog" />
+    <run-team-detail v-model="openDialog" :is-update="isUpdate" />
 
     <v-card class="form-group">
       <v-card-title
@@ -12,13 +12,13 @@
         <v-card-actions class="mt-3 mb-3">
           <v-card-title class="ml-n1">Turmas Cadastradas</v-card-title>
           <v-spacer></v-spacer>
-          <v-btn class="white--text ml-n1" color="primary" @click="openDialog = true"
+          <v-btn class="white--text ml-n1" color="primary" @click="openRegisterModal()"
           >Cadastrar turma</v-btn
           >
         </v-card-actions>
         <v-row>
           <v-col cols="12">
-            <v-simple-table>
+            <v-simple-table >
               <template v-slot:default>
                 <thead>
                 <tr>
@@ -30,15 +30,15 @@
                 </thead>
                 <tbody>
                 <tr v-for="(team, i) in teams" :key="i">
-                  <td>{{ team.title }}</td>
-                  <td>{{ team.students.length }}</td>
+                  <td>{{ team.name }}</td>
+                  <td>{{ team.members.length }}</td>
                   <td>{{ team.teachers.length }}</td>
                   <td class="text-center">
                     <v-btn elevation="0" icon>
-                      <v-icon @click="updateEvent(i)">mdi-pencil</v-icon>
+                      <v-icon color="teal darken-1" @click="updateTeam(i)">mdi-pencil</v-icon>
                     </v-btn>
-                    <v-btn @click="removeDialog(i)" elevation="0" icon>
-                      <v-icon>mdi-delete</v-icon>
+                    <v-btn @click="removeDialog(team.id)" elevation="0" icon>
+                      <v-icon color="red darken-1">mdi-delete</v-icon>
                     </v-btn>
                   </td>
                 </tr>
@@ -49,7 +49,7 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <run-remove-dialog :method="deleteHandle" v-model="openRemoveDialog" />
+    <run-remove-dialog :method="deleteHandler" v-model="openRemoveDialog" />
   </v-container>
 </template>
 
@@ -60,6 +60,11 @@ import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
 import RunTeamDetail from "@/pages/pedagogue/teams/TeamDetail.vue";
 import {getModule} from "vuex-module-decorators";
 import {TeamModule} from "@/store/modules/team.module";
+import {TeamModel} from "@/models/team.model";
+import {ValidationMessageModule} from "@/store/modules/validation/ValidationMessageModule";
+import ValidationMessage from "@/models/validation/ValidationMessage";
+import {TypeMessage} from "@/models/validation/TypeMessage";
+
 
 @Component({
   name:'TeamList',
@@ -68,27 +73,56 @@ import {TeamModule} from "@/store/modules/team.module";
 export default class TeamList extends Vue{
   openDialog = false
   teamModule = getModule(TeamModule, this.$store)
+  validationModule = getModule(ValidationMessageModule, this.$store)
   openRemoveDialog = false
+  isUpdate = false
+  id = ""
 
   get teams(){
     return this.teamModule.teams
   }
 
-  updateEvent(i){
-    console.log(i)
+  set teams(value){
+    this.teamModule._setTeams(value)
   }
 
-  removeDialog(i){
+  updateTeam(i){
+    let team = Object.assign({},this.teams[i])
+    this.teamModule.setTeam(team)
+    this.openDialog = true
+    this.isUpdate = true
+  }
+
+  removeDialog(id){
+    this.id = id
     this.openRemoveDialog = true
-    console.log(i)
+
   }
 
-  deleteHandle(){
-    console.log("delete")
+  deleteHandler(){
+    this.teamModule.delete(this.id).then(res=>{
+      if(res.status == 204){
+        this.validationModule.setValidation(new ValidationMessage('Turma deletada com sucesso.', TypeMessage.SUCCESS ))
+      }
+    }).catch(error=>{
+      console.log(error)
+      this.validationModule.setValidation(new ValidationMessage('Erro ao deletar turma.', TypeMessage.ERROR))
+    }).finally(()=>{
+      this.teamModule.removeFromTeam(this.id)
+      this.openRemoveDialog = false
+    })
+  }
+
+  openRegisterModal(){
+    this.isUpdate = false
+    this.openDialog = true
+    this.teamModule.setTeam(new TeamModel())
   }
 
   created(){
-     this.teamModule.findAll()
+     this.teamModule.findAll().then(res=>{
+       this.teamModule._setTeams(res.data)
+     })
   }
 
 }

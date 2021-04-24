@@ -4,7 +4,7 @@ import { TypeMessage } from '@/models/validation/TypeMessage'
 
 @Module({ name: 'ValidationMessageModule', namespaced: true })
 export class ValidationMessageModule extends VuexModule {
-    _validation: ValidationMessage = new ValidationMessage('', TypeMessage.SUCCESS, false)
+    _validation: ValidationMessage = new ValidationMessage('', TypeMessage.DISABLED)
     _snack: boolean = false
 
     get validation() {

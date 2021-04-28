@@ -6,7 +6,7 @@ export class ClassroomEventsService{
   private path = "/turma/eventos"
 
   saveEvents(event: ClassModel):Promise<AxiosResponse>{
-    return Axios.patch(`${this.path}/add`, event, {params:{classId: event.team.id}})
+    return Axios.put(`${this.path}/add`, event, {params:{classId: event.team.id}})
   }
 
 }

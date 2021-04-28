@@ -39,6 +39,7 @@
                 label="Data Previsão Inicio" />
               <run-teachers
                 :rules="[v=> !!v && v.length > 0 || 'Campo obrigatório']"
+                multiple
                 v-model="team.teachers" />
             </v-col>
           </v-row>
@@ -70,8 +71,8 @@ import RunTeachers from "@/components/run/Teachers.vue";
 import RunDate from "@/components/run/Date.vue";
 import {ValidationMessageModule} from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
-import {period} from "@/models/constants/period.constant.ts"
-import {categories} from "@/models/constants/categories.constant.ts"
+import {period} from "@/models/constants/period.constants.ts"
+import {categories} from "@/models/constants/categories.constants.ts"
 import {TeamModel} from "@/models/team.model";
 import {TypeMessage} from "@/models/validation/TypeMessage";
 

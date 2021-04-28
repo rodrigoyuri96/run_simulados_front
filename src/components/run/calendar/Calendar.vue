@@ -94,7 +94,7 @@
           ref="calendar"
           v-model="focus"
           color="primary"
-          :events="team.events"
+          :events="events1"
           :event-color="getEventColor"
           :type="type"
           @click:event="showEvent"
@@ -193,7 +193,7 @@ export default {
     },
 
     teacherDescription(){
-      return `Disciplina: ${this.selectedEvent.discipline ? this.selectedEvent.discipline.name : '' } <br>
+      return `Disciplina: teste <br>
             Programa da aula: ${this.selectedEvent.lessonProgram ? this.selectedEvent.lessonProgram: '(pendente)' }`
 
     },
@@ -202,6 +202,9 @@ export default {
       return `Programa da aula: ${this.selectedEvent.lessonProgram ? this.selectedEvent.lessonProgram: '(pendente)' }`
     },
 
+    events1(){
+      return this.team.events
+    },
     name: {
       get() {
         return this.value
@@ -213,7 +216,6 @@ export default {
   },
   mounted () {
     this.$refs.calendar.checkChange()
-    console.log("Authorities: ", this.profile)
     console.log("events: ", this.events)
   },
   methods: {
@@ -222,7 +224,7 @@ export default {
       this.type = 'day'
     },
     getEventColor (event) {
-      return event.color
+      return "blue"
     },
     setToday () {
       this.focus = ''

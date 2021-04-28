@@ -40,6 +40,7 @@ export default class ScheduleTeacher extends Vue{
 
   created() {
     this.teamModule.findAll().then(res=>{
+      console.log("RESPOSTA TURMAS::::::::", res.data)
       this.teamModule._setTeams(res.data)
     })
   }

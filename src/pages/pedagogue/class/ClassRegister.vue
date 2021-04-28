@@ -8,12 +8,40 @@
       </v-toolbar>
       <v-card-text class="mt-4">
         <v-form v-model="valid">
-          <v-row no-gutters>
-            <v-col class="mr-2">
+          <v-row>
+            <v-col cols="8">
               <run-teams
                 v-model="selectedTeam"
                 :multiple="false"
                 :rules="requiredField"/>
+            </v-col>
+          </v-row>
+          <v-row no-gutters>
+            <v-col class="mr-2" >
+                <v-select
+                  v-model="type"
+                  outlined
+                  :items="eventType"
+                  dense
+                  label="tipo do evento"
+                  item-text="name"
+                  item-value="value"
+                />
+            </v-col>
+            <v-col>
+                <v-select
+                  v-model="category"
+                  outlined
+                  :items="categories"
+                  dense
+                  label="Categoria do evento"
+                  item-text="name"
+                  item-value="value"
+                />
+            </v-col>
+          </v-row>
+          <v-row no-gutters>
+            <v-col class="mr-2">
               <run-teachers v-model="selectedTeacher" :multiple="false" :rules="requiredField"/>
               <run-time
                 v-model="startTime"
@@ -22,7 +50,6 @@
               <v-checkbox v-model="classModel.recurrent" label="Evento recorrente" ></v-checkbox>
             </v-col>
             <v-col>
-              <run-disciplines v-model="discipline" :rules="requiredField" />
               <run-date v-model="start" label="Data Inicio da Aula" :rules="requiredField"></run-date>
               <run-time v-model="endTime" label="Horário fim aula" :rules="requiredField"/>
             </v-col>
@@ -55,16 +82,22 @@ import {TeacherModel} from "@/models/teacher/teacher.model";
 import {ValidationMessageModule} from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import {TypeMessage} from "@/models/validation/TypeMessage";
+import {events} from "@/models/constants/event.type.constants.ts"
+import {classes} from "@/models/constants/class.categories.constants";
+import {simulated} from "@/models/constants/simulated.categories.constants";
+
 
 @Component({
   name:'ClassRegister',
   components: {RunDate, RunTime, RunDisciplines, RunTeams, RunTeachers}
 })
 export default class ClassRegister extends Vue{
+  private category: string = null
+  private type: string = null
+  private eventType = events
   private requiredField = [ v=> !!v || 'Campo obrigatório']
   private selectedTeam: TeamModel = null
   private selectedTeacher: TeacherModel = null
-  private discipline: DisciplineModel = null
   private start= ""
   private startTime=""
   private endTime=""
@@ -73,6 +106,10 @@ export default class ClassRegister extends Vue{
   teamModule = getModule(TeamModule, this.$store)
   validationModule = getModule(ValidationMessageModule, this.$store)
   valid = false
+
+  get categories(){
+    return this.type == 'CLASS' ?  classes : simulated
+  }
 
   get team(){
     return this.teamModule.team
@@ -89,10 +126,12 @@ export default class ClassRegister extends Vue{
   save(){
     this.classModel.start = this.formatDate(this.start, this.startTime)
     this.classModel.end = this.formatDate(this.start, this.endTime)
-    this.classModel.discipline = this.discipline
     this.classModel.teacher = this.selectedTeacher
     this.classModel.team.id = this.selectedTeam.id,
     this.classModel.team.name = this.selectedTeam.name
+    this.classModel.type = this.type
+    this.classModel.category = this.category
+
     let message = null
     this.teamModule.saveEvent(this.classModel).then(res=>{
       if(res.status == 200){

@@ -26,6 +26,7 @@
                   label="tipo do evento"
                   item-text="name"
                   item-value="value"
+                  :rules="requiredField"
                 />
             </v-col>
             <v-col>
@@ -37,6 +38,7 @@
                   label="Categoria do evento"
                   item-text="name"
                   item-value="value"
+                  :rules="requiredField"
                 />
             </v-col>
           </v-row>
@@ -82,7 +84,7 @@ import {TeacherModel} from "@/models/teacher/teacher.model";
 import {ValidationMessageModule} from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import {TypeMessage} from "@/models/validation/TypeMessage";
-import {events} from "@/models/constants/event.type.constants.ts"
+import {events} from "@/models/constants/event.type.constants"
 import {classes} from "@/models/constants/class.categories.constants";
 import {simulated} from "@/models/constants/simulated.categories.constants";
 

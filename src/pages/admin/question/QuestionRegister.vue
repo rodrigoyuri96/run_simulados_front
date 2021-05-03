@@ -33,20 +33,20 @@
               </v-col>
               <v-col cols="6">
                 <run-exams
-                  @valid="isValidExam = $event"
-                  v-model="question.exam" />
+                  :rules="requiredField"
+                  v-model="selectedExam" />
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="6">
                 <run-disciplines
-                  @valid="isValidDiscipline = $event"
-                  v-model="question.discipline" />
+                  :rules="requiredField"
+                  v-model="selectedDisciplines" />
               </v-col>
               <v-col cols="6">
                 <run-subjects
-                  @valid="isValidSubject = $event"
-                  v-model="question.subjects" />
+                  :rules="requiredField"
+                  v-model="selectedSubjects" />
               </v-col>
             </v-row>
 
@@ -120,7 +120,7 @@ import { QuestionModule } from "@/store/modules/question.module";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import { RegisterStatusEnum } from '@/models/register.status.enum'
-import QuestionRegisterModel from "../../../models/question.register.model";
+import QuestionRegisterModel from "@/models/question.register.model";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunExams from "@/components/run/exam/Exams.vue";
 import RunSubjects from "@/components/run/Subjects.vue"
@@ -128,6 +128,9 @@ import ValidationMessage from "@/models/validation/ValidationMessage";
 import RunEditor from "@/components/run/editor/RunEditor.vue"
 import RunQuestion from "@/components/run/question/Question.vue";
 import RunOptionRegister from "@/pages/admin/question/options/OptionRegister.vue";
+import ExamModel from "@/models/exam.model";
+import DisciplineModel from "@/models/discipline.model";
+import SubjectsModel from "@/models/subjects.model";
 
 
 @Component({
@@ -150,9 +153,11 @@ export default class QuestionRegisters extends Vue {
   questionRegisterModule = getModule(QuestionModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
 
-  isValidDiscipline: boolean = false
-  isValidExam: boolean = false
-  isValidSubject: boolean = false
+  private requiredField = [ v=> !!v || 'Campo obrigatório']
+  private questionRegisterModel = new QuestionRegisterModel()
+  private selectedExam: ExamModel = null
+  private selectedDisciplines: DisciplineModel = null
+  private selectedSubjects: SubjectsModel = null
   valid: boolean = false
   openQuestion: boolean = false
   optionDialog: boolean = false
@@ -182,6 +187,10 @@ export default class QuestionRegisters extends Vue {
   }
 
   save() {
+    this.questionRegisterModel.exam = this.selectedExam
+    this.questionRegisterModel.discipline = this.selectedDisciplines
+    this.questionRegisterModel.subject = this.selectedSubjects
+
     if (this.questionRegisterModule.validUpdate == true) {
       this.dialog = false
       const v = new ValidationMessage("Questão editada com sucesso", TypeMessage.SUCCESS);

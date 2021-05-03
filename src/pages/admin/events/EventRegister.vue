@@ -12,7 +12,7 @@
       </v-card-title>
 
       <v-card-text>
-        <v-form v-model="validEvent">
+        <v-form v-model="valid">
 
            <v-row class="mt-5">
             <v-col cols="6">
@@ -85,35 +85,32 @@
             </v-col>
             <v-col v-if="event.eventType == 'Aula'" cols="6">
                <run-institution
-                v-model="event.institutions"
-                @valid="validInstitution = $event"
+                v-model="selectedInstitutions"
                 :multiple="false"
-                :rules="[(i) => !!i || 'Campo obrigatório']"
+                :rules="requiredField"
               />
             </v-col>
             <v-col v-else-if="event.eventType == 'Simulado'" cols="6">
                <run-institution
-                v-model="event.institutions"
-                @valid="validInstitution = $event"
+                v-model="selectedInstitutions"
                 :multiple="true"
-                :rules="[(i) => !!i || 'Campo obrigatório']"
+                :rules="requiredField"
               />
             </v-col>
           </v-row>
-
 
           <v-row>
             <v-col>
               <run-date
                 v-model="event.startDateSubscription"
-                @valid="validDate = $event"
+                :rules="requiredField"
                 label="Data inicio Inscrição"
               ></run-date>
             </v-col>
             <v-col>
               <run-date
                 v-model="event.endDateSubscription"
-                @valid="validDate = $event"
+                :rules="requiredField"
                 label="Data fim Inscrição"
               ></run-date>
             </v-col>
@@ -123,14 +120,14 @@
             <v-col>
               <run-date
                 v-model="event.startDateEvent"
-                @valid="validDate = $event"
+                :rules="requiredField"
                 label="Data inicio Evento"
               ></run-date>
             </v-col>
             <v-col>
               <run-date
                 v-model="event.endDateEvent"
-                @valid="validDate = $event"
+                :rules="requiredField"
                 label="Data fim Evento"
               ></run-date>
             </v-col>
@@ -138,18 +135,16 @@
           <v-row>
             <v-col cols="6">
               <run-disciplines
-                v-model="event.disciplines"
-                @valid="validDisciplines = $event"
+                :rules="requiredField"
+                v-model="selectedDisciplines"
                 :multiple="true"
-                :rules="[(i) => !!i || 'Campo obrigatório']"
               >
               </run-disciplines>
             </v-col>
             <v-col cols="6">
               <run-subjects
-                v-model="event.subjects"
-                @valid="validSubjects = $event"
-                :rules="[(i) => !!i || 'Campo obrigatório']"
+                :rules="requiredField"
+                v-model="selectedSubjects"
               >
               </run-subjects>
             </v-col>
@@ -158,16 +153,16 @@
           <v-row>
             <v-col cols="6">
                 <run-watch
-                v-model="event.startTimeEvent"
-                @valid="validWatch = $event"
+                v-model="selectedStartTimeEvent"
                 label="Horário inicio Evento"
+                :rules="requiredField"
               ></run-watch>
             </v-col>
             <v-col cols="6">
                 <run-watch
-                v-model="event.endTimeEvent"
-                @valid="validWatch = $event"
+                v-model="selectedEndTimeEvent"
                 label="Horário fim Evento"
+                :rules="requiredField"
               ></run-watch>
             </v-col>
           </v-row>
@@ -235,8 +230,10 @@ import RunError from "@/components/run/validator/Error.vue";
 import RunInstitution from "@/components/run/Institutions.vue"
 import RunWatch from "@/components/run/Watch.vue"
 import { DateUtil } from "@/commons/date.commons";
-import RunEventReview from "@/pages/admin/events/EventReview.vue"
-
+import RunEventReview from "@/pages/admin/events/EventReview.vue";
+import DisciplineModel from "@/models/discipline.model";
+import InstitutionModel from "@/models/institution.model";
+import SubjectsModel from "@/models/subjects.model";
 
 @Component({
   name: "EventRegister",
@@ -245,15 +242,18 @@ import RunEventReview from "@/pages/admin/events/EventReview.vue"
 export default class EventRegister extends Vue {
   @VModel({ type: Boolean }) dialog: boolean | false;
 
+  private requiredField = [ v=> !!v || 'Campo obrigatório']
+  private eventModel = new EventModel()
+  private selectedInstitutions: InstitutionModel[] = []
+  private selectedDisciplines: DisciplineModel = null
+  private selectedSubjects: SubjectsModel = null
+  private selectedStartTimeEvent=""
+  private selectedEndTimeEvent=""
+  valid: boolean = false
   eventModule = getModule(EventModule, this.$store);
   subjectModule = getModule(SubjectModule, this.$store);
   disciplineModule = getModule(DisciplineModule, this.$store);
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
-  validDisciplines: boolean = false;
-  validSubjects: boolean = false;
-  validEvent: boolean = false;
-  validInstitution: boolean = false;
-  validWatch: boolean = false;
   errors: String[] = [];
   TypeList: String[] = ["Aula", "Simulado"];
   classCategory: String[] = ["Normal", "Revisão", "Palestra", "Correção de Prova"];
@@ -286,10 +286,6 @@ export default class EventRegister extends Vue {
     return this.eventModule.registerStatus === RegisterStatusEnum.INSERT;
   }
 
-  get isValid() {
-    return this.validEvent && this.validDisciplines && this.validInstitution && this.validWatch && !this.validDate;
-  }
-
   constructor() {
     super();
   }
@@ -304,6 +300,10 @@ export default class EventRegister extends Vue {
 
   set event(event: EventModel) {
     this.eventModule.setEvent(event);
+  }
+
+  get isValid(){
+    return this.valid && !this.validDate
   }
 
   get validDate(): boolean {
@@ -353,6 +353,12 @@ export default class EventRegister extends Vue {
   }
 
   save() {
+    this.eventModel.institutions = this.selectedInstitutions
+    this.eventModel.disciplines = this.selectedDisciplines
+    this.eventModel.subjects = this.selectedSubjects
+    this.eventModel.startTimeEvent = this.formatDate(this.selectedStartTimeEvent)
+    this.eventModel.endTimeEvent = this.formatDate(this.selectedEndTimeEvent)
+
     const v = new ValidationMessage(
       "Evento salvo com sucesso",
       TypeMessage.SUCCESS,
@@ -388,8 +394,12 @@ export default class EventRegister extends Vue {
 
   get validateUpdateAction(): Boolean {
     return this.eventModule.registerStatus == RegisterStatusEnum.UPDATE
-      ? this.isValid
+      ? this.valid
       : new Boolean(true);
+  }
+
+  formatDate(time){
+    return "T" + time + ":00"
   }
 
   cancel() {

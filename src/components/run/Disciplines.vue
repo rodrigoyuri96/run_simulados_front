@@ -54,7 +54,7 @@ export default class Disciplines extends Vue {
   disciplineModule = getModule(DisciplineModule, this.$store)
   @VModel() disciplines!: any[]
   @Prop({type:Boolean}) multiple!: Boolean
-  @Prop({type:Array}) rules: any[]
+  @Prop({type:Array}) rules!: []
 
   get items() {
     return this.disciplineModule.disciplines

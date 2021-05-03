@@ -354,8 +354,8 @@ export default class EventRegister extends Vue {
 
   save() {
     this.eventModel.institutions = this.selectedInstitutions
-    this.eventModel.disciplines = this.selectedDisciplines
-    this.eventModel.subjects = this.selectedSubjects
+    this.eventModel.disciplines = [this.selectedDisciplines]
+    this.eventModel.subjects = [this.selectedSubjects]
     this.eventModel.startTimeEvent = this.formatDate(this.selectedStartTimeEvent)
     this.eventModel.endTimeEvent = this.formatDate(this.selectedEndTimeEvent)
 

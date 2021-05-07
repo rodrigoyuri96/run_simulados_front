@@ -210,8 +210,6 @@ export default class QuestionRegisters extends Vue {
   }
 
   reset() {
-    console.log("alo ", this.selectedSubjects)
-    this.selectedSubjects = null
     this.question = new QuestionRegisterModel();
     this.dialog = false
   }

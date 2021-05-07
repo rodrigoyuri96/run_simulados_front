@@ -94,7 +94,7 @@
                <run-institution
                 v-model="selectedInstitutions"
                 :multiple="true"
-                :rules="requiredField"
+                :rules="requiredArrayField"
               />
             </v-col>
           </v-row>
@@ -135,7 +135,7 @@
           <v-row>
             <v-col cols="6">
               <run-disciplines
-                :rules="requiredField"
+                :rules="requiredArrayField"
                 v-model="selectedDisciplines"
                 :multiple="true"
               >
@@ -143,7 +143,7 @@
             </v-col>
             <v-col cols="6">
               <run-subjects
-                :rules="requiredField"
+                :rules="requiredArrayField"
                 v-model="selectedSubjects"
               >
               </run-subjects>
@@ -243,6 +243,7 @@ export default class EventRegister extends Vue {
   @VModel({ type: Boolean }) dialog: boolean | false;
 
   private requiredField = [ v=> !!v || 'Campo obrigatório']
+  private requiredArrayField = [v=> !!v && v.length > 0 || 'Campo obrigatório']
   private eventModel = new EventModel()
   private selectedInstitutions: InstitutionModel[] = []
   private selectedDisciplines: DisciplineModel = null

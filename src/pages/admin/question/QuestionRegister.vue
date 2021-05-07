@@ -45,7 +45,7 @@
               </v-col>
               <v-col cols="6">
                 <run-subjects
-                  :rules="requiredField"
+                  :rules="requiredArrayField"
                   v-model="selectedSubjects" />
               </v-col>
             </v-row>
@@ -154,6 +154,7 @@ export default class QuestionRegisters extends Vue {
   validationMessageModule = getModule(ValidationMessageModule, this.$store);
 
   private requiredField = [ v=> !!v || 'Campo obrigatório']
+  private requiredArrayField = [ v=> !!v && v.length > 0 || 'Campo obrigatório']
   private questionRegisterModel = new QuestionRegisterModel()
   private selectedExam: ExamModel = null
   private selectedDisciplines: DisciplineModel = null
@@ -209,6 +210,8 @@ export default class QuestionRegisters extends Vue {
   }
 
   reset() {
+    console.log("alo ", this.selectedSubjects)
+    this.selectedSubjects = null
     this.question = new QuestionRegisterModel();
     this.dialog = false
   }

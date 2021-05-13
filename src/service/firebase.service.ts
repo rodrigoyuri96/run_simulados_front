@@ -1,8 +1,10 @@
-import Firebase from "@/firebase.ts"
+import Firebase from "@/firebase"
 import firebase from "firebase";
 import Axios from "@/plugins/Axios"
 import User = firebase.User;
 import UserCredential = firebase.auth.UserCredential;
+import { resolve } from "node:path";
+import { rejects } from "node:assert";
 
 export default class FirebaseService{
 
@@ -37,6 +39,7 @@ export default class FirebaseService{
       Firebase.auth()
         .signInWithPopup(provider)
         .then((result) => {
+
           resolve(result)
         }).catch((error) => {
           reject(error)
@@ -86,7 +89,31 @@ export default class FirebaseService{
          }
        })
      })
+  }
 
+  public static createUser(email: string, password: string):Promise<UserCredential> {
+    return new Promise((resolve, reject) => {
+      Firebase.auth().createUserWithEmailAndPassword(email, password).then(result => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+    })
+  }
+
+  static async sendEmailVerification(userCredential: UserCredential) {
+    const user = userCredential.user
+    await user.sendEmailVerification()
+  }
+
+  static async updatedUser(userCredential: UserCredential, data: any) {
+    const user = userCredential.user;
+    const photoURL = data.photoURL ? data.photoURL : null;
+    await user.updateProfile({
+      displayName: data.name,
+      photoURL: photoURL
+    })
   }
 
 

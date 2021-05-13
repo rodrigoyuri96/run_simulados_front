@@ -12,6 +12,7 @@ import {Profile} from "@/models/user/profile.enum";
 import UserModel from "@/models/user/user.model";
 import ClientRoutes from "./users/client.routes";
 import FirebaseService from "@/service/firebase.service";
+import firebase from "firebase";
 
 
 Vue.use(Router)
@@ -24,13 +25,16 @@ export const routes = [{
       let adminRole = UserCommons.hasPermission(user, Profile.ADMIN)
       let clientRole = UserCommons.hasPermission(user, Profile.CLIENT)
       let pedagogueRole = UserCommons.hasPermission(user, Profile.PEDAGOGUE)
+      let userVerified = firebase.auth().currentUser;
       console.log("admin role", adminRole)
       console.log("client role", clientRole)
       console.log("pedagogue role", pedagogueRole)
 
       if(user == null){
         next('/run/')
-      }else if(adminRole){
+      } else if(userVerified.emailVerified == false) {
+        next('/verify/email') 
+      } else if(adminRole){
         next(`/admin/${user.uid}`)
       }else if(clientRole){
         console.log("client role")
@@ -40,8 +44,14 @@ export const routes = [{
       }else{
         next(false)
       }
-
     }
+  },
+  {
+    path: '/verify/email',
+    meta: {
+      layout: 'auth'
+    },
+    component: () => import('../pages/auth/WelcomeVerifyYourEmail.vue')
   },
 
 //...RunPages,

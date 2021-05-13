@@ -85,6 +85,8 @@
 <script>
 import FirebaseService from "@/service/firebase.service";
 import AuthService from "@/service/auth.service";
+import firebase from "firebase";
+
 export default {
   data() {
     return {
@@ -123,6 +125,7 @@ export default {
       }
     }
   },
+  
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
@@ -133,7 +136,7 @@ export default {
     },
     async signIn(email, password) {
       FirebaseService.auth(email, password).then(()=>{
-        this.redirectHomePage()
+          this.redirectHomePage()
       })
         .catch(error=>{
         if(error.code == 'auth/wrong-password'){
@@ -141,6 +144,7 @@ export default {
         }
       })
     },
+    
     signInProvider(provider) {
 
       if(provider.label == 'Google'){
@@ -164,8 +168,12 @@ export default {
 
     redirectHomePage(){
       FirebaseService.getUser(true).then(isAuthenticated=>{
-        if(isAuthenticated){
+        let user = firebase.auth().currentUser;
+        if(isAuthenticated && user.emailVerified == true){
+          this.load()
           this.$router.push("/")
+        } else {
+          this.$router.push("/verify/email")
         }
       })
     },
@@ -176,7 +184,11 @@ export default {
 
       this.errorProvider = false
       this.errorProviderMessages = ''
-    }
+    },
+
+    load() {
+      location.reload()
+    },
   }
 }
 </script>

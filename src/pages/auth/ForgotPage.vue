@@ -1,88 +1,68 @@
 <template>
   <div>
     <v-card class="text-center pa-1">
-      <v-card-title class="justify-center display-1 mb-2">{{ $t('forgot.title') }}</v-card-title>
+      <v-card-title class="justify-center display-1 mb-2">{{
+        $t("forgot.title")
+      }}</v-card-title>
+
       <v-card-subtitle>
-        {{ $t('forgot.subtitle') }}
+        {{ $t("forgot.subtitle") }}
       </v-card-subtitle>
 
       <!-- reset form -->
       <v-card-text>
-        <v-form ref="form" v-model="isFormValid" lazy-validation @submit.prevent="submit">
+        <v-form ref="form" v-model="valid">
           <v-text-field
             v-model="email"
-            :rules="[rules.required]"
-            :validate-on-blur="false"
-            :error="error"
-            :error-messages="errorMessages"
+            :rules="requiredField"
             :label="$t('forgot.email')"
             name="email"
             outlined
-            @keyup.enter="submit"
-            @change="resetErrors"
           ></v-text-field>
 
           <v-btn
             class="white--text"
-            :loading="isLoading"
             block
             x-large
+            :disabled="!valid"
             color="primary"
-            @click="submit"
-          >{{ $t('forgot.button') }}</v-btn>
+            @click="sendEmailUpdatePassword"
+            >{{ $t("forgot.button") }}</v-btn
+          >
         </v-form>
       </v-card-text>
     </v-card>
 
     <div class="text-center mt-6">
       <router-link to="/auth/signin">
-        {{ $t('forgot.backtosign') }}
+        {{ $t("forgot.backtosign") }}
       </router-link>
     </div>
   </div>
 </template>
 
-<script>
-/*
-|---------------------------------------------------------------------
-| Forgot Page Component
-|---------------------------------------------------------------------
-|
-| Template to send email to remember/replace password
-|
-*/
-export default {
-  data() {
-    return {
-      // reset button
-      isLoading: false,
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import FirebaseService from "@/service/firebase.service";
 
-      // form
-      isFormValid: true,
-      email: '',
+@Component({
+  name: "ForgotPage",
+})
+export default class ForgotPage extends Vue {
+  
+  private requiredField = [ v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Digite um e-mail válido' ] 
+  valid: boolean = false;
+  email=""
+  error: boolean = false;
 
-      // form error
-      error: false,
-      errorMessages: '',
-
-      // input rules
-      rules: {
-        required: (value) => (value && Boolean(value)) || 'Required'
-      }
-    }
-  },
-  methods: {
-    submit(e) {
-      if (this.$refs.form.validate()) {
-        console.log('submit')
-      }
-    },
-    resetEmail(email, password) {
-    },
-    resetErrors() {
-      this.error = false
-      this.errorMessages = ''
-    }
+  sendEmailUpdatePassword() {
+    FirebaseService.passwordResetEmail(this.email)
+      .then(() => {
+        alert('E-mail enviado com sucesso!')
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 }
 </script>

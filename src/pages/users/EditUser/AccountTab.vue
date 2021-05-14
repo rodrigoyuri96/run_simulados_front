@@ -169,6 +169,7 @@
 </template>
 
 <script lang="ts">
+import FirebaseService from "@/service/firebase.service";
 import {Component, Prop, Vue} from "vue-property-decorator";
 
 @Component({
@@ -179,13 +180,19 @@ export default class AccountTab extends Vue{
   panel: [1]
   deleteDialog: false
   disableDialog: false
+  email: ''
 
   sendEmailVerify(){
 
   }
 
-  sendEmailUpdatePassword(){
-
+  sendEmailUpdatePassword(email){
+    FirebaseService.passwordResetEmail(email).then(()=> {
+      console.log('alo')
+    }).catch(error=>{
+       console.log(error)
+    })
   }
+
 }
 </script>

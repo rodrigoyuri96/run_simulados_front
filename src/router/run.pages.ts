@@ -33,7 +33,5 @@ export default [{
       profile: 'ADMIN',
       public: false
     }
-
   }
-
 ]

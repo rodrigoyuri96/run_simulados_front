@@ -13,6 +13,7 @@ import store from "@/store";
 import UserCommons from "@/commons/user.commons";
 import {Profile} from "@/models/user/profile.enum";
 import TeacherList from "@/pages/pedagogue/teachers/TeachersList.vue"
+import UsersPage from "@/pages/users/UsersPage.vue"
 
 export default [
   {

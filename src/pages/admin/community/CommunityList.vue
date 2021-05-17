@@ -54,7 +54,7 @@
 <script lang="ts">
 
 import {Component, Vue} from 'vue-property-decorator'
-import RunCommunityRegister from '@/pages/community/CommunityRegister.vue'
+import RunCommunityRegister from '@/pages/admin/community/CommunityRegister.vue'
 import { getModule } from "vuex-module-decorators";
 import { CommunityModule } from '@/store/modules/community.module'
 import { mdiDelete, mdiPencil } from "@mdi/js";

@@ -31,14 +31,34 @@
             >{{ $t("forgot.button") }}</v-btn
           >
         </v-form>
+
+        <div class="text-center mt-6">
+          <router-link to="/auth/signin"> Voltar </router-link>
+        </div>
       </v-card-text>
     </v-card>
 
-    <div class="text-center mt-6">
-      <router-link to="/auth/signin">
-        {{ $t("forgot.backtosign") }}
-      </router-link>
-    </div>
+    <v-row justify="center">
+      <v-dialog v-model="dialog" persistent max-width="600">
+        <v-card>
+          <v-card-title class="headline">
+            E-mail enviado com sucesso!
+          </v-card-title>
+          <v-card-text
+            >você receberá um e-mail com um link, para redefinir a senha (se
+            você não recebê-lo, verifique a sua caixa de mensagens spam)
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn class="white--text" color="primary" @click="dialog = false">
+              <router-link class="router-link" to="/auth/signin">
+                OK
+              </router-link>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </div>
 </template>
 
@@ -50,24 +70,36 @@ import FirebaseService from "@/service/firebase.service";
   name: "ForgotPage",
 })
 export default class ForgotPage extends Vue {
-  
-  private requiredField = [ v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Digite um e-mail válido' ] 
+  private requiredField = [
+    (v) =>
+      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+      "Digite um e-mail válido",
+  ];
   valid: boolean = false;
-  email=""
+  email = "";
   error: boolean = false;
   isLoading: boolean = false;
+  dialog: boolean = false;
 
   sendEmailUpdatePassword() {
-    this.isLoading = true
+    this.isLoading = true;
     FirebaseService.passwordResetEmail(this.email)
       .then(() => {
-        alert('E-mail enviado com sucesso!')
+        this.dialog = true;
       })
       .catch((error) => {
         console.log(error);
-      }).finally(() => {
+      })
+      .finally(() => {
         this.isLoading = false;
       });
   }
 }
 </script>
+
+<style scoped>
+.router-link {
+  color: white;
+  text-decoration: none;
+}
+</style>

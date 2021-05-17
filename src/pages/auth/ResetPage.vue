@@ -9,9 +9,9 @@
         v-model="newPassword"
         :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
         :rules="[
-          (v) => !!v || 'Campo obrigatório',
-          (v) =>
-            (v && v.length >= 6) || 'A senha deve ser acima de 6 caracteres',
+          v => !(/[ ]/.test(v)) || 'Não é permitido espaços em branco', 
+          (v) => (v && v.length >= 6) || 'A senha deve ser acima de 6 caracteres', 
+          v => /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/.test(v) || 'Insira pelo menos uma letra maiúscula, minúscula, número e um caractere especial. Ex: Fulano@10'
         ]"
         name="password"
         label="Nova Senha"

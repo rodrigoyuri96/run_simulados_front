@@ -70,10 +70,10 @@
             block
             x-large
             color="primary"
-            @click="submit"
-          >{{ $t('register.button') }}</v-btn>
+            @click="createUser(name, email, password)"
+          >Criar Conta</v-btn>
 
-          <div class="caption font-weight-bold text-uppercase my-3">{{ $t('register.orsign') }}</div>
+          <div class="caption font-weight-bold text-uppercase my-3">Ou inscreva-se com</div>
 
           <!-- external providers list -->
           <v-btn
@@ -81,7 +81,7 @@
             :key="provider.id"
             :loading="provider.isLoading"
             :disabled="isSignUpDisabled"
-            class="mb-2 primary lighten-2 primary--text text--darken-3 white--text"
+            class="mb-2 primary lighten-2  text--darken-3"
             block
             x-large
             @click="signInProvider(provider)"
@@ -113,6 +113,9 @@
 </template>
 
 <script>
+import FirebaseService from '@/service/firebase.service'
+import firebase from "firebase";
+// import { error } from 'console'
 /*
 |---------------------------------------------------------------------
 | Sign Up Page Component
@@ -185,6 +188,16 @@ export default {
 
       this.errorProvider = false
       this.errorProviderMessages = ''
+    },
+
+    createUser(name, email, password) {
+      FirebaseService.createUser(email, password ).then((user) => {
+       FirebaseService.sendEmailVerification(user)
+       FirebaseService.updatedUser(user, {displayName: name})
+        this.$router.push('/verify/email')
+      }).catch((error) => {
+        console.log(error);
+      })
     }
   }
 }

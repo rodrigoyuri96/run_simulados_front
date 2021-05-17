@@ -170,7 +170,6 @@ export default {
       FirebaseService.getUser(true).then(isAuthenticated=>{
         let user = firebase.auth().currentUser;
         if(isAuthenticated && user.emailVerified == true){
-          this.load()
           this.$router.push("/")
         } else {
           this.$router.push("/verify/email")
@@ -184,10 +183,6 @@ export default {
 
       this.errorProvider = false
       this.errorProviderMessages = ''
-    },
-
-    load() {
-      location.reload()
     },
   }
 }

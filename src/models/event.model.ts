@@ -7,7 +7,7 @@ export default class EventModel {
     public title: String
     public eventType: String
     public category: String
-    public disciplines: DisciplineModel[]
+    public disciplines: DisciplineModel[] 
     public subjects: SubjectsModel[]
     public startDateSubscription: String
     public endDateSubscription: String
@@ -24,7 +24,7 @@ export default class EventModel {
         this.eventType = ""
         this.category = ""
         this.numberSubscribers = 0
-        this.disciplines =[]
+        this.disciplines = []
         this.subjects = []
         this.startDateSubscription = ""
         this.endDateSubscription = ""

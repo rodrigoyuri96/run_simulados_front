@@ -1,5 +1,4 @@
 <template>
-  <v-form v-model="valid">
     <v-autocomplete
       v-model="subjects"
       :items="items"
@@ -9,7 +8,6 @@
       outlined
       multiple
       dense
-      @change="handleSubject()"
       return-object
       auto-select-first
       clearable
@@ -24,11 +22,10 @@
         </span>
       </template>
     </v-autocomplete>
-  </v-form>
 </template>
 
 <script lang="ts">
-import {Vue, Component, Emit, VModel, Prop} from "vue-property-decorator";
+import {Vue, Component, VModel, Prop} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import { SubjectModule } from "../../store/modules/subject.module";
 import SubjectsModel from "../../models/subjects.model";
@@ -47,22 +44,18 @@ export default class Subjects extends Vue {
     return this.subjectModule.subjects;
   }
 
+  get loading(){
+    return this.subjectModule.loading
+  }
+
+  set loading(status: Boolean){
+    this.subjectModule.setLoading(status)
+  }
+
   mounted() {
     this.subjectModule.findAll();
   }
 
-  @Emit('valid')
-  handleValid(event: boolean) {
-    if (event != null && event !== undefined) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  handleSubject(){
-    this.handleValid(this.valid)
-  }
 }
 </script>
 

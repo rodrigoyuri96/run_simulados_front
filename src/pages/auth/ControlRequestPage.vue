@@ -1,5 +1,9 @@
 <template>
-  <h1>.</h1>
+<v-btn
+  fab
+  loading
+  x-large
+></v-btn>
 </template>
 
 <script lang='ts'>

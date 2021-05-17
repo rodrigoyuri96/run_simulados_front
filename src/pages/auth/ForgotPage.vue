@@ -22,6 +22,7 @@
 
           <v-btn
             class="white--text"
+            :loading="isLoading"
             block
             x-large
             :disabled="!valid"
@@ -54,14 +55,18 @@ export default class ForgotPage extends Vue {
   valid: boolean = false;
   email=""
   error: boolean = false;
+  isLoading: boolean = false;
 
   sendEmailUpdatePassword() {
+    this.isLoading = true
     FirebaseService.passwordResetEmail(this.email)
       .then(() => {
         alert('E-mail enviado com sucesso!')
       })
       .catch((error) => {
         console.log(error);
+      }).finally(() => {
+        this.isLoading = false;
       });
   }
 }

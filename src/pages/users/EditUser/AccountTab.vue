@@ -40,7 +40,7 @@
               </div>
 
               <div class="mt-2">
-                <v-btn color="primary" @click class="white--text">Atualizar informações</v-btn>
+                <v-btn color="primary" class="white--text">Atualizar informações</v-btn>
               </div>
             </div>
           </div>
@@ -112,13 +112,20 @@
               </div>
 
               <v-divider></v-divider>
-              <div
-                class="subtitle mt-3 mb-2"
-              >To delete the user please transfer ownership or delete user's subscriptions.</div>
-              <v-btn color="error" @click="deleteDialog = true">
-                <v-icon left small>mdi-delete</v-icon>Delete User
+
+              <div class="subtitle mt-3 mb-2">
+                To delete the user please transfer ownership or delete user's subscriptions.
+              </div>
+              <v-btn 
+                class="white--text" 
+                color="error" 
+                @click="deleteDialog = true"
+              >
+                <v-icon left small>mdi-delete</v-icon>
+                Remover sua Conta
               </v-btn>
             </div>
+
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
@@ -154,14 +161,17 @@
     </v-dialog>
 
     <!-- delete modal -->
-    <v-dialog v-model="deleteDialog" max-width="290">
+    <v-dialog 
+      v-model="deleteDialog" 
+      max-width="290"
+    >
       <v-card>
         <v-card-title class="headline">Delete User</v-card-title>
         <v-card-text>Are you sure you want to delete this user?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="deleteDialog = false">Cancel</v-btn>
-          <v-btn color="error" @click="deleteDialog = false">Delete</v-btn>
+          <v-btn class="white--text" color="grey" @click="deleteDialog = false">Cancel</v-btn>
+          <v-btn class="white--text" color="error" @click="removeUser()">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -170,6 +180,8 @@
 
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
+import firebase from '@/firebase'
+import { error } from 'console';
 
 @Component({
   name:'AccountTab'
@@ -177,8 +189,8 @@ import {Component, Prop, Vue} from "vue-property-decorator";
 export default class AccountTab extends Vue{
   @Prop({type: Object, default: {}}) user
   panel: [1]
-  deleteDialog: false
-  disableDialog: false
+  deleteDialog =  false
+  disableDialog =  false
 
   sendEmailVerify(){
 
@@ -186,6 +198,15 @@ export default class AccountTab extends Vue{
 
   sendEmailUpdatePassword(){
 
+  }
+
+  removeUser() {
+    const user = firebase.auth().currentUser
+    user.delete().then(res => {
+      console.log("deu certo", res)
+    }).catch(error => {
+      console.log("Deu ruim",error)
+    })
   }
 }
 </script>

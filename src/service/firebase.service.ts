@@ -115,6 +115,4 @@ export default class FirebaseService{
       photoURL: photoURL
     })
   }
-
-
 }

@@ -17,7 +17,6 @@ export class SubjectModule extends VuexModule {
       return this._subjects
     }
 
-
     get loading(){
       return this._loading
     }

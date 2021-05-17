@@ -50,6 +50,8 @@
           </v-col>
         </v-row>
       </v-card-text>
+
+<!--
       <v-card-actions>
         <v-spacer></v-spacer>
         <run-pagination :page="page"
@@ -59,6 +61,8 @@
                         :byPage="byPage"
                         @page-size-changed="pageSize = $event"/>
       </v-card-actions>
+
+-->
     </v-card>
     <run-question
       v-model="openQuestion"

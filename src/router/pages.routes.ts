@@ -76,6 +76,15 @@ export default [{
   {
     path:'/schedule',
     component: () => import ('@/components/run/calendar/Calendar.vue')
+  },
+  {
+    path: '/control',
+    name: 'request-control',
+    component: () => import('@/pages/auth/ControlRequestPage.vue'),
+    meta: {
+      public: true,
+      layout: 'auth'
+    }
   }
 
 ]

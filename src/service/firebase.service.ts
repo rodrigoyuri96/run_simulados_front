@@ -63,6 +63,47 @@ export default class FirebaseService{
     })
   }
 
+  public static passwordResetEmail(email):Promise<boolean>{
+    return new Promise<boolean> ((resolve, reject) => {
+    const auth = firebase.auth();
+    const emailAddress = email;
+
+    auth.sendPasswordResetEmail(emailAddress).then(function() {
+      resolve(true)
+    }).catch((error) => {
+      reject(error)
+    });
+  })
+  }
+
+  public static updatePassword(newPassword, actionCode):Promise<any> {
+    const auth = Firebase.auth()
+
+    return new Promise((resolve, reject) => {
+      auth.verifyPasswordResetCode(actionCode).then((email) => {
+        var accountEmail = email;
+    
+        auth.confirmPasswordReset(actionCode, newPassword).then((resp) => {
+          alert('Senha salva com sucesso!')
+          
+          resolve(true)
+
+        }).catch((error) => {
+          // Error occurred during confirmation. The code might have expired or the
+          // password is too weak.
+          alert(JSON.stringify(error))
+
+          reject(false)
+        });
+      }).catch((error) => {
+        // Invalid or expired action code. Ask user to try to reset the password
+        // again.
+        alert('Código incorreto!')
+        reject(false)
+      });
+
+    })
+  }
 
   public static async getUser(forceUserUpdate?: boolean):Promise<boolean>{
     return new Promise((resolve, reject) => {

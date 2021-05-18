@@ -50,11 +50,15 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn class="white--text" color="primary" @click="dialog = false">
-              <router-link class="router-link" to="/auth/signin">
+            <router-link class="router-link" to="/auth/signin">
+              <v-btn
+                class="white--text"
+                color="primary"
+                @click="dialog = false"
+              >
                 OK
-              </router-link>
-            </v-btn>
+              </v-btn>
+            </router-link>
           </v-card-actions>
         </v-card>
       </v-dialog>

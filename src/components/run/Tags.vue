@@ -16,17 +16,15 @@
 <script lang="ts">
 import {Vue, Component, VModel} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import {TagModule}  from  "@/store/modules/TagModule";
-import { SubjectModule } from "@/store/modules/SubjectModule";
+import { SubjectModule } from "@/store/modules/subject.module";
 import RunSubjects from "@/components/run/Subjects.vue";
-import Subject from "@/models/Subject";
+import SubjectsModel from "@/models/subjects.model";
 
 @Component({
   name: "Tags",
     components: {RunSubjects},
 })
 export default class Tags extends Vue {
-   tagModule = getModule(TagModule, this.$store);
    subjectModule = getModule(SubjectModule, this.$store);
    generatorColor: String = "1234567890ABCDEF";
    chip: boolean = true;
@@ -37,7 +35,7 @@ export default class Tags extends Vue {
     return this.subjectModule.subjects
   }
 
- set subjects(subjects: Subject[]) {
+ set subjects(subjects: SubjectsModel[]) {
    this.subjectModule.setSubjects(subjects)
  }
 

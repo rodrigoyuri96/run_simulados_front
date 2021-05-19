@@ -36,6 +36,7 @@
           ></v-text-field>
 
           <v-btn
+            class="white--text"
             :loading="isLoading"
             :disabled="isSignInDisabled"
             block
@@ -52,12 +53,12 @@
             :key="provider.id"
             :loading="provider.isLoading"
             :disabled="isSignInDisabled"
-            class="mb-2 primary lighten-2 primary--text text--darken-3"
+            class="mb-2 primary lighten-1 white--text text--darken-1"
             block
             x-large
-            to="/"
+            @click="signInProvider(provider)"
           >
-            <v-icon small left>mdi-{{ provider.id }}</v-icon>
+            <v-icon small left color="white darken-4">mdi-{{ provider.id }}</v-icon>
             {{ provider.label }}
           </v-btn>
 
@@ -82,14 +83,10 @@
 </template>
 
 <script>
-/*
-|---------------------------------------------------------------------
-| Sign In Page Component
-|---------------------------------------------------------------------
-|
-| Sign in template for user authentication into the application
-|
-*/
+import FirebaseService from "@/service/firebase.service";
+import AuthService from "@/service/auth.service";
+import firebase from "firebase";
+
 export default {
   data() {
     return {
@@ -124,10 +121,11 @@ export default {
 
       // input rules
       rules: {
-        required: (value) => (value && Boolean(value)) || 'Required'
+        required: (value) => (value && Boolean(value)) || 'Campo obrigatório'
       }
     }
   },
+  
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
@@ -136,17 +134,56 @@ export default {
         this.signIn(this.email, this.password)
       }
     },
-    signIn(email, password) {
-      this.$router.push('/')
+    async signIn(email, password) {
+      FirebaseService.auth(email, password).then(()=>{
+          this.redirectHomePage()
+      })
+        .catch(error=>{
+        if(error.code == 'auth/wrong-password'){
+          console.log("senha inválida")
+        }
+      })
     },
-    signInProvider(provider) {},
+    
+    signInProvider(provider) {
+
+      if(provider.label == 'Google'){
+        FirebaseService.signInWithGoogle()
+          .then(()=>{
+            this.redirectHomePage()
+          }).catch(error=>{
+            console.log(error)
+        })
+
+      }else if(provider.label == 'Facebook'){
+        FirebaseService.signInWithFacebook()
+        .then(()=>{
+          this.redirectHomePage()
+        }).catch(error=>{
+          console.log(error)
+        })
+      }
+
+    },
+
+    redirectHomePage(){
+      FirebaseService.getUser(true).then(isAuthenticated=>{
+        let user = firebase.auth().currentUser;
+        if(isAuthenticated && user.emailVerified == true){
+          this.$router.push("/")
+        } else {
+          this.$router.push("/verify/email")
+        }
+      })
+    },
+
     resetErrors() {
       this.error = false
       this.errorMessages = ''
 
       this.errorProvider = false
       this.errorProviderMessages = ''
-    }
+    },
   }
 }
 </script>

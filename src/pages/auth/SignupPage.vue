@@ -2,7 +2,7 @@
   <div>
     <v-card class="text-center pa-1">
       <v-card-title class="justify-center display-1 mb-2">{{ $t('register.title') }}</v-card-title>
-      <v-card-subtitle>Let's build amazing products</v-card-subtitle>
+      <v-card-subtitle>Crie sua conta para ter acesso aos nossos conteúdos</v-card-subtitle>
 
       <!-- sign up form -->
       <v-card-text>
@@ -46,18 +46,34 @@
             @change="resetErrors"
             @keyup.enter="submit"
             @click:append="showPassword = !showPassword"
+          >
+
+          </v-text-field><v-text-field
+            v-model="password"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[rules.required]"
+            :type="showPassword ? 'text' : 'password'"
+            :error="errorPassword"
+            :error-messages="errorPasswordMessage"
+            :label="$t('register.password')"
+            name="password"
+            outlined
+            @change="resetErrors"
+            @keyup.enter="submit"
+            @click:append="showPassword = !showPassword"
           ></v-text-field>
 
           <v-btn
+            class="white--text"
             :loading="isLoading"
             :disabled="isSignUpDisabled"
             block
             x-large
             color="primary"
-            @click="submit"
-          >{{ $t('register.button') }}</v-btn>
+            @click="createUser(name, email, password)"
+          >Criar Conta</v-btn>
 
-          <div class="caption font-weight-bold text-uppercase my-3">{{ $t('register.orsign') }}</div>
+          <div class="caption font-weight-bold text-uppercase my-3">Ou inscreva-se com</div>
 
           <!-- external providers list -->
           <v-btn
@@ -65,7 +81,7 @@
             :key="provider.id"
             :loading="provider.isLoading"
             :disabled="isSignUpDisabled"
-            class="mb-2 primary lighten-2 primary--text text--darken-3"
+            class="mb-2 primary lighten-2  text--darken-3"
             block
             x-large
             @click="signInProvider(provider)"
@@ -97,6 +113,9 @@
 </template>
 
 <script>
+import FirebaseService from '@/service/firebase.service'
+import firebase from "firebase";
+// import { error } from 'console'
 /*
 |---------------------------------------------------------------------
 | Sign Up Page Component
@@ -145,7 +164,7 @@ export default {
 
       // input rules
       rules: {
-        required: (value) => (value && Boolean(value)) || 'Required'
+        required: (value) => (value && Boolean(value)) || 'Campo obrigatório'
       }
     }
   },
@@ -169,6 +188,16 @@ export default {
 
       this.errorProvider = false
       this.errorProviderMessages = ''
+    },
+
+    createUser(name, email, password) {
+      FirebaseService.createUser(email, password ).then((user) => {
+       FirebaseService.sendEmailVerification(user)
+       FirebaseService.updatedUser(user, {displayName: name})
+        this.$router.push('/verify/email')
+      }).catch((error) => {
+        console.log(error);
+      })
     }
   }
 }

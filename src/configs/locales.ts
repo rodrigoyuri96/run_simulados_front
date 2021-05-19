@@ -11,7 +11,7 @@ import ja from '../translations/ja'
 import pl from '../translations/pl'
 
 const supported = ['en', 'es', 'pt', 'de', 'fr', 'ar', 'ko', 'ru', 'zh', 'ja', 'pl']
-let locale = 'en'
+let locale = 'pt'
 
 try {
   // get browser default language

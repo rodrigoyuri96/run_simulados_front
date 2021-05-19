@@ -11,6 +11,8 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
+          :rules="rules"
+          autocomplete="off"
           v-model="dateFormatted"
           :label="label"
           hint="formato: DD/MM/YYYY"
@@ -20,9 +22,8 @@
           append-icon="mdi-calendar"
           v-bind="attrs"
           @blur="date = parseDate(dateFormatted)"
-          @change="handleValid"
+          @change="handleValid()"
           v-on="on"
-          :rules="[(v) => !!v || 'campo obrigatório']"
         ></v-text-field>
       </template>
       <v-date-picker
@@ -36,18 +37,17 @@
 
 <script lang="ts">
 import { Vue, Component, Watch, VModel, Prop, Emit } from "vue-property-decorator";
-import {DateUtil} from "@/util/date"
+import {DateUtil} from "@/commons/date.commons"
 
 @Component({
   name: "RunDate",
 })
 export default class RunDate extends Vue {
   menu1 = false;
-  @VModel({type: String}) date: String | "";
+  @VModel({type: String}) date!: "";
   @Prop({type: String}) label: String | "";
-  //.toISOString().substr(0, 10);
-  dateFormatted: String = new String();
-  //vm.formatDate(new Date().toISOString().substr(0, 10));
+  @Prop({type: Array}) rules!: [];
+  dateFormatted: String = "";
   validDate: boolean = false;
 
   get computedDateFormatted() {
@@ -67,15 +67,13 @@ export default class RunDate extends Vue {
 
 
   mounted() {
-    let date: Date = new Date();
-    let str = `${date.getFullYear()}-${date.getDay().toString().padStart(2, "0")}-${date.getMonth().toString().padStart(2, "0")}`;
-    this.date = str;
-    console.log(str);
+    this.dateFormatted = this.formatDate(this.date);
   }
+
   parseDate(date: String) {
       return DateUtil.parseDate(date)
   }
-  
+
   @Emit('valid')
   handleValid(event: boolean) {
     if (event != null && event !== undefined) {

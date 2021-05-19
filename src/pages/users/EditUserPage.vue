@@ -1,14 +1,11 @@
 <template>
-  <div class="flex-grow-1">
+  <div class="flex-grow-1 ml-5 mr-5">
     <div class="d-flex align-center py-3">
       <div>
-        <div class="display-1">Edit User {{ user.name && `- ${user.name}` }}</div>
+        <div class="display-1">Atualizar Perfil</div>
         <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
       </div>
       <v-spacer></v-spacer>
-      <v-btn icon @click>
-        <v-icon>mdi-refresh</v-icon>
-      </v-btn>
     </div>
 
     <div
@@ -19,24 +16,10 @@
       <span class="ma-1">Administrator</span>
     </div>
 
-    <div class="mb-4">
-      <div class="d-flex">
-        <span class="font-weight-bold">Email</span>
-        <span class="mx-1">
-          <copy-label :text="user.email" />
-        </span>
-      </div>
-      <div class="d-flex">
-        <span class="font-weight-bold">ID</span>
-        <span class="mx-1">
-          <copy-label :text="user.id + ''" />
-        </span>
-      </div>
-    </div>
 
     <v-tabs v-model="tab" :show-arrows="false" background-color="transparent">
-      <v-tab to="#tabs-account">Account</v-tab>
-      <v-tab to="#tabs-information">Information</v-tab>
+      <v-tab to="#tabs-account">Conta</v-tab>
+      <v-tab to="#tabs-information">Informações do Plano</v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
@@ -51,42 +34,64 @@
   </div>
 </template>
 
-<script>
-import CopyLabel from '../../components/common/CopyLabel'
-import AccountTab from './EditUser/AccountTab'
-import InformationTab from './EditUser/InformationTab'
+<script lang="ts">
+import CopyLabel from '../../components/common/CopyLabel.vue'
+import AccountTab from './EditUser/AccountTab.vue'
+import InformationTab from './EditUser/InformationTab.vue'
+import {Component, Vue} from "vue-property-decorator";
+import {getModule} from "vuex-module-decorators";
+import {UserModule} from "../../store/modules/user.module";
+import UserModel from "../../models/user/user.model";
 
-export default {
+@Component({
+  name: 'EditUserPage',
   components: {
     CopyLabel,
     AccountTab,
     InformationTab
-  },
-  data() {
-    return {
-      user: {
-        'id':32,
-        'email':'bfitchew0@ezinearticles.com',
-        'name':'Bartel Fitchew',
-        'verified':false,
-        'created':'2019-08-09T03:14:12Z',
-        'lastSignIn':'2019-08-14T20:00:53Z',
-        'disabled':true,
-        'role':'ADMIN',
-        'avatar':'/images/avatars/avatar1.svg'
-      },
-      tab: null,
-      breadcrumbs: [
-        {
-          text: 'Users',
-          to: '/users/list',
-          exact: true
-        },
-        {
-          text: 'Edit User'
-        }
-      ]
-    }
   }
+})
+export default class EditUserPage extends Vue {
+  tab = ""
+  userModule = getModule(UserModule, this.$store)
+
+  get user(){
+    return this.userModule.user
+  }
+
+  set user(newValue: UserModel){
+    this.userModule.setUser(newValue)
+  }
+
+
+  get breadcrumbs(){
+    return [
+      {
+        text: 'Users',
+        to: '/users/list',
+        exact: true
+      },
+      {
+        text: 'Edit User'
+      }
+    ]
+  }
+
+  // data() {
+  //   return {
+  //     // user: {
+  //     //   'id':32,
+  //     //   'email':'bfitchew0@ezinearticles.com',
+  //     //   'name':'Bartel Fitchew',
+  //     //   'verified':false,
+  //     //   'created':'2019-08-09T03:14:12Z',
+  //     //   'lastSignIn':'2019-08-14T20:00:53Z',
+  //     //   'disabled':true,
+  //     //   'role':'ADMIN',
+  //     //   'avatar':'/images/avatars/avatar1.svg'
+  //     // },
+  //     tab: null,
+  //   }
+  // }
 }
 </script>

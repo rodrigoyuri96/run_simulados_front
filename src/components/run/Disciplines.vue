@@ -1,64 +1,60 @@
 <template>
-    <v-form v-model="valid">
-      <v-autocomplete
-        v-if="multiple == false"
-        v-model="disciplines"
-        :items="items"
-        item-text="name"
-        label="Disciplinas"
-        :rules="[v=> !!v || 'campo obrigatório']"
-        hide-no-data
-        outlined
-        dense
-        :loading="loading"
-        @change="handleDiscipline"
-        return-object
-      />
-      <v-autocomplete
-        v-if="multiple == true"
-        v-model="disciplines"
-        :items="items"
-        :loading="loading"
-        item-text="name"
-        label="Disciplinas"
-        :rules="[v=> !!v || 'campo obrigatório']"
-        outlined
-        dense
-        multiple
-        return-object
-        @change="handleDiscipline"
-        auto-select-first
-        clearable
-        chips
-        deletable-chips
-        small-chips
-        hide-no-data
-      >
-        <template v-slot:selection="{ index }">
+  <div>
+    <v-autocomplete
+      v-if="multiple == false"
+      v-model="disciplines"
+      :items="items"
+      item-text="name"
+      label="Disciplinas"
+      :rules="rules"
+      hide-no-data
+      outlined
+      dense
+      :loading="loading"
+      return-object
+    />
+    <v-autocomplete
+      v-if="multiple == true"
+      v-model="disciplines"
+      :items="items"
+      :loading="loading"
+      item-text="name"
+      label="Disciplinas"
+      :rules="rules"
+      outlined
+      dense
+      multiple
+      return-object
+      auto-select-first
+      clearable
+      chips
+      deletable-chips
+      small-chips
+      hide-no-data
+    >
+      <template v-slot:selection="{ index }">
           <span v-if="index == 0" class="pink--text">
             ({{ disciplines.length}} disciplinas selecionadas)
           </span>
-        </template>
-      </v-autocomplete>
-    </v-form>
+      </template>
+    </v-autocomplete>
+  </div>
+
 </template>
 
 <script lang="ts">
 import {Vue, Component, Emit, Prop, VModel} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
-import { DisciplineModule } from '@/store/modules/DisciplineModule'
-import Discipline from '@/models/Discipline'
-import {SubjectModule} from "@/store/modules/SubjectModule";
+import { DisciplineModule } from '@/store/modules/discipline.module'
 
 @Component({
-  name: 'Disciplines'
+  name: 'Disciplines',
 })
 export default class Disciplines extends Vue {
   disciplineModule = getModule(DisciplineModule, this.$store)
-  @VModel() disciplines!: any
+  @VModel() disciplines!: any[]
   @Prop({type:Boolean}) multiple!: Boolean
-  valid: boolean = false;
-
+  @Prop({type:Array}) rules!: []
 
   get items() {
     return this.disciplineModule.disciplines
@@ -72,10 +68,6 @@ export default class Disciplines extends Vue {
     this.disciplineModule.setLoading(status)
   }
 
-  @Emit('valid')
-  handleValid(){
-    return this.valid
-  }
 
   created() {
     this.loading = true
@@ -86,9 +78,24 @@ export default class Disciplines extends Vue {
     })
   }
 
-  handleDiscipline(){
-    this.handleValid()
-  }
+  /*
+  *   <template>
+  *     <div>teste<div>
+  *   </template>
+  *   <script>
+  *        let i = i + 1
+  *    < /script>
+  *   <style>  </style>
+  *
+  *
+  *
+  *
+  *
+  *
+  *
+  *
+  *
+  * */
 
 }
 </script>

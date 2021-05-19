@@ -1,4 +1,5 @@
-export default [{
+export default [
+{
   path: '/users',
   redirect: 'users-list'
 }, {

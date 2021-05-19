@@ -1,15 +1,13 @@
 <template>
-  <v-form v-model="validSubjects">
     <v-autocomplete
       v-model="subjects"
       :items="items"
       item-text="name"
       label="Assuntos"
-      :rules="[(v) => !!v || 'campo obrigatório']"
+      :rules="rules"
       outlined
       multiple
       dense
-      @change="handleSubject"
       return-object
       auto-select-first
       clearable
@@ -24,14 +22,13 @@
         </span>
       </template>
     </v-autocomplete>
-  </v-form>
 </template>
 
 <script lang="ts">
-import {Vue, Component, Emit, VModel} from "vue-property-decorator";
+import {Vue, Component, VModel, Prop} from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
-import { SubjectModule } from "../../store/modules/SubjectModule";
-import Subject from "../../models/Subject";
+import { SubjectModule } from "../../store/modules/subject.module";
+import SubjectsModel from "../../models/subjects.model";
 
 @Component({
   name: "Subjects",
@@ -40,28 +37,25 @@ export default class Subjects extends Vue {
   subjectModule= getModule(SubjectModule, this.$store)
   valid: boolean = false;
   validSubjects: boolean = false;
-  @VModel({type: Array}) subjects!: Subject[]
+  @VModel({type: Array}) subjects!: SubjectsModel[]
+  @Prop({type:Array}) rules: any[]
 
   get items() {
     return this.subjectModule.subjects;
+  }
+
+  get loading(){
+    return this.subjectModule.loading
+  }
+
+  set loading(status: Boolean){
+    this.subjectModule.setLoading(status)
   }
 
   mounted() {
     this.subjectModule.findAll();
   }
 
-  @Emit('valid-field')
-  handleValid(event: boolean) {
-    if (event != null && event !== undefined) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  handleSubject(){
-    this.handleValid(this.valid)
-  }
 }
 </script>
 

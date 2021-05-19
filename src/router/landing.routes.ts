@@ -1,15 +1,17 @@
 export default [{
-  path: '/landing',
-  name: 'landing-home',
+  path: '/run',
+  name: 'run',
   component: () => import(/* webpackChunkName: "landing-home" */ '@/pages/landing/HomePage.vue'),
   meta: {
-    layout: 'landing'
+    layout: 'landing',
+    public: true
   }
 }, {
-  path: '/landing/pricing',
-  name: 'landing-pricing',
+  path: '/pricing',
+  name: 'pricing',
   component: () => import(/* webpackChunkName: "landing-pricing" */ '@/pages/landing/PricingPage.vue'),
   meta: {
-    layout: 'landing'
+    layout: 'landing',
+    public: true
   }
 }]

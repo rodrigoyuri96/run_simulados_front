@@ -1,58 +1,95 @@
 <template>
-  <v-form v-model="valid" ref="formInstitution" lazy-validation>
-    <v-autocomplete
+  <v-form  v-model="valid">
+    <v-select
+      v-if="multiple == false"
       v-model="institutions"
       :items="items"
-      :rules="[v=> !!v || 'campo obrigatório']"
       item-text="name"
+      label="Instituições"
+      :rules="rules"
       outlined
-      label="instituições"
       dense
-      @change="handleValid()"
+      :loading="loading"
+      @change="handleInstitution()"
       return-object
-      auto-select-first
     />
+    <v-select
+      v-if="multiple == true"
+      v-model="institutions"
+      :items="items"
+      :loading="loading"
+      item-text="name"
+      label="Instituições"
+      :rules="rules"
+      outlined
+      dense
+      multiple
+      return-object
+      @change="handleInstitution()"
+      clearable
+      chips
+      deletable-chips
+      small-chips
+      hide-no-data
+    >
+    <template v-slot:selection="{ index }">
+          <span v-if="index == 0" class="pink--text">
+            ({{ institutions.length}} institutições selecionadas)
+          </span>
+        </template>
+    </v-select>
   </v-form>
 </template>
 
 <script lang="ts">
-import { Vue, Component, VModel, Emit } from 'vue-property-decorator'
+import {Vue, Component, VModel, Emit, Prop} from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
-import { InstitutionModule } from '@/store/modules/InstitutionModule'
-import type {RunForm} from "@/commons/RunForm"
+import { InstitutionModule } from '@/store/modules/institution.module'
 
 @Component({
   name: 'Institutions'
-
 })
+
 export default class Institutions extends Vue {
   institutionModule = getModule(InstitutionModule, this.$store)
   @VModel() institutions!: any
-  valid: boolean = true
+  @Prop({type:Boolean}) multiple!: Boolean
+  @Prop({type:Array}) rules: any[]
+  valid: boolean = false
 
   get items() {
     return this.institutionModule.institutions
   }
 
-  get form():RunForm{
-    return this.$refs.formInstitution as RunForm
+  get loading(){
+    return this.institutionModule.loading
   }
 
+  set loading(status: Boolean){
+    this.institutionModule.setLoading(status)
+  }
+
+  
   @Emit('valid')
-  handleValid(){
-    this.validate()
-    return this.valid
-  }
-  created() {
-    this.institutionModule.findAll()
-  }
-
-  validate(){
-    this.valid = this.form.validate()
+  handleValid(event: boolean) {
+    if (event != null && event !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  mounted(){
-    this.handleValid()
+   created() {
+    this.loading = true
+    this.institutionModule.findAll().then(()=>{}).catch(error=>{
+      console.log(error)
+    }).finally(()=>{
+      this.loading = false
+    })
+  }
+
+  handleInstitution(){
+    this.handleValid(this.valid)
   }
 }
 </script>

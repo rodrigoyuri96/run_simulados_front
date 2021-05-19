@@ -1,13 +1,15 @@
 <template>
-  <v-container>
-
+  <v-dialog v-model="dialog" width="1000" scrollable>
     <!-- cadastro-questão -->
-    <v-card v-show="card == false" >
-      <v-card-title>Pré-visualização
+    <v-card v-show="card == false">
+      <v-card-title
+      class="headline teal lighten-2 white--text font-weight-regular"
+      >Pré-visualização
         <v-spacer></v-spacer>
         <v-btn
-          icon>
-          <v-icon>mdi-close</v-icon>
+          icon
+          @click="dialog = !dialog">
+          <v-icon class="white--text" >mdi-close</v-icon>
         </v-btn>
       </v-card-title>
       <v-card-text>
@@ -15,10 +17,10 @@
         <v-row>
           <v-col>
             <v-radio-group>
-              <v-radio 
+              <v-radio
                 disabled
-                v-for="(option, i) in options" 
-                :key="i" 
+                v-for="(option, i) in options"
+                :key="i"
                 :label="option.description">
               </v-radio>
             </v-radio-group>
@@ -36,21 +38,20 @@
           <v-radio-group>
             <v-radio
               disabled
-              v-for="(option, i) in options" 
+              v-for="(option, i) in options"
               :key="i"
               :label="option.description" ></v-radio>
           </v-radio-group>
         </v-col>
       </v-row>
     </div>
-
-  </v-container>
+  </v-dialog>
 </template>
 
 <script lang="ts">
 
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { OptionModule } from "@/store/modules/OptionModule";
+import { Vue, Component, Prop, VModel } from "vue-property-decorator";
+import { OptionModule } from "@/store/modules/option.module";
 import { getModule } from "vuex-module-decorators";
 
 @Component({
@@ -62,6 +63,7 @@ export default class Question extends Vue {
   @Prop({ type: String }) content: string | "";
   @Prop({ type: Boolean }) close: boolean | false;
   @Prop({ type: Boolean }) card: boolean | false;
+  @VModel({ type: Boolean }) dialog: boolean | false
 
   private optionModule = getModule(OptionModule, this.$store);
 
@@ -72,7 +74,6 @@ export default class Question extends Vue {
   get options() {
     return this.optionModule.options;
   }
-
 
 
   created() {

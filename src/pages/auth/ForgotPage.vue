@@ -63,6 +63,29 @@
         </v-card>
       </v-dialog>
     </v-row>
+
+     <v-row justify="center">
+      <v-dialog v-model="dialogErro" persistent max-width="600">
+        <v-card>
+          <v-card-title class="headline">
+            Erro ao redefinir senha!
+          </v-card-title>
+          <v-card-text
+            >Este e-mail não existe em nossa base de dados, por favor tente outro.
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+              <v-btn
+                class="white--text"
+                color="primary"
+                @click="dialogErro = false"
+              >
+                OK
+              </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </div>
 </template>
 
@@ -84,6 +107,7 @@ export default class ForgotPage extends Vue {
   error: boolean = false;
   isLoading: boolean = false;
   dialog: boolean = false;
+  dialogErro: boolean = false;
 
   sendEmailUpdatePassword() {
     this.isLoading = true;
@@ -92,7 +116,7 @@ export default class ForgotPage extends Vue {
         this.dialog = true;
       })
       .catch((error) => {
-        console.log(error);
+        this.dialogErro = true;
       })
       .finally(() => {
         this.isLoading = false;

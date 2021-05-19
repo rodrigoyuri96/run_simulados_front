@@ -78,7 +78,6 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import Firebase from "@/service/firebase.service";
 import FirebaseService from "@/service/firebase.service";
 
 @Component({

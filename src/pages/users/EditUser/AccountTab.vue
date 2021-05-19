@@ -163,15 +163,33 @@
     <!-- delete modal -->
     <v-dialog 
       v-model="deleteDialog" 
-      max-width="290"
+      max-width="390"
     >
       <v-card>
         <v-card-title class="headline">Delete User</v-card-title>
-        <v-card-text>Are you sure you want to delete this user?</v-card-text>
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <p>Para sua segurança, corfirme a sua senha de usuário, para que essa operação seja realizada.</p>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field 
+                v-model="password"
+                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                 :type="showPassword ? 'text' : 'password'"
+                 @click:append="showPassword = !showPassword"
+                outlined 
+                dense 
+                label="Confirmar Senha" />
+            </v-col>
+          </v-row>
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn class="white--text" color="grey" @click="deleteDialog = false">Cancel</v-btn>
-          <v-btn class="white--text" color="error" @click="removeUser()">Delete</v-btn>
+          <v-btn class="white--text" color="error"  @click="removeUser()">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -181,7 +199,8 @@
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 import firebase from '@/firebase'
-import { error } from 'console';
+import users from '../content/users';
+import FirebaseService from '../../../service/firebase.service'
 
 @Component({
   name:'AccountTab'
@@ -191,6 +210,8 @@ export default class AccountTab extends Vue{
   panel: [1]
   deleteDialog =  false
   disableDialog =  false
+  showPassword = false
+  password = ""
 
   sendEmailVerify(){
 
@@ -202,11 +223,14 @@ export default class AccountTab extends Vue{
 
   removeUser() {
     const user = firebase.auth().currentUser
-    user.delete().then(res => {
-      console.log("deu certo", res)
+    user.delete().then(() => {
+      firebase.auth().signOut().then(() => {
+        this.$router.push('/auth/signin')
+      })
     }).catch(error => {
-      console.log("Deu ruim",error)
+      error
     })
   }
+
 }
 </script>

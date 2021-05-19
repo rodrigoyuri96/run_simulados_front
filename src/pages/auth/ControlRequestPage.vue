@@ -1,9 +1,9 @@
 <template>
-<v-btn
-  fab
-  loading
-  x-large
-></v-btn>
+ <v-progress-circular
+      :size="50"
+      color="primary"
+      indeterminate
+    ></v-progress-circular>
 </template>
 
 <script lang='ts'>

@@ -1,4 +1,5 @@
 <template>
+<div>
   <v-card class="pa-2">
     <v-card-title class="justify-center display-1 mb-2"
       >Redefinição de Senha</v-card-title
@@ -39,6 +40,7 @@
 
       <v-btn
         class="white--text"
+        :loading="isLoading"
         block
         depressed
         x-large
@@ -49,19 +51,42 @@
       >
     </v-form>
   </v-card>
+
+   <v-row justify="center">
+      <v-dialog v-model="dialog" persistent max-width="400">
+        <v-card>
+          <v-card-title class="headline">
+            Senha alterada com sucesso!
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <router-link class="router-link" to="/auth/signin">
+              <v-btn
+                class="white--text"
+                color="primary"
+                @click="dialog = false"
+              >
+                OK
+              </v-btn>
+            </router-link>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+   </v-row>
+</div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import Firebase from "@/service/firebase.service"
+import Firebase from "@/service/firebase.service";
 import FirebaseService from "@/service/firebase.service";
 
 @Component({
   name: "ResetPage",
 })
-
 export default class ResetPage extends Vue {
   valid: boolean = false;
+  dialog: boolean = false;
 
   newPassword = "";
   confirmNewPassword = "";
@@ -73,12 +98,19 @@ export default class ResetPage extends Vue {
 
   confirmPasswordReset() {
     this.isLoading = true;
-
-    FirebaseService.updatePassword(this.confirmNewPassword, this.$route.query.oobCode)
-
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 500);
+    FirebaseService.updatePassword(
+      this.confirmNewPassword,
+      this.$route.query.oobCode
+    )
+      .then(() => {
+        this.dialog = true;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        this.isLoading = false;
+      });
   }
 }
 </script>

@@ -84,7 +84,6 @@ export default class FirebaseService{
         var accountEmail = email;
     
         auth.confirmPasswordReset(actionCode, newPassword).then((resp) => {
-          alert('Senha salva com sucesso!')
           
           resolve(true)
 

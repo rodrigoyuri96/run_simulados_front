@@ -11,12 +11,15 @@
       depressed
       x-large
       color="primary"
-      @click="resend"
+      @click="resend()"
     >Enviar e-mail novamente {{ seconds }}</v-btn>
   </v-card>
 </template>
 
 <script>
+import FirebaseService from '@/service/firebase.service'
+import firebase from 'firebase'
+
 /*
 |---------------------------------------------------------------------
 | Verify Email Page Component
@@ -46,8 +49,13 @@ export default {
     clearInterval(this.resendInterval)
   },
   methods: {
-    async resend() {
-      this.setTimer()
+     resend() {
+      const user = firebase.auth().currentUser;
+      user.sendEmailVerification().then(res => {
+        console.log('email enviado', res)
+      }).catch(error => {
+        console.log(error)
+      })
     },
     setTimer() {
       this.disabled = true

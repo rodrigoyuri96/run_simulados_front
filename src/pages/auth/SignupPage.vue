@@ -192,9 +192,10 @@ export default {
 
     createUser(name, email, password) {
       FirebaseService.createUser(email, password ).then((user) => {
-       FirebaseService.sendEmailVerification(user)
-       FirebaseService.updatedUser(user, {displayName: name})
-        this.$router.push('/verify/email')
+      console.log('usuario criado !!')
+      this.$router.push('/auth/signin')
+      FirebaseService.updatedUser(user, {displayName: name})
+      this.$router.push('/')
       }).catch((error) => {
         console.log(error);
       })

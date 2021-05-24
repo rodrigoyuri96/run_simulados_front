@@ -169,11 +169,14 @@ export default {
     redirectHomePage(){
       FirebaseService.getUser(true).then(isAuthenticated=>{
         let user = firebase.auth().currentUser;
-        if(isAuthenticated && user.emailVerified == true){
-          this.$router.push("/")
-        } else {
-          this.$router.push("/verify/email")
-        }
+        if(isAuthenticated) {
+          console.log("usuario autenticado", user)
+          if(user.emailVerified) {
+            this.$router.push("/")
+          } else {
+            this.$router.push("/auth/verify-email")
+          }
+        } 
       })
     },
 

@@ -32,8 +32,15 @@ export const routes = [{
 
       if(user == null){
         next('/run/')
-      } else if(userVerified.emailVerified == false) {
-        next('/verify/email') 
+      } else if(!userVerified.emailVerified) {
+        console.log(from)
+        if(to.name == 'request-control' || to.name == 'verify-email-successfully' ){
+          console.log('entrou no successfully')
+          next()
+        }else {
+          console.log('NÃO ENTROU')
+          next('/auth/verify-email')
+        } 
       } else if(adminRole){
         next(`/admin/${user.uid}`)
       }else if(clientRole){
@@ -47,11 +54,13 @@ export const routes = [{
     }
   },
   {
-    path: '/verify/email',
+    path: '/verify/email/successfully',
+    name: 'verify-email-successfully',
     meta: {
-      layout: 'auth'
+      layout: 'auth',
+      public: true
     },
-    component: () => import('../pages/auth/WelcomeVerifyYourEmail.vue')
+    component: () => import('../pages/auth/VerifyEmailSuccessfully.vue')
   },
 
 //...RunPages,

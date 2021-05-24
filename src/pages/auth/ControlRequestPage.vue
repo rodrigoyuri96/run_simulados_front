@@ -26,8 +26,13 @@ export default class ControlRequestPage extends Vue {
         this.apiKey = this.$route.query.apiKey
         this.lang = this.$route.query.lang
 
-        if(this.mode && this.mode == 'resetPassword'){
-            this.$router.push({name: 'auth-reset', query: {mode: this.mode, oobCode: this.oobCode, apiKey: this.apiKey, lang: this.lang}})
+        if(this.mode) {
+            if(this.mode == 'resetPassword'){
+                this.$router.push({name: 'auth-reset', query: {mode: this.mode, oobCode: this.oobCode, apiKey: this.apiKey, lang: this.lang}})
+            }else if(this.mode == 'verifyEmail') {
+                console.log("Entrou no Verify")
+                this.$router.push({name: 'verify-email-successfully', query: {mode: this.mode, oobCode: this.oobCode, apiKey: this.apiKey, lang: this.lang}})
+            }
         }
     }
 }

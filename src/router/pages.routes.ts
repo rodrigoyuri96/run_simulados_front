@@ -14,15 +14,16 @@ export default [{
     layout: 'auth',
     public: true
   }
-}, {
+},
+{
   path: '/auth/verify-email',
   name: 'auth-verify-email',
   component: () => import(/* webpackChunkName: "auth-verify-email" */ '@/pages/auth/VerifyEmailPage.vue'),
   meta: {
     layout: 'auth',
-    public: true
   }
-}, {
+}, 
+{
   path: '/auth/forgot-password',
   name: 'auth-forgot',
   component: () => import(/* webpackChunkName: "auth-forgot" */ '@/pages/auth/ForgotPage.vue'),

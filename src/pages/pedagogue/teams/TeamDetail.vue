@@ -1,9 +1,9 @@
 <template>
-  <v-dialog v-model="dialog" width="600" scrollable>
+  <v-dialog v-model="dialog" width="600" persistent scrollable>
     <v-card class="form-group">
-      <v-card-title class="headline teal lighten-2 white--text">Cadastro Turma <v-spacer></v-spacer><v-icon  style="color: white" @click="dialog = !dialog">mdi-close</v-icon></v-card-title>
+      <v-card-title class="headline teal lighten-2 white--text">Cadastro Turma <v-spacer></v-spacer><v-icon  style="color: white" @click="cancel">mdi-close</v-icon></v-card-title>
       <v-card-text>
-        <v-form v-model="valid" class="mt-5">
+        <v-form v-model="valid" ref="form" class="mt-5">
           <v-row>
             <v-col>
               <v-text-field
@@ -63,7 +63,8 @@
 
 
 <script lang="ts">
-import {Component, Prop, VModel, Vue} from "vue-property-decorator";
+import {Component, Prop, VModel, Vue, Ref} from "vue-property-decorator";
+import { VForm } from "@/filters/types";
 import {getModule} from "vuex-module-decorators";
 import {TeamModule} from "@/store/modules/team.module";
 import {TeacherModule} from "@/store/modules/teacher.module";
@@ -71,8 +72,8 @@ import RunTeachers from "@/components/run/Teachers.vue";
 import RunDate from "@/components/run/Date.vue";
 import {ValidationMessageModule} from "@/store/modules/validation/ValidationMessageModule";
 import ValidationMessage from "@/models/validation/ValidationMessage";
-import {period} from "@/models/constants/period.constants.ts"
-import {categories} from "@/models/constants/categories.constants.ts"
+import {period} from "@/models/constants/period.constants"
+import {categories} from "@/models/constants/categories.constants"
 import {TeamModel} from "@/models/team.model";
 import {TypeMessage} from "@/models/validation/TypeMessage";
 
@@ -84,6 +85,7 @@ import {TypeMessage} from "@/models/validation/TypeMessage";
   }
 })
 export default class TeamDetail extends Vue{
+  @Ref("form") readonly form!: VForm;
   @VModel({type:Boolean}) dialog;
   @Prop({type: Boolean}) isUpdate = false;
   teamModule = getModule(TeamModule, this.$store);
@@ -113,10 +115,12 @@ export default class TeamDetail extends Vue{
         this.loading = false
         this.validationModule.setValidation(new ValidationMessage('Turma atualizada com sucesso.', TypeMessage.SUCCESS))
         this.teamModule._updateTeam(res.data)
+        this.form.reset()
       }
     }).catch(error=>{
       this.loading = false
       this.validationModule.setValidation(new ValidationMessage('Erro ao salvar turma.', TypeMessage.ERROR))
+      this.form.reset()
     }).finally(() =>{
       this.loading = false
       this.dialog=false
@@ -132,11 +136,13 @@ export default class TeamDetail extends Vue{
         this.loading = false
         this.validationModule.setValidation(new ValidationMessage("Turma salva com sucesso!", TypeMessage.SUCCESS))
         this.teamModule._addToTeams(res.data)
+         this.form.reset()
       }
     }).catch(error=>{
       this.loading = false
       this.validationModule.setValidation(new ValidationMessage('Erro ao salvar turma.', TypeMessage.ERROR))
       console.log(error)
+      this.form.reset()
     }).finally(() =>{
       this.loading = false
       this.dialog=false
@@ -146,7 +152,8 @@ export default class TeamDetail extends Vue{
   }
 
   cancel(){
-    this.team = new TeamModel()
+    this.form.reset()
+    this.dialog = false
   }
 
   mounted(){

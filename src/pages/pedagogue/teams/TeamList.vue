@@ -115,8 +115,8 @@ export default class TeamList extends Vue{
 
   openRegisterModal(){
     this.isUpdate = false
+    //this.teamModule.setTeam(new TeamModel())
     this.openDialog = true
-    this.teamModule.setTeam(new TeamModel())
   }
 
   created(){

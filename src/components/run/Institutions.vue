@@ -1,5 +1,5 @@
 <template>
-  <v-form  v-model="valid">
+  <div>
     <v-select
       v-if="multiple == false"
       v-model="institutions"
@@ -10,7 +10,6 @@
       outlined
       dense
       :loading="loading"
-      @change="handleInstitution()"
       return-object
     />
     <v-select
@@ -25,7 +24,6 @@
       dense
       multiple
       return-object
-      @change="handleInstitution()"
       clearable
       chips
       deletable-chips
@@ -38,7 +36,7 @@
           </span>
         </template>
     </v-select>
-  </v-form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -69,15 +67,6 @@ export default class Institutions extends Vue {
     this.institutionModule.setLoading(status)
   }
 
-  
-  @Emit('valid')
-  handleValid(event: boolean) {
-    if (event != null && event !== undefined) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
    created() {
     this.loading = true
@@ -86,10 +75,6 @@ export default class Institutions extends Vue {
     }).finally(()=>{
       this.loading = false
     })
-  }
-
-  handleInstitution(){
-    this.handleValid(this.valid)
   }
 }
 </script>

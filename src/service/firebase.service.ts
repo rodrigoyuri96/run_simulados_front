@@ -1,10 +1,13 @@
+import UserModel  from '@/models/user/user.model';
 import Firebase from "@/firebase"
 import firebase from "firebase";
 import Axios from "@/plugins/Axios"
 import User = firebase.User;
 import UserCredential = firebase.auth.UserCredential;
 
-export default class FirebaseService{
+export default class FirebaseService {
+
+  private static _currentUser: User;
 
   public static auth(email: string, password: string):Promise<User>{
     return new Promise ((resolve, reject) => {
@@ -66,6 +69,7 @@ export default class FirebaseService{
     return new Promise((resolve, reject) => {
         Firebase.auth().onAuthStateChanged(user => {
          if (user) {
+           FirebaseService._currentUser = user
            user.getIdToken().then(idToken => {
              localStorage.setItem('idToken', idToken)
              const userSession = sessionStorage.getItem('user')
@@ -112,5 +116,18 @@ export default class FirebaseService{
       displayName: data.name,
       photoURL: photoURL
     })
+  }
+
+  static removeUser(userModel: UserModel): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const user = FirebaseService._currentUser
+      user.delete().then(() => {
+        resolve(true)
+      }).catch(e => {
+        reject(e)
+      }).catch(e => {
+        reject(e)
+      })
+    }) 
   }
 }

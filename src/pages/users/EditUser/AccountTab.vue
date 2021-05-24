@@ -17,7 +17,7 @@
               <v-img
                 :src="user.picture"
                 aspect-ratio="1"
-                class="blue-grey lighten-4 rounded elevation-3"
+                class="blue-grey lighten-4 rounded"
                 max-width="90"
                 max-height="90"
               ></v-img>
@@ -166,30 +166,30 @@
       max-width="390"
     >
       <v-card>
-        <v-card-title class="headline">Delete User</v-card-title>
+        <v-card-title class="headline">Deletar Conta</v-card-title>
         <v-card-text>
           <v-row>
             <v-col>
-              <p>Para sua segurança, corfirme a sua senha de usuário, para que essa operação seja realizada.</p>
+              <p>Tem Certeza que você deseja deletar a conta na Run ?</p>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
               <v-text-field 
                 v-model="password"
-                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                 :type="showPassword ? 'text' : 'password'"
-                 @click:append="showPassword = !showPassword"
-                outlined 
-                dense 
-                label="Confirmar Senha" />
+                outlined
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showPassword ? 'text' : 'password'"
+                @click:append="showPassword = !showPassword"
+                label="Confirmar senha"
+                dense />
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn class="white--text" color="grey" @click="deleteDialog = false">Cancel</v-btn>
-          <v-btn class="white--text" color="error"  @click="removeUser()">Delete</v-btn>
+          <v-btn class="white--text" color="grey" @click="deleteDialog = false">Cancelar</v-btn>
+          <v-btn class="white--text" color="error" :loading="loading" @click="removeUser()">Deletar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -197,10 +197,11 @@
 </template>
 
 <script lang="ts">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 import {Component, Prop, Vue} from "vue-property-decorator";
 import firebase from '@/firebase'
-import users from '../content/users';
-import FirebaseService from '../../../service/firebase.service'
+import FirebaseService from '@/service/firebase.service';
+import Firebase from "firebase";
 
 @Component({
   name:'AccountTab'
@@ -210,8 +211,9 @@ export default class AccountTab extends Vue{
   panel: [1]
   deleteDialog =  false
   disableDialog =  false
+  password = ''
   showPassword = false
-  password = ""
+  loading = false
 
   sendEmailVerify(){
 
@@ -221,16 +223,18 @@ export default class AccountTab extends Vue{
 
   }
 
-  removeUser() {
-    const user = firebase.auth().currentUser
-    user.delete().then(() => {
-      firebase.auth().signOut().then(() => {
-        this.$router.push('/auth/signin')
-      })
-    }).catch(error => {
-      error
-    })
+  updateImage() {
+   
   }
 
+  removeUser() {
+    this.loading = true
+    FirebaseService.removeUser(this.user).then((res) => {
+      if (res) {
+        this.loading = false
+        this.$router.push('/auth/signin')
+      }
+    })
+  }
 }
 </script>

@@ -1,20 +1,17 @@
 <template>
   <v-dialog v-model="dialog" width="1500px" scrollable>
     <v-card class="form-group">
-      <v-card-title
-        class="headline teal lighten-2 white--text font-weight-regular"
-      >
-        {{ isInsert ? "Registro de evento" : "Atualização do evento" }}
+      <v-card-title class="headline teal lighten-2 white--text font-weight-regular">
+        {{ !isUpdate ? "Registro de evento" : "Atualização do evento" }}
         <v-spacer></v-spacer>
-        <v-btn icon @click="dialog = !dialog">
+        <v-btn icon @click="cancel">
           <v-icon class="white--text">mdi-close</v-icon>
         </v-btn>
       </v-card-title>
 
       <v-card-text>
-        <v-form v-model="valid">
-
-           <v-row class="mt-5">
+        <v-form v-model="valid" ref="form">
+          <v-row class="mt-5">
             <v-col cols="6">
               <v-text-field
                 v-model="event.title"
@@ -84,15 +81,15 @@
               ></v-select>
             </v-col>
             <v-col v-if="event.eventType == 'Aula'" cols="6">
-               <run-institution
-                v-model="selectedInstitutions"
+              <run-institution
+                v-model="event.institution"
                 :multiple="false"
                 :rules="requiredField"
               />
             </v-col>
             <v-col v-else-if="event.eventType == 'Simulado'" cols="6">
-               <run-institution
-                v-model="selectedInstitutions"
+              <run-institution
+                v-model="event.institution"
                 :multiple="true"
                 :rules="requiredArrayField"
               />
@@ -136,37 +133,33 @@
             <v-col cols="6">
               <run-disciplines
                 :rules="requiredArrayField"
-                v-model="selectedDisciplines"
+                v-model="event.disciplines"
                 :multiple="true"
               >
               </run-disciplines>
             </v-col>
             <v-col cols="6">
-              <run-subjects
-                :rules="requiredArrayField"
-                v-model="selectedSubjects"
-              >
+              <run-subjects :rules="requiredArrayField" v-model="event.subjects">
               </run-subjects>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="6">
-                <run-watch
-                v-model="selectedStartTimeEvent"
+              <run-watch
+                v-model="event.startTimeEvent"
                 label="Horário inicio Evento"
                 :rules="requiredField"
               ></run-watch>
             </v-col>
             <v-col cols="6">
-                <run-watch
-                v-model="selectedEndTimeEvent"
+              <run-watch
+                v-model="event.endTimeEvent"
                 label="Horário fim Evento"
                 :rules="requiredField"
               ></run-watch>
             </v-col>
           </v-row>
-
         </v-form>
         <run-error v-if="errors.length > 0" :errors="errors"></run-error>
         <v-card-actions>
@@ -176,8 +169,9 @@
                 block
                 color="primary"
                 class="white--text"
+                :loading="loading"
                 :disabled="!isValid"
-                @click="save"
+                @click="!isUpdate ? save() : update()"
               >
                 {{ isInsert ? "Salvar" : "Atualizar" }}
               </v-btn>
@@ -213,11 +207,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch, VModel } from "vue-property-decorator";
+import { Vue, Component, VModel, Ref, Prop } from "vue-property-decorator";
+import { VForm } from "@/filters/types";
 import { getModule } from "vuex-module-decorators";
 import { EventModule } from "@/store/modules/event.module";
-import { SubjectModule } from "@/store/modules/subject.module";
-import { DisciplineModule } from "@/store/modules/discipline.module";
 import EventModel from "@/models/event.model";
 import RunDisciplines from "@/components/run/Disciplines.vue";
 import RunSubjects from "@/components/run/Subjects.vue";
@@ -227,41 +220,41 @@ import { ValidationMessageModule } from "@/store/modules/validation/ValidationMe
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import RunError from "@/components/run/validator/Error.vue";
-import RunInstitution from "@/components/run/Institutions.vue"
-import RunWatch from "@/components/run/Watch.vue"
+import RunInstitution from "@/components/run/Institutions.vue";
+import RunWatch from "@/components/run/Watch.vue";
 import { DateUtil } from "@/commons/date.commons";
 import RunEventReview from "@/pages/admin/events/EventReview.vue";
-import DisciplineModel from "@/models/discipline.model";
-import InstitutionModel from "@/models/institution.model";
-import SubjectsModel from "@/models/subjects.model";
 
 @Component({
   name: "EventRegister",
-  components: { RunDisciplines, RunSubjects, RunEventReview, RunDate, RunError, RunInstitution, RunWatch },
+  components: {
+    RunDisciplines,
+    RunSubjects,
+    RunEventReview,
+    RunDate,
+    RunError,
+    RunInstitution,
+    RunWatch,
+  },
 })
 export default class EventRegister extends Vue {
   @VModel({ type: Boolean }) dialog: boolean | false;
+  @Ref("form") readonly form!: VForm;
+  @Prop({ type: Boolean }) isUpdate = false;
 
-  private requiredField = [ v=> !!v || 'Campo obrigatório']
-  private requiredArrayField = [v=> !!v && v.length > 0 || 'Campo obrigatório']
-  private eventModel = new EventModel()
-  private selectedInstitutions: InstitutionModel[] = []
-  private selectedDisciplines: DisciplineModel = null
-  private selectedSubjects: SubjectsModel = null
-  private selectedStartTimeEvent=""
-  private selectedEndTimeEvent=""
-  valid: boolean = false
+  private requiredField = [(v) => !!v || "Campo obrigatório"];
+  private requiredArrayField = [(v) => (!!v && v.length > 0) || "Campo obrigatório"];
   eventModule = getModule(EventModule, this.$store);
-  subjectModule = getModule(SubjectModule, this.$store);
-  disciplineModule = getModule(DisciplineModule, this.$store);
-  validationMessageModule = getModule(ValidationMessageModule, this.$store);
+  valid: boolean = false;
+  validationModule = getModule(ValidationMessageModule, this.$store);
   errors: String[] = [];
   TypeList: String[] = ["Aula", "Simulado"];
   classCategory: String[] = ["Normal", "Revisão", "Palestra", "Correção de Prova"];
   simulatedCategory: String[] = ["Simulado 1º fase", "Simulado 2º fase"];
-  openReviewQuestion: boolean = false
+  openReviewQuestion: boolean = false;
+  loading = false;
 
-/*
+  /*
   @Watch("event.disciplines")
   onDisciplineEventChanged(newVal: EventModel, oldVal: EventModel) {
     this.subjectModule.setSubjects([]);
@@ -303,8 +296,8 @@ export default class EventRegister extends Vue {
     this.eventModule.setEvent(event);
   }
 
-  get isValid(){
-    return this.valid && !this.validDate
+  get isValid() {
+    return this.valid && !this.validDate;
   }
 
   get validDate(): boolean {
@@ -339,12 +332,7 @@ export default class EventRegister extends Vue {
         "A data inicial inscrição não pode ser depois do inicio do evento."
       );
     }
-    if (
-      !DateUtil.isBiggersThanDate(
-        this.event.endDateEvent,
-        this.event.startDateEvent
-      )
-    ) {
+    if (!DateUtil.isBiggersThanDate(this.event.endDateEvent, this.event.startDateEvent)) {
       this.errors.push(
         "A data final do evento não pode ser menor que a data inicial do evento."
       );
@@ -353,44 +341,63 @@ export default class EventRegister extends Vue {
     return this.errors.length > 0;
   }
 
-  save() {
-    this.eventModel.institutions = this.selectedInstitutions
-    this.eventModel.disciplines = [this.selectedDisciplines]
-    this.eventModel.subjects = [this.selectedSubjects]
-    this.eventModel.startTimeEvent = this.formatDate(this.selectedStartTimeEvent)
-    this.eventModel.endTimeEvent = this.formatDate(this.selectedEndTimeEvent)
-
-    const v = new ValidationMessage(
-      "Evento salvo com sucesso",
-      TypeMessage.SUCCESS,
-    );
-    this.dialog = false;
-    if (this.eventModule.registerStatus == RegisterStatusEnum.INSERT) {
-      this.eventModule.save().then((res) => {
-        if (!(res.status == 201)) {
-          v.message = "Erro ao salvar evento";
-          v.type = TypeMessage.ERROR;
-          this.eventModule.addToEvents(res.data);
+  update() {
+    this.loading = true;
+    this.eventModule
+      .update()
+      .then((res) => {
+        if (res.status == 200) {
+          this.loading = false;
+          this.validationModule.setValidation(
+            new ValidationMessage("Evento atualizado com sucesso.", TypeMessage.SUCCESS)
+          );
+          this.eventModule._updateEvent(res.data);
         }
+      })
+      .catch((error) => {
+        this.loading = false;
+        this.validationModule.setValidation(
+          new ValidationMessage("Erro ao atualizar o evento.", TypeMessage.ERROR)
+        );
+        this.form.reset();
+      })
+      .finally(() => {
+        this.loading = false;
+        this.dialog = false;
       });
-    } else {
-      this.eventModule
-        .update()
-        .then((res) => {
-          if (!(res.status == 200)) {
-            v.message = "Erro ao atualizar evento";
-            v.type = TypeMessage.ERROR;
-          }
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-      v.message = "Evento atualizado com sucesso";
-    }
 
-    this.validationMessageModule.setValidation(v);
-    this.eventModule.findAll();
-    this.eventModule.setDialog(false);
+    this.event = new EventModel();
+    this.form.reset();
+  }
+
+  save() {
+    this.loading = true;
+    this.eventModule
+      .save()
+      .then((res) => {
+        if (res.status == 200) {
+          this.loading = false;
+          this.validationModule.setValidation(
+            new ValidationMessage("Evento salvo com sucesso!", TypeMessage.SUCCESS)
+          );
+          this.eventModule._addToEvents(res.data);
+        }
+      })
+      .catch((error) => {
+        this.loading = false;
+        this.validationModule.setValidation(
+          new ValidationMessage("Erro ao salvar o evento", TypeMessage.ERROR)
+        );
+        console.log(error);
+        this.form.reset();
+      })
+      .finally(() => {
+        this.loading = false;
+        this.dialog = false;
+      });
+
+    this.event = new EventModel();
+    this.form.reset();
   }
 
   get validateUpdateAction(): Boolean {
@@ -399,16 +406,15 @@ export default class EventRegister extends Vue {
       : new Boolean(true);
   }
 
-  formatDate(time){
-    return "T" + time + ":00"
+  formatDate(time) {
+    return "T" + time + ":00";
   }
 
   cancel() {
-    this.event = new EventModel();
+    this.form.reset();
     this.dialog = false;
   }
 }
 </script>
 
-<style>
-</style>
+<style></style>

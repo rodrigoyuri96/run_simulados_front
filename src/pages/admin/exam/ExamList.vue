@@ -65,7 +65,6 @@ import { ExamModule } from "@/store/modules/exam.module";
 import RunExamRegister from "@/pages/admin/exam/ExamRegister.vue";
 import { RegisterStatusEnum } from "@/models/register.status.enum";
 import { mdiDelete, mdiPencil } from "@mdi/js";
-import ExamModel from "@/models/exam.model";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";

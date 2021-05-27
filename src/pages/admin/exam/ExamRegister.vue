@@ -154,7 +154,7 @@
                 class="white--text"
                 :loading="loading"
                 :disabled="!isValid"
-                @click="!isUpdate? save() : update()"
+                @click="!isUpdate ? save() : update()"
               >
                 {{ !isUpdate ? "Salvar" : "Atualizar" }}
               </v-btn>
@@ -204,7 +204,7 @@ import { RegisterStatusEnum } from "@/models/register.status.enum";
 export default class ExamRegister extends Vue {
   @VModel({ type: Boolean }) dialog: boolean | false;
   @Ref("form") readonly form!: VForm;
-  @Prop({type: Boolean}) isUpdate = false;
+  @Prop({ type: Boolean }) isUpdate = false;
 
   examModule = getModule(ExamModule, this.$store);
   institutionModule = getModule(InstitutionModule, this.$store);
@@ -224,10 +224,7 @@ export default class ExamRegister extends Vue {
   }
 
   get isValid() {
-    return (
-      this.validExam &&
-      this.exam.disciplinesRules.length > 0
-    );
+    return this.validExam && this.exam.disciplinesRules.length > 0;
   }
 
   constructor() {
@@ -260,14 +257,6 @@ export default class ExamRegister extends Vue {
     return this.examModule.disciplineRulesDialog;
   }
 
-  get snack() {
-    return this.validationModule.snack;
-  }
-
-  set snack(newValue: boolean) {
-    this.validationModule.setSnack(newValue);
-  }
-
   set dialogDisciplineRules(newValue: boolean) {
     this.examModule.setDisciplineRulesDialog(newValue);
   }
@@ -278,48 +267,73 @@ export default class ExamRegister extends Vue {
     this.dialogDisciplineRules = true;
   }
 
-   update(){
-    this.loading = true
-    this.examModule.update().then(res=>{
-      if(res.status == 200){
-        this.loading = false
-        this.validationModule.setValidation(new ValidationMessage('Vestibular atualizado com sucesso.', TypeMessage.SUCCESS))
-        this.examModule._updateExam(res.data)
-      }
-    }).catch(error=>{
-      this.loading = false
-      this.validationModule.setValidation(new ValidationMessage('Erro ao atualizar vestibular.', TypeMessage.ERROR))
-    }).finally(() =>{
-      this.loading = false
-      this.dialog=false
-    })
+  update() {
+    this.loading = true;
+    this.examModule
+      .update()
+      .then((res) => {
+        if (res.status == 200) {
+          this.loading = false;
+          this.validationModule.setValidation(
+            new ValidationMessage(
+              "Vestibular atualizado com sucesso.",
+              TypeMessage.SUCCESS
+            )
+          );
+          this.examModule._updateExam(res.data);
+        }
+      })
+      .catch((error) => {
+        this.loading = false;
+        this.validationModule.setValidation(
+          new ValidationMessage(
+            "Erro ao atualizar vestibular.",
+            TypeMessage.ERROR
+          )
+        );
+        this.form.reset();
+      })
+      .finally(() => {
+        this.loading = false;
+        this.dialog = false;
+      });
 
-    this.exam = new ExamModel()
-    this.form.reset()
-  }
-  
-   save(){
-    this.loading = true
-    this.examModule.save().then(res=>{
-      if(res.status == 201){
-        this.loading = false
-        this.validationModule.setValidation(new ValidationMessage("Vestibular salvo com sucesso!", TypeMessage.SUCCESS))
-        this.examModule._addToExams(res.data)
-         this.form.reset()
-      }
-    }).catch(error=>{
-      this.loading = false
-      this.validationModule.setValidation(new ValidationMessage('Erro ao salvar vestibular.', TypeMessage.ERROR))
-      console.log(error)
-      this.form.reset()
-    }).finally(() =>{
-      this.loading = false
-      this.dialog=false
-    })
-
-    this.exam = new ExamModel()
+    this.exam = new ExamModel();
+    this.form.reset();
   }
 
+  save() {
+    this.loading = true;
+    this.examModule
+      .save()
+      .then((res) => {
+        if (res.status == 201) {
+          this.loading = false;
+          this.validationModule.setValidation(
+            new ValidationMessage(
+              "Vestibular salvo com sucesso!",
+              TypeMessage.SUCCESS
+            )
+          );
+          this.examModule._addToExams(res.data);
+        }
+      })
+      .catch((error) => {
+        this.loading = false;
+        this.validationModule.setValidation(
+          new ValidationMessage("Erro ao salvar vestibular.", TypeMessage.ERROR)
+        );
+        console.log(error);
+        this.form.reset();
+      })
+      .finally(() => {
+        this.loading = false;
+        this.dialog = false;
+      });
+
+    this.exam = new ExamModel();
+    this.form.reset();
+  }
 
   get validateUpdateAction(): Boolean {
     return this.examModule.registerStatus == RegisterStatusEnum.UPDATE
@@ -340,9 +354,9 @@ export default class ExamRegister extends Vue {
   }
 
   cancel() {
-      this.examModule.exam.disciplinesRules = []
-      this.form.reset()
-      this.dialog = false;
+    this.examModule.exam.disciplinesRules = [];
+    this.form.reset();
+    this.dialog = false;
   }
 }
 </script>

@@ -144,7 +144,7 @@
             <v-col cols="6">
               <run-subjects
                 :rules="requiredArrayField"
-                v-model="selectedSubjects"
+                v-model="event.subjects"
               >
               </run-subjects>
             </v-col>

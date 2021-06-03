@@ -11,27 +11,26 @@
             <template v-slot:activator="{ on }">
               <transition name="slide-fade" mode="out-in">
                 <v-btn v-show="selectedUsers.length > 0" v-on="on">
-                  Actions
+                  Ações
                   <v-icon right>mdi-menu-down</v-icon>
                 </v-btn>
               </transition>
             </template>
             <v-list dense>
-              <v-list-item @click>
+              <v-list-item>
                 <v-list-item-title>Verificar</v-list-item-title>
               </v-list-item>
-              <v-list-item @click>
+              <v-list-item>
                 <v-list-item-title>Desabilitar</v-list-item-title>
               </v-list-item>
               <v-divider></v-divider>
-              <v-list-item @click>
+              <v-list-item>
                 <v-list-item-title>Excluir</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
-
         </v-col>
-        <v-col cols="8" class="d-flex text-right align-center ml-15 " >
+        <v-col cols="8" class="d-flex text-right align-center ml-15">
           <v-text-field
             v-model="searchQuery"
             append-icon="mdi-magnify"
@@ -60,7 +59,9 @@
         class="flex-grow-1"
       >
         <template v-slot:item.id="{ item }">
-          <div class="font-weight-bold"># <copy-label :text="item.id + ''" /></div>
+          <div class="font-weight-bold">
+            # <copy-label :text="item.id + ''" />
+          </div>
         </template>
 
         <template v-slot:item.email="{ item }">
@@ -74,24 +75,23 @@
           </div>
         </template>
 
-        <template v-slot:item.role="{ item }">
-          <v-chip
-            label
-            small
-            :class="item.role === 'ADMIN' ? 'white--text font-weight-bold' : 'font-weight-bold'"
-            :color="item.role === 'ADMIN' ? 'primary' : undefined"
-          >{{ item.role | capitalize }}</v-chip>
+        <template v-slot:item.ative="{ item }">
+          <div>
+              <v-switch
+                 primary
+              ></v-switch>
+          </div>
         </template>
 
         <template v-slot:item.created="{ item }">
-          <div>{{ item.created | formatDate('ll') }}</div>
+          <div>{{ item.created | formatDate("ll") }}</div>
         </template>
 
         <template v-slot:item.lastSignIn="{ item }">
-          <div>{{ item.lastSignIn | formatDate('lll') }}</div>
+          <div>{{ item.lastSignIn | formatDate("lll") }}</div>
         </template>
 
-        <template v-slot:item.action="{ }">
+        <template v-slot:item.action="{}">
           <div class="actions">
             <v-btn @click="openDialog = true" icon>
               <v-icon>mdi-open-in-new</v-icon>
@@ -105,43 +105,41 @@
 </template>
 
 <script>
-import users from '@/pages/users/content/users'
-import CopyLabel from '@/components/common/CopyLabel'
-import RunTeachersRegister from "@/pages/pedagogue/teachers/TeachersRegister.vue"
+import users from "@/pages/users/content/users";
+import CopyLabel from "@/components/common/CopyLabel";
+import RunTeachersRegister from "@/pages/pedagogue/teachers/TeachersRegister.vue";
 
 export default {
   components: {
     CopyLabel,
-    RunTeachersRegister
+    RunTeachersRegister,
   },
   data() {
     return {
       openDialog: false,
       isLoading: false,
-      searchQuery: '',
+      searchQuery: "",
       selectedUsers: [],
       headers: [
-        { text: 'Id', align: 'left', value: 'id' },
-        { text: 'Email', value: 'email' },
-        { text: 'Nome', align: 'left', value: 'name' },
-        { text: 'Perfil', value: 'role' },
-        { text: 'Data Criação', value: 'created' },
-        { text: '', sortable: false, align: 'right', value: 'action' }
+        { text: "Id", align: "left", value: "id" },
+        { text: "Email", value: "email" },
+        { text: "Nome", align: "left", value: "name" },
+        { text: "Ativo", value: "ative" },
+        { text: "Data Criação", value: "created" },
+        { text: "", sortable: false, align: "right", value: "action" },
       ],
 
-      users
-    }
+      users,
+    };
   },
   watch: {
-    selectedUsers(val) {
-
-    }
+    selectedUsers(val) {},
   },
   methods: {
     searchUser() {},
-    open() {}
-  }
-}
+    open() {},
+  },
+};
 </script>
 
 <style lang="scss" scoped>

@@ -1,8 +1,17 @@
-import DisciplineModel from "@/models/discipline.model";
+import ClassesRulesModel from '@/models/teacher/class.rules.model'
 
-export class TeacherModel{
-  id: string
-  name: string
-  title: string
-  discipline: DisciplineModel
+export default class TeacherModel{
+  public id: string
+  public name: string
+  public email: string
+  public phone: string
+  public classesRules: ClassesRulesModel[]
+
+  constructor(){
+    this.id = null
+    this.name = ''
+    this.email = ''
+    this.phone = ''
+    this.classesRules = []
+  }
 }

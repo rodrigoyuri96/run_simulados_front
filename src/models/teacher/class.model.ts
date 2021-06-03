@@ -1,5 +1,5 @@
 import {TeamSearchModel} from "@/models/team.search.model";
-import {TeacherModel} from "@/models/teacher/teacher.model";
+import TeacherModel from "@/models/teacher/teacher.model";
 
 export class ClassModel{
   name: string

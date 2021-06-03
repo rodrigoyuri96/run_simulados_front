@@ -27,7 +27,7 @@
            </v-row>
            <v-row>
               <v-col>
-                <run-tag v-model="event.subjects"></run-tag>
+                <run-tag :tags="tags"></run-tag>
               </v-col>
            </v-row>
         </v-form>
@@ -38,7 +38,7 @@
 
 <script lang="ts">
 
-import {Component, Vue, VModel} from "vue-property-decorator";
+import {Component, Vue, VModel, Prop} from "vue-property-decorator";
 import RunInstitution from "@/components/run/Institutions.vue";
 import {getModule} from "vuex-module-decorators";
 import RunTag from "@/components/run/Tags.vue"
@@ -56,6 +56,13 @@ export default class EventReview extends Vue{
 
   @VModel({ type: Boolean }) dialog: boolean | false
   valid: boolean = false
+
+  get tags(){
+    let tags = this.event.subjects.map(s=>{
+      return s.name
+    })
+    return tags
+  }
 
    get events() {
     return this.eventModule.events;

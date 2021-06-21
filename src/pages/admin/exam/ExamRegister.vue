@@ -1,18 +1,18 @@
 <template>
-  <v-dialog v-model="dialog" width="1500px" scrollable>
+  <v-dialog v-model="dialog" width="1500px" persistent scrollable>
     <v-card class="form-group">
       <v-card-title
         class="headline teal lighten-2 white--text font-weight-regular"
       >
-        {{ isInsert ? "Cadastro de Vestibular" : "Atualização do vestibular" }}
+        {{ !isUpdate ? "Cadastro de Vestibular" : "Atualização do vestibular" }}
         <v-spacer></v-spacer>
-        <v-btn icon @click="dialog = !dialog">
+        <v-btn icon @click="cancel">
           <v-icon class="white--text">mdi-close</v-icon>
         </v-btn>
       </v-card-title>
 
       <v-card-text>
-        <v-form v-model="validExam">
+        <v-form v-model="validExam" ref="form">
           <v-row class="mt-5">
             <v-col>
               <v-text-field
@@ -44,7 +44,6 @@
             <v-col cols="8">
               <run-institution
                 v-model="exam.institution"
-                @valid="validInstitution = $event"
                 :rules="[(i) => !!i || 'Campo obrigatório']"
               />
             </v-col>
@@ -153,10 +152,11 @@
                 block
                 color="primary"
                 class="white--text"
+                :loading="loading"
                 :disabled="!isValid"
-                @click="save"
+                @click="!isUpdate ? save() : update()"
               >
-                {{ isInsert ? "Salvar" : "Atualizar" }}
+                {{ !isUpdate ? "Salvar" : "Atualizar" }}
               </v-btn>
             </v-col>
 
@@ -166,7 +166,7 @@
                 block
                 color="secondary"
                 class="white--text"
-                @click="cancel()"
+                @click="cancel"
               >
                 Cancelar
               </v-btn>
@@ -182,7 +182,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, VModel } from "vue-property-decorator";
+import { Component, Vue, VModel, Ref, Prop } from "vue-property-decorator";
+import { VForm } from "@/filters/types";
 import { getModule } from "vuex-module-decorators";
 import { ExamModule } from "@/store/modules/exam.module";
 import { InstitutionModule } from "../../../store/modules/institution.module";
@@ -202,13 +203,16 @@ import { RegisterStatusEnum } from "@/models/register.status.enum";
 })
 export default class ExamRegister extends Vue {
   @VModel({ type: Boolean }) dialog: boolean | false;
+  @Ref("form") readonly form!: VForm;
+  @Prop({ type: Boolean }) isUpdate = false;
 
   examModule = getModule(ExamModule, this.$store);
   institutionModule = getModule(InstitutionModule, this.$store);
-  validationMessageModule = getModule(ValidationMessageModule, this.$store);
+  validationModule = getModule(ValidationMessageModule, this.$store);
   items = [1, 2];
   validInstitution: boolean = false;
   validExam = false;
+  loading = false;
 
   icons = {
     mdiDelete,
@@ -220,11 +224,7 @@ export default class ExamRegister extends Vue {
   }
 
   get isValid() {
-    return (
-      this.validExam &&
-      this.validInstitution &&
-      this.exam.disciplinesRules.length > 0
-    );
+    return this.validExam && this.exam.disciplinesRules.length > 0;
   }
 
   constructor() {
@@ -257,14 +257,6 @@ export default class ExamRegister extends Vue {
     return this.examModule.disciplineRulesDialog;
   }
 
-  get snack() {
-    return this.validationMessageModule.snack;
-  }
-
-  set snack(newValue: boolean) {
-    this.validationMessageModule.setSnack(newValue);
-  }
-
   set dialogDisciplineRules(newValue: boolean) {
     this.examModule.setDisciplineRulesDialog(newValue);
   }
@@ -275,38 +267,72 @@ export default class ExamRegister extends Vue {
     this.dialogDisciplineRules = true;
   }
 
-  save() {
-    const v = new ValidationMessage(
-      "Vestibular salvo com sucesso",
-      TypeMessage.SUCCESS,
-    );
-    this.dialog = false;
-    if (this.examModule.registerStatus == RegisterStatusEnum.INSERT) {
-      this.examModule.save().then((res) => {
-        if (!(res.status == 201)) {
-          v.message = "Erro ao salvar vestibular";
-          v.type = TypeMessage.ERROR;
-          this.examModule.addToExams(res.data);
+  update() {
+    this.loading = true;
+    this.examModule
+      .update()
+      .then((res) => {
+        if (res.status == 200) {
+          this.loading = false;
+          this.validationModule.setValidation(
+            new ValidationMessage(
+              "Vestibular atualizado com sucesso.",
+              TypeMessage.SUCCESS
+            )
+          );
+          this.examModule._updateExam(res.data);
         }
+      })
+      .catch((error) => {
+        this.loading = false;
+        this.validationModule.setValidation(
+          new ValidationMessage(
+            "Erro ao atualizar vestibular.",
+            TypeMessage.ERROR
+          )
+        );
+        this.form.reset();
+      })
+      .finally(() => {
+        this.loading = false;
+        this.dialog = false;
       });
-    } else {
-      this.examModule
-        .update()
-        .then((res) => {
-          if (!(res.status == 200)) {
-            v.message = "Erro ao atualizar vestibular";
-            v.type = TypeMessage.ERROR;
-          }
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-      v.message = "Vestibular atualizado com sucesso";
-    }
 
-    this.validationMessageModule.setValidation(v);
-    this.examModule.findAll();
-    this.examModule.setDialog(false);
+    this.exam = new ExamModel();
+    this.form.reset();
+  }
+
+  save() {
+    this.loading = true;
+    this.examModule
+      .save()
+      .then((res) => {
+        if (res.status == 201) {
+          this.loading = false;
+          this.validationModule.setValidation(
+            new ValidationMessage(
+              "Vestibular salvo com sucesso!",
+              TypeMessage.SUCCESS
+            )
+          );
+          this.examModule._addToExams(res.data);
+        }
+      })
+      .catch((error) => {
+        this.loading = false;
+        this.validationModule.setValidation(
+          new ValidationMessage("Erro ao salvar vestibular.", TypeMessage.ERROR)
+        );
+        console.log(error);
+        this.form.reset();
+      })
+      .finally(() => {
+        this.loading = false;
+        this.dialog = false;
+      });
+
+    this.exam = new ExamModel();
+    this.form.reset();
   }
 
   get validateUpdateAction(): Boolean {
@@ -328,7 +354,8 @@ export default class ExamRegister extends Vue {
   }
 
   cancel() {
-    this.exam = new ExamModel();
+    this.examModule.exam.disciplinesRules = [];
+    this.form.reset();
     this.dialog = false;
   }
 }

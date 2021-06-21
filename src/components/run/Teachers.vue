@@ -7,7 +7,6 @@
     :multiple="multiple"
     return-object
     dense
-    required
     :rules="rules"
     label="Professores"
     outlined
@@ -24,15 +23,16 @@
 
 <script lang="ts">
 import { getModule } from 'vuex-module-decorators'
-import {Vue, Component, Emit, Prop, VModel} from 'vue-property-decorator'
+import {Vue, Component, Prop, VModel} from 'vue-property-decorator'
 import {TeacherModule} from "@/store/modules/teacher.module";
 
 @Component({
   name: 'RunTeams',
 })
+
 export default class Teachers extends Vue {
   teacherModule = getModule(TeacherModule, this.$store)
-  @VModel() teachers!: []
+  @VModel() teachers
   @Prop({type:Boolean}) multiple!: Boolean
   @Prop({type:Array}) rules!: []
   loading: boolean = false
@@ -63,7 +63,6 @@ export default class Teachers extends Vue {
       this.loading = false
     })
   }
-
 }
 </script>
 

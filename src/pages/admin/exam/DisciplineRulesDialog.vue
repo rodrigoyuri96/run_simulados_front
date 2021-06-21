@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="500">
+  <v-dialog v-model="dialog" width="500" persistent>
     <v-card>
       <v-card-title class="headline teal lighten-2 white--text">
         Regras de Disciplina
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue} from "vue-property-decorator";
 import RunDiscipline from "@/components/run/Disciplines.vue";
 import { ExamModule } from "@/store/modules/exam.module";
 import { getModule } from "vuex-module-decorators";

@@ -101,7 +101,7 @@ export class ExamModule extends VuexModule {
     }
 
     @Mutation
-    addToExams(newExam: ExamModel) {
+    _addToExams(newExam: ExamModel) {
       this._exams.push(newExam)
     }
 
@@ -125,17 +125,18 @@ export class ExamModule extends VuexModule {
       this.disciplinesRules[this._index] = newValue
     }
 
-    @Action({commit:"addToExams"})
-    save():Promise<AxiosResponse> {
-       return new Promise<AxiosResponse>((resolve, reject) => {
-         this.service.save(this.exam).then(res=>{
+    @Mutation
+      _updateExam(updatedExam: ExamModel) {
+       let index = this._exams.map(t=> t.id)
+                .indexOf(updatedExam.id)
 
-             resolve(res)
-         }).catch(error=>{
-           reject(error)
-         })
-       })
-    }
+       Object.assign(this._exams[index], updatedExam)
+  }
+
+  @Action
+  save(): Promise<AxiosResponse<ExamModel>> {
+    return this.service.save(this.exam)
+  }
 
     @Action({commit:"setExams"})
     findAll() {

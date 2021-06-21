@@ -61,7 +61,6 @@ import { ValidationMessageModule } from "@/store/modules/validation/ValidationMe
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import { mdiDelete, mdiPencil } from "@mdi/js";
-import EventModel from "@/models/event.model";
 import RunRemoveDialog from "@/components/run/messages/removeDialog.vue";
 
 @Component({
@@ -74,6 +73,7 @@ export default class EventList extends Vue {
   index = 0;
   openRemoveDialog = false;
   openEventRegister = false;
+  isUpdate = false
 
   icons = {
     mdiDelete,
@@ -82,6 +82,14 @@ export default class EventList extends Vue {
 
   get events() {
     return this.eventModule.events;
+  }
+
+   get snack() {
+    return this.validationMessageModule.snack;
+  }
+
+  set snack(newValue: boolean) {
+    this.validationMessageModule.setSnack(newValue);
   }
 
   get dialog() {
@@ -97,11 +105,11 @@ export default class EventList extends Vue {
     this.openRemoveDialog = true;
   }
 
-  updateEvent(i: number) {
-    console.log(this.eventModule.events[i]);
-    this.eventModule.setEvent(this.eventModule.events[i]);
-    this.eventModule.setRegisterStatus(RegisterStatusEnum.UPDATE);
+  updateEvent(i) {
+    let event = Object.assign({}, this.events[i])
+    this.eventModule.setEvent(event);
     this.openEventRegister = true;
+    this.isUpdate = true
   }
 
   deleteEvent() {
@@ -131,8 +139,9 @@ export default class EventList extends Vue {
 
   addEvent() {
     this.eventModule.setRegisterStatus(RegisterStatusEnum.INSERT);
-    this.eventModule.setEvent(new EventModel());
+    //this.eventModule.setEvent(new EventModel());
     this.openEventRegister = true;
+    this.isUpdate = false
   }
 
   created() {

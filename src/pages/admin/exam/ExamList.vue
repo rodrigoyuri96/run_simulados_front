@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <run-exam-register v-model="openExamRegister" />
+    <run-exam-register v-model="openExamRegister" :is-update="isUpdate" />
 
     <v-card class="form-group">
       <v-card-title
@@ -65,7 +65,6 @@ import { ExamModule } from "@/store/modules/exam.module";
 import RunExamRegister from "@/pages/admin/exam/ExamRegister.vue";
 import { RegisterStatusEnum } from "@/models/register.status.enum";
 import { mdiDelete, mdiPencil } from "@mdi/js";
-import ExamModel from "@/models/exam.model";
 import ValidationMessage from "@/models/validation/ValidationMessage";
 import { TypeMessage } from "@/models/validation/TypeMessage";
 import { ValidationMessageModule } from "@/store/modules/validation/ValidationMessageModule";
@@ -82,6 +81,7 @@ export default class ExamList extends Vue {
   index = 0;
   openRemoveDialog = false;
   openExamRegister = false;
+  isUpdate = false
   icons = {
     mdiDelete,
     mdiPencil,
@@ -112,10 +112,11 @@ export default class ExamList extends Vue {
     this.openRemoveDialog = true;
   }
 
-  updateExam(i: number) {
-    this.examModule.setExam(this.examModule.exams[i]);
-    this.examModule.setRegisterStatus(RegisterStatusEnum.UPDATE);
+  updateExam(i) {
+    let exam = Object.assign({}, this.exams[i])
+    this.examModule.setExam(exam);
     this.openExamRegister = true;
+    this.isUpdate = true
   }
 
   deleteExam() {
@@ -145,8 +146,9 @@ export default class ExamList extends Vue {
 
   addExam() {
     this.examModule.setRegisterStatus(RegisterStatusEnum.INSERT);
-    this.examModule.setExam(new ExamModel());
+    //this.examModule.setExam(new ExamModel());
     this.openExamRegister = true;
+    this.isUpdate = false;
   }
 
   created() {

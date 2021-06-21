@@ -55,11 +55,6 @@ export class EventModule extends VuexModule {
     }
 
     @Mutation
-    setValidField(newValue: boolean){
-        this._validField = newValue
-    }
-
-    @Mutation
     setDialog(newValue: boolean){
         this._dialog = newValue
     }
@@ -73,6 +68,11 @@ export class EventModule extends VuexModule {
     setEvent(newEvent: EventModel) {
       this._event = newEvent
     }
+    
+    @Mutation
+    _addToEvents(newEvent: EventModel) {
+        this._events.push(newEvent)
+    }
 
     @Mutation
     _setEvents(events: EventModel[]){
@@ -84,21 +84,19 @@ export class EventModule extends VuexModule {
         this._index = newValue
     }
 
-    @Mutation
-    addToEvents(newEvent: EventModel) {
-        this._events.push(newEvent)
-    }
 
-    @Action({commit:"addToEvents"})
-    save():Promise<AxiosResponse> {
-       return new Promise<AxiosResponse>((resolve, reject) => {
-         this.service.save(this.event).then(res=>{
-             resolve(res)
-         }).catch(error=>{
-           reject(error)
-         })
-       })
-    }
+    @Mutation
+      _updateEvent(updatedEvent: EventModel) {
+       let index = this._events.map(t=> t.id)
+                .indexOf(updatedEvent.id)
+
+       Object.assign(this._events[index], updatedEvent)
+  }
+
+  @Action
+  save(): Promise<AxiosResponse<EventModel>> {
+    return this.service.save(this.event)
+  }
 
     @Action
     findAll(){

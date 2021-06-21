@@ -1,5 +1,4 @@
 <template>
-  <v-form v-model="validDate">
     <v-menu
       ref="menu1"
       v-model="menu1"
@@ -22,7 +21,6 @@
           append-icon="mdi-calendar"
           v-bind="attrs"
           @blur="date = parseDate(dateFormatted)"
-          @change="handleValid()"
           v-on="on"
         ></v-text-field>
       </template>
@@ -32,11 +30,10 @@
         @input="menu1 = false"
       ></v-date-picker>
     </v-menu>
-  </v-form>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch, VModel, Prop, Emit } from "vue-property-decorator";
+import { Vue, Component, Watch, VModel, Prop } from "vue-property-decorator";
 import {DateUtil} from "@/commons/date.commons"
 
 @Component({
@@ -44,9 +41,9 @@ import {DateUtil} from "@/commons/date.commons"
 })
 export default class RunDate extends Vue {
   menu1 = false;
-  @VModel({type: String}) date!: "";
+  @VModel() date!: "";
   @Prop({type: String}) label: String | "";
-  @Prop({type: Array}) rules!: [];
+  @Prop({type:Array}) rules!: []
   dateFormatted: String = "";
   validDate: boolean = false;
 
@@ -65,22 +62,12 @@ export default class RunDate extends Vue {
     return `${day}/${month}/${year}`;
   }
 
-
   mounted() {
     this.dateFormatted = this.formatDate(this.date);
   }
 
   parseDate(date: String) {
       return DateUtil.parseDate(date)
-  }
-
-  @Emit('valid')
-  handleValid(event: boolean) {
-    if (event != null && event !== undefined) {
-      return true;
-    } else {
-      return false;
-    }
   }
 }
 </script>

@@ -3,8 +3,6 @@ import firebase from "firebase";
 import Axios from "@/plugins/Axios"
 import User = firebase.User;
 import UserCredential = firebase.auth.UserCredential;
-import { resolve } from "node:path";
-import { rejects } from "node:assert";
 
 export default class FirebaseService{
 
@@ -155,6 +153,4 @@ export default class FirebaseService{
       photoURL: photoURL
     })
   }
-
-
 }

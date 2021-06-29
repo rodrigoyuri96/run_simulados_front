@@ -25,6 +25,7 @@ import simpleLayout from './layouts/SimpleLayout'
 import landingLayout from './layouts/LandingLayout'
 import authLayout from './layouts/AuthLayout'
 import errorLayout from './layouts/ErrorLayout'
+import userLayout from './layouts/UserLayout.vue'
 
 /*
 |---------------------------------------------------------------------
@@ -41,6 +42,7 @@ export default {
     landingLayout,
     authLayout,
     errorLayout,
+    userLayout
   },
   computed: {
     ...mapState('app', ['toast']),

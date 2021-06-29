@@ -21,19 +21,15 @@ export const routes = [{
     path: '/',
     beforeEnter: (to, from, next) => {
       const user:UserModel = JSON.parse(sessionStorage.getItem('user'))
-      console.log('user: ', store.state.UserModule._user)
       let adminRole = UserCommons.hasPermission(user, Profile.ADMIN)
       let clientRole = UserCommons.hasPermission(user, Profile.CLIENT)
       let pedagogueRole = UserCommons.hasPermission(user, Profile.PEDAGOGUE)
-      let userVerified = firebase.auth().currentUser;
       console.log("admin role", adminRole)
       console.log("client role", clientRole)
       console.log("pedagogue role", pedagogueRole)
 
       if(user == null){
-        next('/run/')
-      } else if(userVerified.emailVerified == false) {
-        next('/verify/email') 
+        next('/run/') 
       } else if(adminRole){
         next(`/admin/${user.uid}`)
       }else if(clientRole){
@@ -47,11 +43,13 @@ export const routes = [{
     }
   },
   {
-    path: '/verify/email',
+    path: '/verify/email/successfully',
+    name: 'verify-email-successfully',
     meta: {
-      layout: 'auth'
+      layout: 'auth',
+      public: true
     },
-    component: () => import('../pages/auth/WelcomeVerifyYourEmail.vue')
+    component: () => import('../pages/auth/VerifyEmailSuccessfully.vue')
   },
 
 //...RunPages,

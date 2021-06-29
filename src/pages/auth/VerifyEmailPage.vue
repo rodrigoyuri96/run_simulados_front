@@ -1,7 +1,10 @@
 <template>
   <v-card class="pa-2">
     <h1>Verificação de conta</h1>
-    <div class="mb-6 overline">Por favor, verifique seu email para ter acesso aos recursos da RUN Simulados</div>
+    <div class="mb-6 overline">
+      Por favor, verifique seu email para ter acesso aos recursos da RUN
+      Simulados
+    </div>
 
     <v-btn
       class="white--text"
@@ -11,12 +14,14 @@
       depressed
       x-large
       color="primary"
-      @click="resend"
-    >Enviar e-mail novamente {{ seconds }}</v-btn>
+      @click="resend()"
+      >Enviar e-mail novamente {{ seconds }}</v-btn
+    >
   </v-card>
 </template>
 
 <script>
+import firebase from "firebase";
 /*
 |---------------------------------------------------------------------
 | Verify Email Page Component
@@ -26,7 +31,7 @@
 |
 */
 
-const TIMEOUT = 10
+const TIMEOUT = 10;
 
 export default {
   data() {
@@ -36,35 +41,41 @@ export default {
       times: 0,
       resendInterval: null,
       secondsToEnable: TIMEOUT,
-      seconds: ''
-    }
+      seconds: "",
+    };
   },
   mounted() {
-    this.setTimer()
+    this.setTimer();
   },
   beforeDestroy() {
-    clearInterval(this.resendInterval)
+    clearInterval(this.resendInterval);
   },
   methods: {
-    async resend() {
-      this.setTimer()
+    resend() {
+      const user = firebase.auth().currentUser;
+      user.sendEmailVerification().then((res) => {
+          console.log("email enviado", res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     setTimer() {
-      this.disabled = true
-      this.times++
-      this.secondsToEnable = TIMEOUT * this.times
+      this.disabled = true;
+      this.times++;
+      this.secondsToEnable = TIMEOUT * this.times;
 
       this.resendInterval = setInterval(() => {
         if (this.secondsToEnable === 0) {
-          clearInterval(this.resendInterval)
-          this.seconds = ''
-          this.disabled = false
+          clearInterval(this.resendInterval);
+          this.seconds = "";
+          this.disabled = false;
         } else {
-          this.seconds = `( ${this.secondsToEnable} )`
-          this.secondsToEnable--
+          this.seconds = `( ${this.secondsToEnable} )`;
+          this.secondsToEnable--;
         }
-      }, 1000)
-    }
-  }
-}
+      }, 1000);
+    },
+  },
+};
 </script>

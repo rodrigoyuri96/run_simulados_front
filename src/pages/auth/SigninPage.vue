@@ -43,9 +43,12 @@
             x-large
             color="primary"
             @click="submit"
-          >{{ $t('login.button') }}</v-btn>
+            >{{ $t("login.button") }}</v-btn
+          >
 
-          <div class="caption font-weight-bold text-uppercase my-3">{{ $t('login.orsign') }}</div>
+          <div class="caption font-weight-bold text-uppercase my-3">
+            {{ $t("login.orsign") }}
+          </div>
 
           <!-- external providers list -->
           <v-btn
@@ -66,7 +69,7 @@
 
           <div class="mt-5">
             <router-link to="/auth/forgot-password">
-              {{ $t('login.forgot') }}
+              {{ $t("login.forgot") }}
             </router-link>
           </div>
         </v-form>
@@ -74,9 +77,9 @@
     </v-card>
 
     <div class="text-center mt-6">
-      {{ $t('login.noaccount') }}
+      {{ $t("login.noaccount") }}
       <router-link to="/auth/signup" class="font-weight-bold">
-        {{ $t('login.create') }}
+        {{ $t("login.create") }}
       </router-link>
     </div>
   </div>
@@ -84,7 +87,6 @@
 
 <script>
 import FirebaseService from "@/service/firebase.service";
-import AuthService from "@/service/auth.service";
 import firebase from "firebase";
 
 export default {
@@ -96,94 +98,100 @@ export default {
 
       // form
       isFormValid: true,
-      email: '',
-      password: '',
+      email: "",
+      password: "",
 
       // form error
       error: false,
-      errorMessages: '',
+      errorMessages: "",
 
       errorProvider: false,
-      errorProviderMessages: '',
+      errorProviderMessages: "",
 
       // show password field
       showPassword: false,
 
-      providers: [{
-        id: 'google',
-        label: 'Google',
-        isLoading: false
-      }, {
-        id: 'facebook',
-        label: 'Facebook',
-        isLoading: false
-      }],
+      providers: [
+        {
+          id: "google",
+          label: "Google",
+          isLoading: false,
+        },
+        {
+          id: "facebook",
+          label: "Facebook",
+          isLoading: false,
+        },
+      ],
 
       // input rules
       rules: {
-        required: (value) => (value && Boolean(value)) || 'Campo obrigatório'
-      }
-    }
+        required: (value) => (value && Boolean(value)) || "Campo obrigatório",
+      },
+    };
   },
-  
+
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        this.isLoading = true
-        this.isSignInDisabled = true
-        this.signIn(this.email, this.password)
+        this.isLoading = true;
+        this.isSignInDisabled = true;
+        this.signIn(this.email, this.password);
       }
     },
     async signIn(email, password) {
-      FirebaseService.auth(email, password).then(()=>{
-          this.redirectHomePage()
-      })
-        .catch(error=>{
-        if(error.code == 'auth/wrong-password'){
-          console.log("senha inválida")
-        }
-      })
+      FirebaseService.auth(email, password)
+        .then(() => {
+          this.redirectHomePage();
+        })
+        .catch((error) => {
+          if (error.code == "auth/wrong-password") {
+            console.log("senha inválida");
+          }
+        });
     },
-    
+
     signInProvider(provider) {
-
-      if(provider.label == 'Google'){
+      if (provider.label == "Google") {
         FirebaseService.signInWithGoogle()
-          .then(()=>{
-            this.redirectHomePage()
-          }).catch(error=>{
-            console.log(error)
-        })
-
-      }else if(provider.label == 'Facebook'){
+          .then(() => {
+            this.redirectHomePage();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else if (provider.label == "Facebook") {
         FirebaseService.signInWithFacebook()
-        .then(()=>{
-          this.redirectHomePage()
-        }).catch(error=>{
-          console.log(error)
-        })
+          .then(() => {
+            this.redirectHomePage();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
-
     },
 
-    redirectHomePage(){
-      FirebaseService.getUser(true).then(isAuthenticated=>{
+    redirectHomePage() {
+      FirebaseService.getUser(true).then((isAuthenticated) => {
         let user = firebase.auth().currentUser;
-        if(isAuthenticated && user.emailVerified == true){
-          this.$router.push("/")
-        } else {
-          this.$router.push("/verify/email")
+        if (isAuthenticated) {
+          console.log("usuario autenticado", user);
+          if (user.emailVerified) {
+            this.$router.push("/");
+          } else {
+            this.$router.push("/auth/verify-email");
+          }
         }
-      })
+      });
     },
 
     resetErrors() {
-      this.error = false
-      this.errorMessages = ''
+      this.error = false;
+      this.errorMessages = "";
 
-      this.errorProvider = false
-      this.errorProviderMessages = ''
+      this.errorProvider = false;
+      this.errorProviderMessages = "";
     },
-  }
-}
+  },
+};
 </script>

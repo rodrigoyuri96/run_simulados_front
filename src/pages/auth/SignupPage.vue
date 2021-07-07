@@ -72,24 +72,14 @@
             >Criar Conta</v-btn
           >
 
-          <div class="caption font-weight-bold text-uppercase my-3">
-            Ou inscreva-se com
-          </div>
-
-          <!-- external providers list -->
           <v-btn
-            v-for="provider in providers"
-            :key="provider.id"
-            :loading="provider.isLoading"
-            :disabled="isSignUpDisabled"
-            class="mb-2 primary lighten-2 text--darken-3"
+            class="white--text"
             block
             x-large
-            @click="signInProvider(provider)"
+            color="primary"
+            @click="add()"
+            >Teste</v-btn
           >
-            <v-icon small left>mdi-{{ provider.id }}</v-icon>
-            {{ provider.label }}
-          </v-btn>
 
           <div v-if="errorProvider" class="error--text">
             {{ errorProviderMessages }}
@@ -136,21 +126,25 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <plan-update v-model="openPlanDialog"></plan-update>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import FirebaseService from "@/service/firebase.service";
-import firebase from "firebase";
+import PlanUpdate from "@/components/run/PlanUpdate.vue"
 
 @Component({
   name: "SignupPage",
+    components: { PlanUpdate }
 })
 export default class SignupPage extends Vue {
   valid: boolean = false;
   dialog: boolean = false;
   dialogErro: boolean = false;
+
+  openPlanDialog = false;
 
   email = "";
   password = "";
@@ -182,39 +176,9 @@ export default class SignupPage extends Vue {
     },
   ];
 
-  signInProvider(provider) {
-      if (provider.label == "Google") {
-        FirebaseService.signInWithGoogle()
-          .then(() => {
-            this.redirectHomePage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else if (provider.label == "Facebook") {
-        FirebaseService.signInWithFacebook()
-          .then(() => {
-            this.redirectHomePage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
+  add(){
+    this.openPlanDialog = true;
   }
-
-   redirectHomePage() {
-      FirebaseService.getUser(true).then((isAuthenticated) => {
-        let user = firebase.auth().currentUser;
-        if (isAuthenticated) {
-          console.log("usuario autenticado", user);
-          if (user.emailVerified) {
-            this.$router.push("/");
-          } else {
-            this.$router.push("/auth/verify-email");
-          }
-        }
-      });
-    }
 
   createUser(name, email, password) {
     this.isLoading = true;

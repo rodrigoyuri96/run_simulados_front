@@ -34,22 +34,30 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-btn color="orange" text> Share </v-btn>
+          <v-btn color="orange" text v-model="openPlanDialog"> Plano </v-btn>
 
           <v-btn color="orange" text> Explore </v-btn>
         </v-card-actions>
       </v-card>
     </div>
+    <plan-update ></plan-update>
   </user-layout>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Vue, VModel } from "vue-property-decorator";
 import UserLayout from "@/layouts/UserLayout.vue";
+import PlanUpdate from "@/components/run/PlanUpdate.vue"
 
-export default {
-  components: { UserLayout },
+@Component({
   name: "Dashboard",
-};
+  components: { UserLayout, PlanUpdate }
+})
+export default class Dashboard extends Vue {
+  @VModel({ type: Boolean }) dialog: boolean | false;
+
+  openPlanDialog = false;
+}
 </script>
 
 <style scoped>

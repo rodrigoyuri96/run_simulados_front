@@ -70,6 +70,18 @@ export default {
 /**
  * Transition animation between pages
  */
+@font-face {
+  font-family: "Raleway-Black";
+  src: local("Raleway-Black"),
+   url("./fonts/Raleway-Black.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Raleway";
+  src: local("Raleway"),
+   url("./fonts/Raleway-Regular.ttf") format("truetype");
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition-duration: 0.2s;

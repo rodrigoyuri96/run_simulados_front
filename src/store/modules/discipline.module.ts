@@ -41,8 +41,9 @@ export class DisciplineModule extends VuexModule {
         this._disciplineList = disciplines
     }
 
-    @Action
+    @Action({commit: '_setDisciplines'})
     findAll(){
+      /*
       return new Promise(((resolve, reject) => {
         Axios.get('/disciplinas').then(res=>{
           const ds: [] = res.data
@@ -57,6 +58,32 @@ export class DisciplineModule extends VuexModule {
           reject(false)
         })
       }))
+      */
+
+      const c1 = new DisciplineModel()
+      c1.name = 'Matemática'
+      c1.id = 1
+      const c2 = new DisciplineModel()
+      c2.name = "Geografia"
+      c2.id = 2
+      const c3 = new DisciplineModel()
+      c3.name = "Física"
+      c3.id = 3
+      const c4 = new DisciplineModel()
+      c4.name = "História"
+      c4.id = 4
+      const c5 = new DisciplineModel()
+      c5.name = "Biologia"
+      c5.id = 5
+      const c6 = new DisciplineModel()
+      c6.name = "Português"
+      c6.id = 6
+
+      const c7: DisciplineModel[] = []
+
+      c7.push(c1,c2,c3,c4,c5,c6)
+
+      return c7
     }
 
     @Action

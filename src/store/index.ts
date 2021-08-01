@@ -9,6 +9,7 @@ import {EventModule} from "@/store/modules/event.module";
 import {OptionModule} from "@/store/modules/option.module"
 import { CourseModule } from "@/store/modules/course.module"
 import { CommunityModule } from "@/store/modules/community.module"
+import { SimulatedModule } from './modules/simulated.module';
 
 // Global vuex
 import AppModule from './app'
@@ -37,7 +38,8 @@ const store = new Vuex.Store({
     TeamModule,
     CourseModule,
     CommunityModule,
-    TeacherModule
+    TeacherModule,
+    SimulatedModule
   }
 })
 

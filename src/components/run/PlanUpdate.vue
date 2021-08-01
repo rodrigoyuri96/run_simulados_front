@@ -57,7 +57,7 @@
                 <v-btn
                   class="white--text"
                   color="#00DDBB"
-                  style="font-size: 20px; font-family: sans-serif"
+                  style="font-size: 20px; font-family: Raleway"
                   block
                   x-large
                 >
@@ -116,7 +116,7 @@
                 <v-btn
                   class="white--text"
                   color="#00DDBB"
-                  style="font-size: 20px; font-family: sans-serif"
+                  style="font-size: 20px; font-family: Raleway"
                   block
                   x-large
                 >
@@ -175,7 +175,7 @@
                 <v-btn
                   class="white--text"
                   color="#00DDBB"
-                  style="font-size: 20px; font-family: sans-serif"
+                  style="font-size: 20px; font-family: Raleway"
                   block
                   x-large
                 >

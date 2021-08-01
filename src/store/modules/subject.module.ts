@@ -6,7 +6,7 @@ import DisciplineModel from "@/models/discipline.model";
 @Module({ name: 'SubjectModule', namespaced: true })
 export class SubjectModule extends VuexModule {
     _subjects: SubjectsModel[] = []
-    _idDiscipline: String = ""
+    _idDiscipline: number = 0
     _loading: Boolean = false
 
     get idDiscipline() {
@@ -27,7 +27,7 @@ export class SubjectModule extends VuexModule {
     }
 
     @Mutation
-    setIdDiscipline(id: String) {
+    setIdDiscipline(id: number) {
       this._idDiscipline = id
     }
 
@@ -38,6 +38,7 @@ export class SubjectModule extends VuexModule {
 
     @Action({ commit: 'setSubjects' })
     findAll() {
+      /*
       Axios.get('/assuntos').then(res=>{
         const sjs: [] = res.data
         let subjects: SubjectsModel[] = sjs.map(s =>{
@@ -47,6 +48,40 @@ export class SubjectModule extends VuexModule {
         })
         this.setSubjects(subjects)
       })
+      */
+      
+      const s1 = new SubjectsModel()
+      s1.name = 'Estátistica'
+      s1.id = 1
+      s1.idDiscipline = 1
+      const s2 = new SubjectsModel()
+      s2.name = "Funções"
+      s2.id = 2
+      s2.idDiscipline = 1
+
+      const s3 = new SubjectsModel()
+      s3.name = "Globalização"
+      s3.id = 3
+      s3.idDiscipline = 2
+      const s4 = new SubjectsModel()
+      s4.name = "Problemas Ambientais"
+      s4.id = 4
+      s4.idDiscipline = 2
+
+      const s5 = new SubjectsModel()
+      s5.name = "Eletricidade"
+      s5.id = 5
+      s5.idDiscipline = 3
+      const s6 = new SubjectsModel()
+      s6.name = "Leis de Newton"
+      s6.id = 5
+      s6.idDiscipline = 3
+
+      const s12: SubjectsModel[] = []
+
+      s12.push(s1,s2,s3,s4,s5,s6)
+
+      return s12
     }
 
   @Action

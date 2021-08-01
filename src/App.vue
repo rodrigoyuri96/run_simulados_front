@@ -73,13 +73,19 @@ export default {
 @font-face {
   font-family: "Raleway-Black";
   src: local("Raleway-Black"),
-   url("./fonts/Raleway-Black.ttf") format("truetype");
+  url("./fonts/Raleway-Black.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Raleway";
   src: local("Raleway"),
-   url("./fonts/Raleway-Regular.ttf") format("truetype");
+  url("./fonts/Raleway-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Raleway-Bold";
+  src: local("Raleway-Bold"),
+  url("./fonts/Raleway-Bold.ttf") format("truetype");
 }
 
 .fade-enter-active,

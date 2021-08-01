@@ -1,3 +1,4 @@
+
 export default class SubjectsModel {
     public id: number
     public idDiscipline: number

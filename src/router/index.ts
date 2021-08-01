@@ -20,6 +20,8 @@ Vue.use(Router)
 export const routes = [{
     path: '/',
     beforeEnter: (to, from, next) => {
+      next()
+      /*
       const user:UserModel = JSON.parse(sessionStorage.getItem('user'))
       console.log('user: ', store.state.UserModule._user)
       let adminRole = UserCommons.hasPermission(user, Profile.ADMIN)
@@ -44,7 +46,7 @@ export const routes = [{
       }else{
         next(false)
       }
-    }
+    */}
   },
   {
     path: '/verify/email',
@@ -88,6 +90,8 @@ router.beforeEach((to, from, next) => {
   // console.log(store.state.UserModule)
   // sessionStorage.setItem('user', store.state.UserModule.user)
   // return next()
+    next()
+  /*
    FirebaseService.getUser().then(isAuthenticated=>{
       const user:UserModel = JSON.parse(sessionStorage.getItem('user'))
       store.commit('UserModule/setUser', user)
@@ -102,7 +106,8 @@ router.beforeEach((to, from, next) => {
      }else{
        next('/auth/signin')
      }
-   })
+   }) 
+   */
 })
 
 /**

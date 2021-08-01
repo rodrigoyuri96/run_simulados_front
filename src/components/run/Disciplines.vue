@@ -21,8 +21,8 @@
       item-text="name"
       label="Disciplinas"
       :rules="rules"
-      outlined
-      dense
+      :outlined="!layoutUser"
+      :dense="!layoutUser"
       multiple
       return-object
       auto-select-first
@@ -55,6 +55,7 @@ export default class Disciplines extends Vue {
   @VModel() disciplines!: any[]
   @Prop({type:Boolean}) multiple!: Boolean
   @Prop({type:Array}) rules!: []
+  @Prop({type:Boolean}) layoutUser!: Boolean
 
   get items() {
     return this.disciplineModule.disciplines
@@ -68,7 +69,7 @@ export default class Disciplines extends Vue {
     this.disciplineModule.setLoading(status)
   }
 
-
+/*
   created() {
     this.loading = true
     this.disciplineModule.findAll().then(()=>{}).catch(error=>{
@@ -77,26 +78,11 @@ export default class Disciplines extends Vue {
       this.loading = false
     })
   }
+*/
 
-  /*
-  *   <template>
-  *     <div>teste<div>
-  *   </template>
-  *   <script>
-  *        let i = i + 1
-  *    < /script>
-  *   <style>  </style>
-  *
-  *
-  *
-  *
-  *
-  *
-  *
-  *
-  *
-  * */
-
+  created(){
+    this.disciplineModule.findAll()
+  }
 }
 </script>
 

@@ -23,6 +23,7 @@ export default [
     path: '/student',
     component: Home,
     beforeEnter: (to, from, next) => {
+      /*
       let user: UserModel = store.state.UserModule._user
       let clientRole = UserCommons.hasPermission(user, Profile.CLIENT)
       if(clientRole){
@@ -30,6 +31,8 @@ export default [
       }else{
         next('/')
       }
+      */
+     next()
 
     },
     children:[
@@ -42,11 +45,11 @@ export default [
         component: Simulated,
         children: [
           {
-            path: '',
+            path: ':id',
             component: SimulatedRegister
           },
           {
-            path: ':id',
+            path: '',
             component: SimulatedDetail
           }
         ]
